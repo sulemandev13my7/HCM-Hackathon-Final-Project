@@ -75,10 +75,17 @@ exports.createPayrollRun = async (req, res) => {
       
       let absentDays = 0;
       let halfDays = 0;
+      let lateCount = 0;
       attendance.forEach(a => {
         if (a.status === 'absent') absentDays++;
         if (a.status === 'half_day') halfDays++;
+        if (a.status === 'late') lateCount++;
       });
+      
+      let latePenaltyDays = 0;
+      if (lateCount >= 3) {
+        latePenaltyDays = Math.floor(lateCount / 3) * 0.5;
+      }
       
       const unpaidLeaves = await LeaveRequest.find({
         employee: emp._id,
@@ -96,7 +103,7 @@ exports.createPayrollRun = async (req, res) => {
       
       const gross = salary.gross || salary.basic * 1.5;
       const perDay = gross / (workingDays || 1);
-      const deductions = perDay * (absentDays + unpaidLeaveDays + 0.5 * halfDays);
+      const deductions = perDay * (absentDays + unpaidLeaveDays + 0.5 * halfDays + latePenaltyDays);
       const annualGross = gross * 12;
       const annualTax = calculateTax(annualGross);
       const tax = annualTax / 12;
@@ -109,6 +116,8 @@ exports.createPayrollRun = async (req, res) => {
         absentDays,
         unpaidLeaveDays,
         halfDays,
+        lateCount,
+        latePenaltyDays,
         deductions: Math.round(deductions),
         tax: Math.round(tax),
         netPay: Math.round(netPay),

@@ -1,11 +1,13 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Users, Calendar, FileText, DollarSign, Settings, MessageSquare, LayoutDashboard, LogOut, Shield, Bell, Megaphone, ClipboardCheck } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
+import { Users, Calendar, FileText, DollarSign, Settings, MessageSquare, LayoutDashboard, LogOut, Shield, Bell, Megaphone, Moon, Sun } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import API from '../services/api';
 
 export default function AdminLayout() {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const [notifications, setNotifications] = useState([]);
   const [showNotif, setShowNotif] = useState(false);
