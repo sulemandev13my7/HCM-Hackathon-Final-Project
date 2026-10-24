@@ -81,10 +81,8 @@ exports.checkOut = async (req, res) => {
     attendance.hoursWorked = Math.round(hoursWorked * 100) / 100;
     
     const halfDayHours = settings?.halfDayHours || 5;
-    if (hoursWorked < halfDayHours && attendance.status !== 'late') {
+    if (hoursWorked < halfDayHours) {
       attendance.status = 'half_day';
-    } else if (hoursWorked < halfDayHours && attendance.status === 'late') {
-      attendance.status = 'late';
     }
     
     await attendance.save();

@@ -161,11 +161,13 @@ exports.chat = async (req, res) => {
     const { message, history = [] } = req.body;
     const user = await User.findById(req.user.id).populate('employeeId');
     
-    const systemPrompt = `You are an AI assistant for HCM Lite HR system. You must only answer based on data and tools provided. 
+    const systemPrompt = `You are an AI assistant for HCM Lite HR system. You must ONLY answer using tools and data from the system. NEVER guess or make up data.
 Rules: Office hours 09:00, grace 15 min, late after 09:15, half day under 5 hours. 
 Leave quotas: Annual 14, Sick 8, Casual 10, Unpaid unlimited. Working days exclude weekends (Sat-Sun) and holidays.
-You must respect role-based access. Never reveal other employees' salaries or private data to employees.
-Always use tools when asked for data. Answer concisely.`;
+You must respect role-based access strictly. 
+If an employee asks about another employee's salary, compensation, or private financial data - politely refuse and say you can only share their own information.
+If asked for data you don't have tools for or not authorized - say so politely.
+Always use tools when asked for company/HR data. Answer concisely with "AI-generated" context in mind.`;
 
     const messages = [
       { role: 'system', content: systemPrompt },
@@ -201,10 +203,14 @@ Always use tools when asked for data. Answer concisely.`;
     if (assistantMessage.tool_calls && assistantMessage.tool_calls.length > 0) {
       for (let toolCall of assistantMessage.tool_calls) {
         const toolName = toolCall.function.name;
-        const args = JSON.parse(toolCall.function.arguments || '{}');
-        toolsUsed.push(toolName);
-        const result = await executeTool(toolName, args, user);
-        toolResults.push({ tool: toolName, result });
+        try {
+          const args = JSON.parse(toolCall.function.arguments || '{}');
+          toolsUsed.push(toolName);
+          const result = await executeTool(toolName, args, user);
+          toolResults.push({ tool: toolName, result });
+        } catch (e) {
+          toolResults.push({ tool: toolCall.function.name, result: { error: 'Invalid tool arguments' } });
+        }
       }
 
       // Second call with results
@@ -254,31 +260,42 @@ Always use tools when asked for data. Answer concisely.`;
 exports.smartLeave = async (req, res) => {
   try {
     const { text } = req.body;
-    const user = await User.findById(req.user.id);
     
     if (!process.env.AI_API_KEY) {
       return res.json({ type: 'casual', startDate: '', endDate: '', reason: text });
     }
 
-    const response = await axios.post(process.env.AI_BASE_URL, {
-      model: process.env.AI_MODEL || 'google/gemini-2.5-flash',
-      messages: [
-        { role: 'system', content: 'Extract leave details from natural language. Return ONLY valid JSON with keys: type (annual/sick/casual/unpaid), startDate (YYYY-MM-DD), endDate (YYYY-MM-DD), reason. Use current year context if dates mentioned.' },
-        { role: 'user', content: text }
-      ],
-      max_tokens: 200
-    }, {
-      headers: {
-        'Authorization': `Bearer ${process.env.AI_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      timeout: 10000
-    });
+    const callAI = async () => {
+      const response = await axios.post(process.env.AI_BASE_URL, {
+        model: process.env.AI_MODEL || 'google/gemini-2.5-flash',
+        messages: [
+          { role: 'system', content: 'Extract leave details from natural language. Return ONLY valid JSON with keys: type (annual/sick/casual/unpaid), startDate (YYYY-MM-DD), endDate (YYYY-MM-DD), reason. Use current year context if dates mentioned. Do not include any other text.' },
+          { role: 'user', content: text }
+        ],
+        max_tokens: 200
+      }, {
+        headers: {
+          'Authorization': `Bearer ${process.env.AI_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        timeout: 10000
+      });
+      return response.data.choices[0].message.content;
+    };
 
     try {
-      const content = response.data.choices[0].message.content;
-      const json = JSON.parse(content.replace(/```json|```/g, ''));
-      res.json(json);
+      let content = await callAI();
+      try {
+        const json = JSON.parse(content.replace(/```json|```/g, '').trim());
+        if (json.type && json.startDate && json.endDate) {
+          return res.json(json);
+        }
+        throw new Error('Invalid');
+      } catch {
+        content = await callAI();
+        const json = JSON.parse(content.replace(/```json|```/g, '').trim());
+        return res.json(json);
+      }
     } catch {
       res.json({ type: 'casual', startDate: '', endDate: '', reason: text });
     }
@@ -294,24 +311,35 @@ exports.summarize = async (req, res) => {
       return res.json({ summary: ['Dashboard data loaded successfully'] });
     }
 
-    const response = await axios.post(process.env.AI_BASE_URL, {
-      model: process.env.AI_MODEL || 'google/gemini-2.5-flash',
-      messages: [
-        { role: 'system', content: 'You are a data analyst. Summarize dashboard KPIs in 3-5 bullet points. Use only the numbers provided.' },
-        { role: 'user', content: JSON.stringify(kpis) }
-      ],
-      max_tokens: 200
-    }, {
-      headers: {
-        'Authorization': `Bearer ${process.env.AI_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      timeout: 10000
-    });
+    const callAI = async () => {
+      const response = await axios.post(process.env.AI_BASE_URL, {
+        model: process.env.AI_MODEL || 'google/gemini-2.5-flash',
+        messages: [
+          { role: 'system', content: 'You are a data analyst. Summarize dashboard KPIs in 3-5 bullet points. Use only the numbers provided. Label context as AI-generated insights.' },
+          { role: 'user', content: JSON.stringify(kpis) }
+        ],
+        max_tokens: 200
+      }, {
+        headers: {
+          'Authorization': `Bearer ${process.env.AI_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        timeout: 10000
+      });
+      return response.data.choices[0].message.content;
+    };
 
-    const content = response.data.choices[0].message.content;
-    const bullets = content.split('\n').filter(l => l.trim().startsWith('-') || l.trim().startsWith('•')).map(l => l.replace(/^[-•]\s*/, ''));
-    res.json({ summary: bullets.length ? bullets : [content] });
+    try {
+      let content = await callAI();
+      let bullets = content.split('\n').filter(l => l.trim().match(/^[-*•]\s+/)).map(l => l.replace(/^[-*•]\s+/, '').trim());
+      if (bullets.length === 0) {
+        content = await callAI();
+        bullets = content.split('\n').filter(l => l.trim().match(/^[-*•]\s+/)).map(l => l.replace(/^[-*•]\s+/, '').trim());
+      }
+      res.json({ summary: bullets.length ? bullets : [content.trim()] });
+    } catch {
+      res.json({ summary: ['Unable to generate summary'] });
+    }
   } catch (error) {
     res.json({ summary: ['Unable to generate summary'] });
   }

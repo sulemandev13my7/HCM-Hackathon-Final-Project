@@ -9,10 +9,10 @@ const pdfkit = require('pdfkit');
 
 const calculateTax = (annualGross) => {
   if (annualGross <= 600000) return 0;
-  if (annualGross <= 1200000) return 30000 + (annualGross - 600000) * 0.05;
-  if (annualGross <= 2400000) return 30000 + 30000 + (annualGross - 1200000) * 0.15;
-  if (annualGross <= 3600000) return 30000 + 30000 + 180000 + (annualGross - 2400000) * 0.25;
-  return 30000 + 30000 + 180000 + 300000 + (annualGross - 3600000) * 0.35;
+  if (annualGross <= 1200000) return (annualGross - 600000) * 0.05;
+  if (annualGross <= 2400000) return 30000 + (annualGross - 1200000) * 0.15;
+  if (annualGross <= 3600000) return 30000 + 180000 + (annualGross - 2400000) * 0.25;
+  return 30000 + 180000 + 300000 + (annualGross - 3600000) * 0.35;
 };
 
 exports.getMyPayslips = async (req, res) => {
@@ -94,8 +94,8 @@ exports.createPayrollRun = async (req, res) => {
         }
       });
       
-      const gross = salary.gross;
-      const perDay = gross / workingDays;
+      const gross = salary.gross || salary.basic * 1.5;
+      const perDay = gross / (workingDays || 1);
       const deductions = perDay * (absentDays + unpaidLeaveDays + 0.5 * halfDays);
       const annualGross = gross * 12;
       const annualTax = calculateTax(annualGross);

@@ -11,7 +11,7 @@ const limiter = rateLimit({
 });
 
 router.post('/chat', protect, limiter, chat);
-router.post('/smart-leave', protect, smartLeave);
-router.post('/summarize', protect, summarize);
+router.post('/smart-leave', protect, limiter, smartLeave);
+router.post('/summarize', protect, limiter, summarize);
 
 module.exports = router;
