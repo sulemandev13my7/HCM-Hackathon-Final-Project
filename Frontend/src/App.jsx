@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Toaster } from 'react-hot-toast';
+import { useEffect, useState } from 'react';
+import API from './services/api';
 import FirstRunSetup from './pages/FirstRunSetup';
 import Login from './pages/Login';
 import ChangePassword from './pages/ChangePassword';
@@ -30,8 +32,18 @@ const ProtectedRoute = ({ children, roles }) => {
   return children;
 };
 
-const RoleRedirect = () => {
+const RootRedirect = () => {
   const { user } = useAuth();
+  const [needsSetup, setNeedsSetup] = useState(null);
+
+  useEffect(() => {
+    API.get('/auth/check-setup').then(res => {
+      setNeedsSetup(res.data.needsSetup);
+    }).catch(() => setNeedsSetup(false));
+  }, []);
+
+  if (needsSetup === null) return <div className="flex items-center justify-center h-screen">Loading...</div>;
+  if (needsSetup) return <Navigate to="/setup" />;
   if (user?.role === 'admin') return <Navigate to="/admin" />;
   if (user?.role === 'hr') return <Navigate to="/hr" />;
   if (user?.role === 'employee') return <Navigate to="/employee" />;
@@ -44,7 +56,7 @@ function App() {
       <Router>
         <Toaster position="top-right" />
         <Routes>
-          <Route path="/" element={<RoleRedirect />} />
+          <Route path="/" element={<RootRedirect />} />
           <Route path="/setup" element={<FirstRunSetup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/change-password" element={<ChangePassword />} />
