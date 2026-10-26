@@ -1,101 +1,213 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import toast from 'react-hot-toast';
-import { Mail, Lock, ArrowRight, Building2 } from 'lucide-react';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/useAuth";
+import toast from "react-hot-toast";
+import {
+  AlertCircle,
+  ArrowRight,
+  Building2,
+  Eye,
+  EyeOff,
+  LockKeyhole,
+  Mail,
+  ShieldCheck,
+} from "lucide-react";
+import AuthShell from "../components/auth/AuthShell";
+import AuthField from "../components/auth/AuthField";
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [capsLock, setCapsLock] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const validate = () => {
+    const nextErrors = {};
+    if (!email.trim()) {
+      nextErrors.email = "Enter your email address.";
+    } else if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
+      nextErrors.email = "Enter a valid email address.";
+    }
+    if (!password) {
+      nextErrors.password = "Enter your password.";
+    }
+    setFieldErrors(nextErrors);
+    const firstInvalid = Object.keys(nextErrors)[0];
+    if (firstInvalid) {
+      const id = firstInvalid === "email" ? "login-email" : "login-password";
+      document.getElementById(id)?.focus();
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setError("");
+    if (!validate()) return;
+    setSubmitting(true);
     try {
-      const data = await login(email, password);
-      toast.success('Login successful');
+      const data = await login(email.trim(), password);
+      toast.success(`Welcome back, ${data.user.firstName || "there"}`);
       if (data.user.mustChangePassword) {
-        navigate('/change-password');
-      } else if (data.user.role === 'admin') {
-        navigate('/admin');
-      } else if (data.user.role === 'hr') {
-        navigate('/hr');
+        navigate("/change-password");
+      } else if (data.user.role === "admin") {
+        navigate("/admin");
+      } else if (data.user.role === "hr") {
+        navigate("/hr");
       } else {
-        navigate('/employee');
+        navigate("/employee");
       }
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Login failed');
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          (err.request
+            ? "We could not reach your workspace. Check your connection and try again."
+            : "We could not sign you in. Check your details and try again."),
+      );
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 px-4">
-      <div className="max-w-md w-full">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/30 mb-4">
-            <Building2 className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">HCM Lite</h1>
-          <p className="text-gray-600">Human Capital Management System</p>
-        </div>
-
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl shadow-blue-500/10 border border-white/20 overflow-hidden">
-          <div className="p-8">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-1">Welcome Back</h2>
-              <p className="text-gray-500">Sign in to access your dashboard</p>
-            </div>
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Email Address</label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type="email"
-                    placeholder="you@company.com"
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type="password"
-                    placeholder="Enter your password"
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-              <button type="submit" className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 font-medium">
-                Sign In
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </form>
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
-                Don't have an account?{' '}
-                <button
-                  type="button"
-                  onClick={() => navigate('/setup')}
-                  className="text-blue-600 hover:text-blue-700 font-medium hover:underline"
-                >
-                  Sign Up
-                </button>
-              </p>
-            </div>
-          </div>
-        </div>
-        <p className="text-center text-sm text-gray-500 mt-6">© 2026 HCM Lite. All rights reserved.</p>
+    <AuthShell variant="login">
+      <div>
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-[#dfe8de] bg-[#f3f8f0] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#32624f]">
+          <LockKeyhole className="h-3 w-3" />
+          Workspace access
+        </span>
+        <h2 className="mt-4 text-[30px] font-semibold leading-tight tracking-[-0.04em] text-[#14241e]">
+          Welcome back.
+        </h2>
+        <p className="mt-2 text-sm leading-6 text-[#6f7b75]">
+          Sign in with the account your workspace admin created for you.
+        </p>
       </div>
-    </div>
+
+      {error && (
+        <div
+          id="login-error"
+          role="alert"
+          aria-live="polite"
+          className="mt-5 flex items-start gap-2.5 rounded-xl border border-[#f0c8c4] bg-[#fef4f2] px-3.5 py-3 text-[13px] leading-5 text-[#9d2d24]"
+        >
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+          {error}
+        </div>
+      )}
+
+      <form
+        onSubmit={handleSubmit}
+        aria-busy={submitting}
+        noValidate
+        className="mt-6 space-y-4"
+      >
+        <AuthField
+          id="login-email"
+          label="Email address"
+          icon={Mail}
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+          placeholder="you@company.com"
+          value={email}
+          onChange={(event) => {
+            setEmail(event.target.value);
+            if (error) setError("");
+            if (fieldErrors.email) {
+              setFieldErrors((current) => ({ ...current, email: "" }));
+            }
+          }}
+          error={fieldErrors.email}
+          required
+          autoFocus
+        />
+
+        <AuthField
+          id="login-password"
+          label="Password"
+          icon={LockKeyhole}
+          type={showPassword ? "text" : "password"}
+          autoComplete="current-password"
+          placeholder="Enter your password"
+          value={password}
+          onChange={(event) => {
+            setPassword(event.target.value);
+            if (error) setError("");
+            if (fieldErrors.password) {
+              setFieldErrors((current) => ({ ...current, password: "" }));
+            }
+          }}
+          onKeyUp={(event) => setCapsLock(event.getModifierState("CapsLock"))}
+          onBlur={() => setCapsLock(false)}
+          error={fieldErrors.password}
+          required
+          hint={capsLock ? "Caps Lock is on" : undefined}
+          action={
+            <button
+              type="button"
+              onClick={() => setShowPassword((current) => !current)}
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-[#7d8882] transition hover:bg-[#f1eee6] hover:text-[#14241e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f5d4d]/30"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? (
+                <EyeOff className="h-[18px] w-[18px]" />
+              ) : (
+                <Eye className="h-[18px] w-[18px]" />
+              )}
+            </button>
+          }
+        />
+
+        <button
+          type="submit"
+          disabled={submitting}
+          className="group flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#10251f] px-4 text-sm font-semibold text-[#f8f5eb] transition hover:bg-[#1a3a30] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2f5d4d]/20 disabled:cursor-wait disabled:opacity-70"
+        >
+          {submitting ? (
+            <>
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/25 border-t-white" />
+              Signing you in...
+            </>
+          ) : (
+            <>
+              Sign in
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </>
+          )}
+        </button>
+      </form>
+
+      <p className="mt-3.5 flex items-center justify-center gap-1.5 text-[11px] text-[#87918c]">
+        <ShieldCheck className="h-3.5 w-3.5 text-[#3d7a5d]" />
+        Your role controls exactly what you can see and do.
+      </p>
+
+      <div className="mt-7 flex items-center gap-3 text-[11px] font-medium text-[#98a19c]">
+        <span className="h-px flex-1 bg-[#e7e2d7]" />
+        New to HCM Lite?
+        <span className="h-px flex-1 bg-[#e7e2d7]" />
+      </div>
+
+      <button
+        type="button"
+        onClick={() => navigate("/setup")}
+        className="group mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-[#ddd7cb] bg-white px-4 text-[13px] font-semibold text-[#32433c] transition hover:border-[#c9c1b2] hover:bg-[#fbfaf6] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2f5d4d]/10"
+      >
+        <Building2 className="h-4 w-4 text-[#6f7b75]" />
+        Set up a company workspace
+        <ArrowRight className="h-3.5 w-3.5 text-[#98a19c] transition-transform group-hover:translate-x-0.5" />
+      </button>
+
+      <p className="mt-5 text-center text-[11px] leading-5 text-[#8a948f]">
+        Need an account? Ask your workspace administrator to invite you.
+      </p>
+    </AuthShell>
   );
 }

@@ -6,6 +6,7 @@ const attendanceSchema = new mongoose.Schema({
   checkIn: Date,
   checkOut: Date,
   status: { type: String, enum: ['present', 'late', 'half_day', 'absent', 'on_leave', 'missing_checkout'], default: 'present' },
+  isLate: { type: Boolean, default: false },
   hoursWorked: { type: Number, default: 0 },
   source: { type: String, enum: ['web', 'camera'], default: 'web' },
   location: { lat: Number, lng: Number },

@@ -1,12 +1,45 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { applyLeave, getLeaveRequests, approveLeave, rejectLeave, getBalances } = require('../controllers/leaveController');
-const { protect, authorize } = require('../middleware/auth');
+const {
+  applyLeave,
+  getLeaveRequests,
+  cancelLeave,
+  approveLeave,
+  rejectLeave,
+  getBalances,
+} = require("../controllers/leaveController");
+const { protect, authorize } = require("../middleware/auth");
+const { logAudit } = require("../middleware/audit");
 
-router.post('/apply', protect, authorize('employee'), applyLeave);
-router.get('/', protect, getLeaveRequests);
-router.get('/balances', protect, getBalances);
-router.put('/:id/approve', protect, authorize('admin', 'hr'), approveLeave);
-router.put('/:id/reject', protect, authorize('admin', 'hr'), rejectLeave);
+router.post(
+  "/apply",
+  protect,
+  authorize("employee", "hr"),
+  logAudit("create", "leave"),
+  applyLeave,
+);
+router.get("/", protect, getLeaveRequests);
+router.get("/balances", protect, getBalances);
+router.put(
+  "/:id/cancel",
+  protect,
+  authorize("employee", "hr"),
+  logAudit("cancel", "leave"),
+  cancelLeave,
+);
+router.put(
+  "/:id/approve",
+  protect,
+  authorize("hr"),
+  logAudit("approve", "leave"),
+  approveLeave,
+);
+router.put(
+  "/:id/reject",
+  protect,
+  authorize("hr"),
+  logAudit("reject", "leave"),
+  rejectLeave,
+);
 
 module.exports = router;
