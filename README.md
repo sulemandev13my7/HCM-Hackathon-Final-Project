@@ -9,6 +9,7 @@ The app starts empty. There is no seed or demo data: the first admin creates the
 ### Core modules
 
 - **First-run setup** - Create the company and first Admin account on an empty database.
+- **Admin launch checklist** - Live, data-backed onboarding progress for leave types, HR, employees and the first payroll run.
 - **Authentication and RBAC** - JWT authentication, temporary-password onboarding, forced first-login password change, and role-specific routes.
 - **Organization settings** - Company profile, office hours, grace period, half-day threshold, weekends, departments, designations, leave types and public holidays.
 - **Employee management** - Directory, search and filters, Employee 360, CSV import with dry-run validation, CSV export, salary structures and salary history.
@@ -113,6 +114,16 @@ Open the Vite URL. On a fresh database, the app opens first-run setup. Create th
 7. HR creates a payroll draft; Admin finalizes it; the employee downloads the payslip.
 8. Show dashboards, announcements, notifications and the Admin audit log.
 
+### Reset between evaluators
+
+The production API has no public reset endpoint. To hand the demo to another evaluator, reset the dedicated database from the operator machine:
+
+```powershell
+npm --prefix Backend run db:reset -- --yes
+```
+
+This removes all company data and makes `/` open first-run setup again. Use it only between demo sessions; there is no undo.
+
 ## Deployment
 
 ### Live stack
@@ -180,6 +191,7 @@ Current local verification:
 - Isolated end-to-end smoke test: **55/55 passing**, covering setup, RBAC, HR self-service, camera geofence rejection and check-in, attendance, leave, payroll, payslip PDFs, dashboards, notifications, announcements, audit logs, CSV import/export, Employee 360, AI chat and smart leave.
 - Hosted Vercel frontend and Render API verified together: production health, setup status, CORS preflight, SPA deep links and the protected-route redirect all return the expected responses.
 - Login and first-run setup checked in a real browser at 375px and desktop widths with custom validation, focus handling and no horizontal overflow.
+- Admin launch checklist verified in a real browser: live counts, next-step highlighting, module links, collapse/expand state and accessible progress reporting.
 - Hosted setup remains unsubmitted so the deployed workspace stays clean for the first real admin.
 
 ## Notes

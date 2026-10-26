@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import API from "../services/api";
+import AdminQuickStart from "./AdminQuickStart";
 import CheckInCard from "./CheckInCard";
 
 const getDefaultFilters = () => {
@@ -236,6 +237,8 @@ export default function DashboardAnalytics({ role }) {
           </button>
         </div>
       </header>
+
+      {isAdmin && <AdminQuickStart />}
 
       {!isAdmin && <CheckInCard compact />}
 
