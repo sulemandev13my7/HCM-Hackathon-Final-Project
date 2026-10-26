@@ -1,9 +1,26 @@
 node_modules/
 dist/
 build/
+
 .env
 .env.*
+.envrc
+!.env.example
 !**/.env.example
+
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+id_rsa
+id_ed25519
+.npmrc
+secrets/
+**/service-account*.json
+**/credentials.json
+
 *.log
 .DS_Store
 
@@ -12,5 +29,3 @@ uploads/
 Backend/uploads/
 .vercel/
 
-.vercel
-.env*
