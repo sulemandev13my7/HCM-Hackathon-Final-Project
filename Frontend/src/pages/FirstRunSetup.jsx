@@ -201,11 +201,11 @@ export default function FirstRunSetup() {
 
   if (checking) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#10251f] text-[#f7f3e9]">
-        <span className="flex h-12 w-12 items-center justify-center rounded-[14px] bg-[#d7f59f] text-[#10251f]">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#f4f1e9] text-[#14241e]">
+        <span className="flex h-12 w-12 items-center justify-center rounded-[14px] bg-[#10251f] text-[#d7f59f]">
           <Building2 className="h-6 w-6" />
         </span>
-        <div className="flex items-center gap-2 text-sm text-[#b9c9c1]">
+        <div className="flex items-center gap-2 text-sm text-[#5d6c65]">
           <Loader2 className="h-4 w-4 animate-spin" />
           Checking your workspace...
         </div>

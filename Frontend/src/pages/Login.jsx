@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/useAuth";
 import toast from "react-hot-toast";
@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import AuthShell from "../components/auth/AuthShell";
 import AuthField from "../components/auth/AuthField";
+import API from "../services/api";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -23,8 +24,23 @@ export default function Login() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
+  const [setupPending, setSetupPending] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    let active = true;
+    API.get("/auth/check-setup")
+      .then((response) => {
+        if (active) setSetupPending(Boolean(response.data?.needsSetup));
+      })
+      .catch(() => {
+        if (active) setSetupPending(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const validate = () => {
     const nextErrors = {};
@@ -189,21 +205,25 @@ export default function Login() {
         Your role controls exactly what you can see and do.
       </p>
 
-      <div className="mt-7 flex items-center gap-3 text-[11px] font-medium text-[#98a19c]">
-        <span className="h-px flex-1 bg-[#e7e2d7]" />
-        New to HCM Lite?
-        <span className="h-px flex-1 bg-[#e7e2d7]" />
-      </div>
+      {setupPending && (
+        <>
+          <div className="mt-7 flex items-center gap-3 text-[11px] font-medium text-[#98a19c]">
+            <span className="h-px flex-1 bg-[#e7e2d7]" />
+            New to HCM Lite?
+            <span className="h-px flex-1 bg-[#e7e2d7]" />
+          </div>
 
-      <button
-        type="button"
-        onClick={() => navigate("/setup")}
-        className="group mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-[#ddd7cb] bg-white px-4 text-[13px] font-semibold text-[#32433c] transition hover:border-[#c9c1b2] hover:bg-[#fbfaf6] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2f5d4d]/10"
-      >
-        <Building2 className="h-4 w-4 text-[#6f7b75]" />
-        Set up a company workspace
-        <ArrowRight className="h-3.5 w-3.5 text-[#98a19c] transition-transform group-hover:translate-x-0.5" />
-      </button>
+          <button
+            type="button"
+            onClick={() => navigate("/setup")}
+            className="group mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-[#ddd7cb] bg-white px-4 text-[13px] font-semibold text-[#32433c] transition hover:border-[#c9c1b2] hover:bg-[#fbfaf6] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2f5d4d]/10"
+          >
+            <Building2 className="h-4 w-4 text-[#6f7b75]" />
+            Set up a company workspace
+            <ArrowRight className="h-3.5 w-3.5 text-[#98a19c] transition-transform group-hover:translate-x-0.5" />
+          </button>
+        </>
+      )}
 
       <p className="mt-5 text-center text-[11px] leading-5 text-[#8a948f]">
         Need an account? Ask your workspace administrator to invite you.
