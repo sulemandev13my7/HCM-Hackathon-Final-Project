@@ -115,6 +115,14 @@ Open the Vite URL. On a fresh database, the app opens first-run setup. Create th
 
 ## Deployment
 
+### Live stack
+
+- Frontend: <https://hcm-hackathon-final-project.vercel.app>
+- Backend API: <https://hcm-hackathon-final-project.onrender.com/api>
+- Health check: <https://hcm-hackathon-final-project.onrender.com/api/health>
+
+The hosted database is intentionally uninitialized. Open `/setup` to create the first workspace and admin account.
+
 ### Backend
 
 Deploy `Backend` to a Node host such as Render and configure:
@@ -142,7 +150,7 @@ VITE_API_BASE_URL=https://<your-render-service>.onrender.com/api
 
 Then redeploy. A build that used `http://localhost:5000/api` cannot call a hosted API.
 
-No public backend URL is committed to this repository. Use the first-run setup screen to initialize the deployed database.
+The production build is verified to call the hosted backend rather than `localhost`. Use the first-run setup screen to initialize the deployed database.
 
 ## Security
 
@@ -170,8 +178,9 @@ Current local verification:
 - Frontend ESLint: passing.
 - Frontend production build: passing with route-level code splitting.
 - Isolated end-to-end smoke test: **55/55 passing**, covering setup, RBAC, HR self-service, camera geofence rejection and check-in, attendance, leave, payroll, payslip PDFs, dashboards, notifications, announcements, audit logs, CSV import/export, Employee 360, AI chat and smart leave.
-
-The hosted Vercel deployment has not been verified against a public backend in this checkout. A final deployment check is still required.
+- Hosted Vercel frontend and Render API verified together: production health, setup status, CORS preflight, SPA deep links and the protected-route redirect all return the expected responses.
+- Login and first-run setup checked in a real browser at 375px and desktop widths with custom validation, focus handling and no horizontal overflow.
+- Hosted setup remains unsubmitted so the deployed workspace stays clean for the first real admin.
 
 ## Notes
 
