@@ -3,6 +3,7 @@ import API from "../../services/api";
 import toast from "react-hot-toast";
 import { useAuth } from "../../contexts/useAuth";
 import CheckInCard from "../../components/CheckInCard";
+import { PageHeader } from "../../components/ui";
 import {
   AlertCircle,
   CalendarDays,
@@ -189,28 +190,27 @@ export default function Attendance() {
 
   return (
     <div className="space-y-6">
-      <header className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
-        <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-blue-500/25 blur-3xl" />
-        <div className="relative flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
-              {isSelfService ? "Time & attendance" : "Attendance control"}
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Attendance
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-              {isSelfService
-                ? "Check in, review your calendar and raise a correction if something went wrong."
-                : "A live view of the daily board, correction queue and attendance history."}
-            </p>
-          </div>
-          <div className="inline-flex w-fit items-center gap-2 rounded-xl bg-white/10 px-3 py-2 text-xs text-slate-200">
-            <ShieldCheck className="h-4 w-4 text-emerald-300" />
-            Server-stamped time
-          </div>
-        </div>
-      </header>
+      <PageHeader
+        eyebrow={isSelfService ? "Time & attendance" : "Attendance control"}
+        title="Attendance"
+        description={
+          isSelfService
+            ? "Check in, review your calendar and raise a correction if something went wrong."
+            : "A live view of the daily board, correction queue and attendance history."
+        }
+        meta={
+          <>
+            <span className="hcm-chip-dark">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              Server-stamped time
+            </span>
+            <span className="hcm-chip-dark">
+              <CalendarDays className="h-3.5 w-3.5" />
+              {attendance.length} records in view
+            </span>
+          </>
+        }
+      />
 
       {isSelfService && <CheckInCard compact />}
 

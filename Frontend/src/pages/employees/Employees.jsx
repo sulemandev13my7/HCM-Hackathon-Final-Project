@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import API from "../../services/api";
 import toast from "react-hot-toast";
 import { useAuth } from "../../contexts/useAuth";
+import { Button, PageHeader } from "../../components/ui";
 import {
   AlertTriangle,
   BadgeCheck,
@@ -373,49 +374,45 @@ export default function Employees() {
 
   return (
     <div className="space-y-6">
-      <header className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
-        <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-teal-500/20 blur-3xl" />
-        <div className="relative flex flex-col justify-between gap-5 xl:flex-row xl:items-end">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-300">
-              People directory
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Employees
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-              {canManageEmployees
-                ? "Register employees, manage records, salary structures and bulk imports."
-                : "Browse the employee directory and open a complete employee profile."}
-            </p>
-          </div>
-          {canManageEmployees && (
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={exportCsv}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-white/20 bg-white/10 px-3.5 py-2.5 text-sm font-medium text-white hover:bg-white/15"
-              >
+      <PageHeader
+        eyebrow="People directory"
+        title="Employees"
+        description={
+          canManageEmployees
+            ? "Register employees, manage records, salary structures and bulk imports."
+            : "Browse the employee directory and open a complete employee profile."
+        }
+        meta={
+          <>
+            <span className="hcm-chip-dark">
+              <Users className="h-3.5 w-3.5" />
+              {employees.length} people
+            </span>
+            <span className="hcm-chip-dark">
+              <Building2 className="h-3.5 w-3.5" />
+              {departments.length} departments
+            </span>
+          </>
+        }
+        actions={
+          canManageEmployees && (
+            <>
+              <Button variant="inverse-ghost" onClick={exportCsv}>
                 <Download className="h-4 w-4" /> Export
-              </button>
-              <button
-                type="button"
+              </Button>
+              <Button
+                variant="inverse-ghost"
                 onClick={() => setShowImport((value) => !value)}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-white/20 bg-white/10 px-3.5 py-2.5 text-sm font-medium text-white hover:bg-white/15"
               >
                 <Upload className="h-4 w-4" /> Import
-              </button>
-              <button
-                type="button"
-                onClick={openCreate}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 hover:bg-slate-100"
-              >
+              </Button>
+              <Button variant="inverse" onClick={openCreate}>
                 <Plus className="h-4 w-4" /> Add employee
-              </button>
-            </div>
-          )}
-        </div>
-      </header>
+              </Button>
+            </>
+          )
+        }
+      />
 
       {tempPassword && (
         <div className="flex flex-col gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 sm:flex-row sm:items-center sm:justify-between">

@@ -23,9 +23,11 @@ const timeLabel = (value) =>
     : "—";
 
 const statusTone = {
-  present: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
-  late: "bg-amber-50 text-amber-700 ring-amber-600/20",
-  half_day: "bg-orange-50 text-orange-700 ring-orange-600/20",
+  present: "bg-[#e9f3eb] text-[#2f6b50] ring-[#2f6b50]/20",
+  late: "bg-[#fdf0df] text-[#a96820] ring-[#a96820]/20",
+  half_day: "bg-[#f8eadb] text-[#a05a1e] ring-[#a05a1e]/20",
+  on_leave: "bg-[#e8f1f7] text-[#2d6384] ring-[#2d6384]/20",
+  absent: "bg-[#fbeae5] text-[#a8442b] ring-[#a8442b]/20",
   missing_checkout: "bg-rose-50 text-rose-700 ring-rose-600/20",
 };
 
@@ -424,30 +426,33 @@ export default function CheckInCard({ className = "", compact = false }) {
     }
   };
 
-  const tone = statusTone[attendance?.status] || "bg-slate-100 text-slate-700 ring-slate-600/20";
+  const tone =
+    statusTone[attendance?.status] ||
+    "bg-[#f0ece2] text-hcm-muted ring-hcm-line";
 
   return (
     <>
       <section
-        className={`relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm ${className}`}
+        className={`relative overflow-hidden rounded-3xl border border-hcm-line bg-hcm-surface shadow-hcm ${className}`}
         aria-labelledby="today-attendance-title"
       >
-        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-emerald-500" />
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-hcm-accent via-[#76b85a] to-hcm-lime" />
         <div className={compact ? "p-5" : "p-5 sm:p-6"}>
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+              <p className="hcm-eyebrow">
+                <span className="h-1.5 w-1.5 rounded-full bg-hcm-lime" />
                 Today
               </p>
               <h2
                 id="today-attendance-title"
-                className="mt-1 text-lg font-semibold text-slate-900"
+                className="mt-1.5 text-lg font-semibold tracking-tight text-hcm-ink"
               >
                 Your attendance
               </h2>
             </div>
             {loading ? (
-              <Loader2 className="h-5 w-5 animate-spin text-slate-300" />
+              <Loader2 className="h-5 w-5 animate-spin text-[#b5b0a4]" />
             ) : (
               <span
                 className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold capitalize ring-1 ring-inset ${tone}`}
@@ -458,28 +463,28 @@ export default function CheckInCard({ className = "", compact = false }) {
             )}
           </div>
 
-          <div className="mt-5 grid grid-cols-3 divide-x divide-slate-100 rounded-xl bg-slate-50 px-2 py-3 text-center">
+          <div className="mt-5 grid grid-cols-3 divide-x divide-hcm-line rounded-2xl border border-hcm-line bg-[#faf7f0] px-2 py-3.5 text-center">
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-wide text-slate-400">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-hcm-muted">
                 Check in
               </p>
-              <p className="mt-1 text-sm font-semibold text-slate-800">
+              <p className="mt-1 text-sm font-semibold text-hcm-ink">
                 {timeLabel(attendance?.checkIn)}
               </p>
             </div>
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-wide text-slate-400">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-hcm-muted">
                 Check out
               </p>
-              <p className="mt-1 text-sm font-semibold text-slate-800">
+              <p className="mt-1 text-sm font-semibold text-hcm-ink">
                 {timeLabel(attendance?.checkOut)}
               </p>
             </div>
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-wide text-slate-400">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-hcm-muted">
                 Hours
               </p>
-              <p className="mt-1 text-sm font-semibold text-slate-800">
+              <p className="mt-1 text-sm font-semibold text-hcm-ink">
                 {attendance?.hoursWorked || 0}
               </p>
             </div>
@@ -492,7 +497,7 @@ export default function CheckInCard({ className = "", compact = false }) {
                   type="button"
                   onClick={() => markAttendance("check-in")}
                   disabled={Boolean(busy)}
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-60"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-hcm-ink px-4 py-3 text-sm font-semibold text-hcm-surface shadow-[0_12px_28px_-18px_rgba(16,37,31,0.8)] transition hover:bg-hcm-ink-soft disabled:opacity-60"
                 >
                   {busy === "check-in" ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -504,7 +509,7 @@ export default function CheckInCard({ className = "", compact = false }) {
                 <button
                   type="button"
                   onClick={() => setCameraOpen(true)}
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700 transition hover:border-blue-300 hover:bg-blue-100"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-hcm-line bg-white px-4 py-3 text-sm font-semibold text-hcm-accent transition hover:border-hcm-line-strong hover:bg-[#faf7f0]"
                 >
                   <Camera className="h-4 w-4" />
                   Camera + location
@@ -517,7 +522,7 @@ export default function CheckInCard({ className = "", compact = false }) {
                 type="button"
                 onClick={() => markAttendance("check-out")}
                 disabled={Boolean(busy)}
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-rose-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-rose-700 disabled:opacity-60"
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-hcm-danger px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#913a25] disabled:opacity-60"
               >
                 {busy === "check-out" ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -529,14 +534,14 @@ export default function CheckInCard({ className = "", compact = false }) {
             )}
 
             {checkedOut && (
-              <div className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
+              <div className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-[#cfe2d3] bg-[#e9f3eb] px-4 py-3 text-sm font-semibold text-[#2f6b50]">
                 <CheckCircle2 className="h-4 w-4" />
                 Day complete — {attendance.hoursWorked || 0} hours logged
               </div>
             )}
           </div>
 
-          <p className="mt-3 flex items-center gap-1.5 text-[11px] text-slate-400">
+          <p className="mt-3 flex items-center gap-1.5 text-[10px] leading-5 text-hcm-muted">
             <Clock className="h-3.5 w-3.5" />
             Server time is authoritative. Late after{" "}
             {data?.settings?.officeStartTime || "09:00"} +{" "}

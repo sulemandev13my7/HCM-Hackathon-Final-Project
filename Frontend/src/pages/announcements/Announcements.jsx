@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import API from "../../services/api";
 import toast from "react-hot-toast";
 import { useAuth } from "../../contexts/useAuth";
+import { Button, PageHeader } from "../../components/ui";
 import {
   CalendarDays,
   Loader2,
@@ -129,34 +130,38 @@ export default function Announcements() {
 
   return (
     <div className="space-y-6">
-      <header className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
-        <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-amber-500/20 blur-3xl" />
-        <div className="relative flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-300">
-              Company communication
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Announcements
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-              {canPost
-                ? "Share updates with the right audience. Only targeted roles will see each post."
-                : "Updates from your company, in one place."}
-            </p>
-          </div>
-          {canPost && (
-            <button
-              type="button"
+      <PageHeader
+        eyebrow="Company communication"
+        title="Announcements"
+        description={
+          canPost
+            ? "Share updates with the right audience. Only targeted roles will see each post."
+            : "Updates from your company, in one place."
+        }
+        meta={
+          <>
+            <span className="hcm-chip-dark">
+              <Megaphone className="h-3.5 w-3.5" />
+              {stats.total} posts
+            </span>
+            <span className="hcm-chip-dark">
+              <Users className="h-3.5 w-3.5" />
+              {stats.audiences} audiences
+            </span>
+          </>
+        }
+        actions={
+          canPost && (
+            <Button
+              variant="inverse"
               onClick={() => setShowForm((value) => !value)}
-              className="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
             >
               <Plus className="h-4 w-4" />
               Post announcement
-            </button>
-          )}
-        </div>
-      </header>
+            </Button>
+          )
+        }
+      />
 
       <section className="grid gap-3 sm:grid-cols-3">
         {[

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import API from "../../services/api";
 import { useAuth } from "../../contexts/useAuth";
+import { Button, PageHeader } from "../../components/ui";
 import toast from "react-hot-toast";
 import {
   ArrowDownToLine,
@@ -222,34 +223,38 @@ export default function Payroll() {
 
   return (
     <div className="space-y-6">
-      <header className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
-        <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-emerald-500/20 blur-3xl" />
-        <div className="relative flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">
-              {isEmployee ? "Compensation" : "Payroll control"}
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-              {isEmployee ? "My payslips" : "Payroll"}
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-              {isEmployee
-                ? "Every finalized payslip, ready to download."
-                : "Create runs, validate totals and release payslips with confidence."}
-            </p>
-          </div>
-          {canCreatePayroll && (
-            <button
-              type="button"
+      <PageHeader
+        eyebrow={isEmployee ? "Compensation" : "Payroll control"}
+        title={isEmployee ? "My payslips" : "Payroll"}
+        description={
+          isEmployee
+            ? "Every finalized payslip, ready to download."
+            : "Create runs, validate totals and release payslips with confidence."
+        }
+        meta={
+          <>
+            <span className="hcm-chip-dark">
+              <Wallet className="h-3.5 w-3.5" />
+              {isEmployee ? `${payslips.length} payslips` : `${runs.length} runs`}
+            </span>
+            <span className="hcm-chip-dark">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              Finalized payslips only
+            </span>
+          </>
+        }
+        actions={
+          canCreatePayroll && (
+            <Button
+              variant="inverse"
               onClick={() => setShowForm((value) => !value)}
-              className="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
             >
               <Plus className="h-4 w-4" />
               Create payroll run
-            </button>
-          )}
-        </div>
-      </header>
+            </Button>
+          )
+        }
+      />
 
       {canCreatePayroll && showForm && (
         <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">

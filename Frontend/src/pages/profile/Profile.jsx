@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import API from "../../services/api";
 import toast from "react-hot-toast";
+import { PageHeader } from "../../components/ui";
 import {
   BadgeCheck,
   Briefcase,
@@ -100,33 +101,22 @@ export default function Profile() {
 
   return (
     <div className="space-y-6">
-      <header className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
-        <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-emerald-500/20 blur-3xl" />
-        <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-4">
-            <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-blue-500 text-xl font-bold text-slate-950 shadow-lg">
-              {initials}
-            </span>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">
-                Employee profile
-              </p>
-              <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
-                {employee.firstName} {employee.lastName}
-              </h1>
-              <p className="mt-1 text-sm text-slate-300">
-                {employee.employeeId} ·{" "}
-                {employee.designation?.title || "No designation"} ·{" "}
-                {employee.department?.name || "No department"}
-              </p>
-            </div>
-          </div>
-          <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium capitalize text-slate-200">
-            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-300" />
+      <PageHeader
+        eyebrow="Employee profile"
+        title={`${employee.firstName} ${employee.lastName}`}
+        description={`${employee.employeeId} · ${employee.designation?.title || "No designation"} · ${employee.department?.name || "No department"}`}
+        leading={
+          <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-hcm-lime text-xl font-bold text-hcm-ink shadow-lg">
+            {initials}
+          </span>
+        }
+        actions={
+          <span className="inline-flex h-10 items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 text-xs font-semibold capitalize text-[#d7e0da]">
+            <CheckCircle2 className="h-4 w-4 text-hcm-lime" />
             {titleCase(employee.status)}
           </span>
-        </div>
-      </header>
+        }
+      />
 
       <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
         <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">

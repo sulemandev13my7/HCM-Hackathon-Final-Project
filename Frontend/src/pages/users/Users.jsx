@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import API from "../../services/api";
 import toast from "react-hot-toast";
 import { useAuth } from "../../contexts/useAuth";
+import { Button, PageHeader } from "../../components/ui";
 import {
   Check,
   CheckCircle2,
@@ -153,31 +154,32 @@ export default function Users() {
 
   return (
     <div className="space-y-6">
-      <header className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
-        <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-blue-500/25 blur-3xl" />
-        <div className="relative flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
-              Access control
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Users & access
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-              Create HR accounts, reset credentials and control who can sign in.
-              Each HR user automatically receives an employee profile.
-            </p>
-          </div>
-          <button
-            type="button"
+      <PageHeader
+        eyebrow="Access control"
+        title="Users & access"
+        description="Create HR accounts, reset credentials and control who can sign in. Each HR user automatically receives an employee profile."
+        meta={
+          <>
+            <span className="hcm-chip-dark">
+              <UsersIcon className="h-3.5 w-3.5" />
+              {stats.total} users
+            </span>
+            <span className="hcm-chip-dark">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              {stats.admin} admins
+            </span>
+          </>
+        }
+        actions={
+          <Button
+            variant="inverse"
             onClick={() => setShowForm((value) => !value)}
-            className="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
           >
             <Plus className="h-4 w-4" />
             Create HR user
-          </button>
-        </div>
-      </header>
+          </Button>
+        }
+      />
 
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[

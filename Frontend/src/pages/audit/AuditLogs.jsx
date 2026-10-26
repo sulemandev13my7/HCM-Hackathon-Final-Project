@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import API from "../../services/api";
+import { PageHeader } from "../../components/ui";
 import toast from "react-hot-toast";
 import {
   Activity,
@@ -108,21 +109,23 @@ export default function AuditLogs() {
 
   return (
     <div className="space-y-6">
-      <header className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
-        <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-indigo-500/25 blur-3xl" />
-        <div className="relative">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-300">
-            Accountability
-          </p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Audit logs
-          </h1>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-            A read-only trail of important actions. Credential fields are
-            redacted before storage.
-          </p>
-        </div>
-      </header>
+      <PageHeader
+        eyebrow="Accountability"
+        title="Audit logs"
+        description="A read-only trail of important actions. Credential fields are redacted before storage."
+        meta={
+          <>
+            <span className="hcm-chip-dark">
+              <FileClock className="h-3.5 w-3.5" />
+              {logs.length} recent events
+            </span>
+            <span className="hcm-chip-dark">
+              <Clock3 className="h-3.5 w-3.5" />
+              {todayCount} today
+            </span>
+          </>
+        }
+      />
 
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[

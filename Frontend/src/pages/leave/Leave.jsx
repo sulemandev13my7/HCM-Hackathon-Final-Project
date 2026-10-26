@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import API from "../../services/api";
 import toast from "react-hot-toast";
 import { useAuth } from "../../contexts/useAuth";
+import { PageHeader } from "../../components/ui";
 import {
   CalendarDays,
   Check,
@@ -263,30 +264,29 @@ export default function Leave() {
 
   return (
     <div className="space-y-6">
-      <header className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
-        <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-emerald-500/20 blur-3xl" />
-        <div className="relative flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">
-              {isSelfService ? "Time off" : "Leave control"}
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Leave management
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-              {isReviewer
-                ? "Approve your team’s time off and keep your own balance in one place."
-                : isSelfService
-                  ? "Apply in seconds, see your balance, or describe your leave in plain words."
-                  : "A complete view of leave requests across the company."}
-            </p>
-          </div>
-          <span className="inline-flex w-fit items-center gap-2 rounded-xl bg-white/10 px-3 py-2 text-xs text-slate-200">
-            <CalendarDays className="h-4 w-4 text-emerald-300" />
-            Working days computed automatically
-          </span>
-        </div>
-      </header>
+      <PageHeader
+        eyebrow={isSelfService ? "Time off" : "Leave control"}
+        title="Leave management"
+        description={
+          isReviewer
+            ? "Approve your team’s time off and keep your own balance in one place."
+            : isSelfService
+              ? "Apply in seconds, see your balance, or describe your leave in plain words."
+              : "A complete view of leave requests across the company."
+        }
+        meta={
+          <>
+            <span className="hcm-chip-dark">
+              <CalendarDays className="h-3.5 w-3.5" />
+              Working days computed automatically
+            </span>
+            <span className="hcm-chip-dark">
+              <span className="h-1.5 w-1.5 rounded-full bg-hcm-lime" />
+              {leaves.length} requests
+            </span>
+          </>
+        }
+      />
 
       {isSelfService && (
         <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">

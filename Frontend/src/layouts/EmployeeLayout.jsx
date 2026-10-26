@@ -10,17 +10,52 @@ import {
 import AppLayout from "./AppLayout";
 
 const navItems = [
-  { path: "/employee", icon: LayoutDashboard, label: "Dashboard" },
-  { path: "/employee/attendance", icon: Calendar, label: "My attendance" },
-  { path: "/employee/leave", icon: FileText, label: "My leave" },
-  { path: "/employee/payroll", icon: DollarSign, label: "Payslips" },
+  {
+    path: "/employee",
+    icon: LayoutDashboard,
+    label: "Dashboard",
+    shortLabel: "Home",
+    group: "My work",
+  },
+  {
+    path: "/employee/attendance",
+    icon: Calendar,
+    label: "My attendance",
+    shortLabel: "Time",
+    group: "My work",
+  },
+  {
+    path: "/employee/leave",
+    icon: FileText,
+    label: "My leave",
+    shortLabel: "Leave",
+    group: "My work",
+  },
+  {
+    path: "/employee/payroll",
+    icon: DollarSign,
+    label: "Payslips",
+    shortLabel: "Pay",
+    group: "My work",
+  },
   {
     path: "/employee/announcements",
     icon: Megaphone,
     label: "Announcements",
+    group: "Company",
   },
-  { path: "/employee/profile", icon: User, label: "My profile" },
-  { path: "/employee/ai", icon: MessageSquare, label: "AI Assistant" },
+  {
+    path: "/employee/profile",
+    icon: User,
+    label: "My profile",
+    group: "Company",
+  },
+  {
+    path: "/employee/ai",
+    icon: MessageSquare,
+    label: "AI Assistant",
+    group: "Tools",
+  },
 ];
 
 export default function EmployeeLayout() {

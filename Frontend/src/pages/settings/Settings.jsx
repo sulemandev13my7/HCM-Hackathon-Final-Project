@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import API from "../../services/api";
 import toast from "react-hot-toast";
 import { useAuth } from "../../contexts/useAuth";
+import { PageHeader } from "../../components/ui";
 import {
   Building2,
   CalendarDays,
@@ -228,30 +229,35 @@ export default function Settings() {
 
   return (
     <div className="space-y-6">
-      <header className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
-        <div className="pointer-events-none absolute -right-16 -top-24 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl" />
-        <div className="relative flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300">
-              Workspace configuration
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-              {settings.companyName || "Company settings"}
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-              {canEdit
-                ? "Manage company profile, attendance rules and organization lists."
-                : "Read-only view. Only an Admin can change company settings."}
-            </p>
-          </div>
-          {!canEdit && (
-            <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-slate-200">
-              <ShieldCheck className="h-3.5 w-3.5 text-cyan-300" />
+      <PageHeader
+        eyebrow="Workspace configuration"
+        title={settings.companyName || "Company settings"}
+        description={
+          canEdit
+            ? "Manage company profile, attendance rules and organization lists."
+            : "Read-only view. Only an Admin can change company settings."
+        }
+        meta={
+          <>
+            <span className="hcm-chip-dark">
+              <Building2 className="h-3.5 w-3.5" />
+              {departments.length} departments
+            </span>
+            <span className="hcm-chip-dark">
+              <Users className="h-3.5 w-3.5" />
+              {designations.length} designations
+            </span>
+          </>
+        }
+        actions={
+          !canEdit && (
+            <span className="inline-flex h-10 items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 text-xs font-semibold text-[#d7e0da]">
+              <ShieldCheck className="h-4 w-4 text-hcm-lime" />
               HR read-only access
             </span>
-          )}
-        </div>
-      </header>
+          )
+        }
+      />
 
       <nav className="flex gap-1 overflow-x-auto rounded-2xl border border-slate-200/80 bg-white p-1.5 shadow-sm">
         {tabs.map((item) => (

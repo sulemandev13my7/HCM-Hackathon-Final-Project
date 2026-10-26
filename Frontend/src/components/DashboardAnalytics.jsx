@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Bar,
   BarChart,
   CartesianGrid,
-  Legend,
   Line,
   LineChart,
   ResponsiveContainer,
@@ -13,9 +13,12 @@ import {
 } from "recharts";
 import {
   Activity,
+  AlertCircle,
+  ArrowUpRight,
   BadgeDollarSign,
   CalendarCheck,
   CalendarDays,
+  CheckCircle2,
   Clock3,
   FileText,
   Filter,
@@ -28,6 +31,16 @@ import toast from "react-hot-toast";
 import API from "../services/api";
 import AdminQuickStart from "./AdminQuickStart";
 import CheckInCard from "./CheckInCard";
+import {
+  Badge,
+  Button,
+  DashboardSkeleton,
+  EmptyState,
+  PageHeader,
+  ProgressBar,
+  SectionCard,
+  StatCard,
+} from "./ui";
 
 const getDefaultFilters = () => {
   const today = new Date().toISOString().slice(0, 10);
@@ -40,96 +53,197 @@ const getDefaultFilters = () => {
 
 const formatNumber = (value) => Number(value || 0).toLocaleString();
 const formatPercent = (value) => `${Number(value || 0).toFixed(1)}%`;
+const formatCurrency = (value) => `Rs ${formatNumber(value)}`;
+const formatPeriodDate = (value) =>
+  value
+    ? new Date(`${value}T00:00:00`).toLocaleDateString(undefined, {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })
+    : "—";
 
-function Metric({ label, value, detail, icon: Icon, tone, emphasis }) {
+const tooltipStyle = {
+  borderRadius: 14,
+  border: "1px solid #e2dcd0",
+  background: "#fffdf8",
+  boxShadow: "0 20px 55px -32px rgba(16,37,31,.5)",
+  fontSize: 12,
+  color: "#10251f",
+};
+
+function ChartEmpty({ message = "No data for this period." }) {
   return (
-    <div
-      className={`rounded-2xl border p-5 shadow-sm ${
-        emphasis
-          ? "border-slate-900 bg-slate-950 text-white"
-          : "border-slate-200/80 bg-white"
-      }`}
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p
-            className={`text-sm font-medium ${
-              emphasis ? "text-slate-300" : "text-slate-500"
-            }`}
-          >
-            {label}
-          </p>
-          <p
-            className={`mt-2 text-2xl font-semibold tracking-tight ${
-              emphasis ? "text-white" : "text-slate-900"
-            }`}
-          >
-            {value}
-          </p>
-          {detail && (
-            <p
-              className={`mt-1 text-xs ${
-                emphasis ? "text-slate-400" : "text-slate-400"
-              }`}
-            >
-              {detail}
-            </p>
-          )}
-        </div>
-        {Icon && (
-          <span
-            className={`flex h-10 w-10 items-center justify-center rounded-xl ${
-              emphasis ? "bg-white/10 text-white" : tone
-            }`}
-          >
-            <Icon className="h-5 w-5" />
-          </span>
-        )}
-      </div>
+    <div className="flex h-[260px] items-center justify-center rounded-2xl border border-dashed border-hcm-line-strong bg-[#faf7f0] text-xs text-hcm-muted">
+      {message}
     </div>
+  );
+}
+
+function MiniSignal({ icon: Icon, label, value, detail }) {
+  return (
+    <div className="rounded-2xl border border-hcm-line bg-[#faf7f0] px-4 py-3.5">
+      <div className="flex items-center gap-2 text-hcm-muted">
+        <Icon className="h-3.5 w-3.5" />
+        <p className="text-[10px] font-semibold uppercase tracking-[0.12em]">
+          {label}
+        </p>
+      </div>
+      <p className="mt-2 text-lg font-semibold tracking-tight text-hcm-ink">
+        {value}
+      </p>
+      <p className="mt-0.5 text-[10px] text-hcm-muted">{detail}</p>
+    </div>
+  );
+}
+
+function AttentionRow({ to, icon: Icon, label, value, detail, tone }) {
+  return (
+    <Link
+      to={to}
+      className="group flex items-center gap-3 rounded-xl border border-transparent px-2 py-2.5 transition hover:border-hcm-line hover:bg-white"
+    >
+      <span
+        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${tone}`}
+      >
+        <Icon className="h-4 w-4" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-xs font-semibold text-hcm-ink">
+          {label}
+        </span>
+        <span className="block truncate text-[10px] text-hcm-muted">
+          {detail}
+        </span>
+      </span>
+      <span className="flex items-center gap-1">
+        <strong className="text-sm font-semibold text-hcm-ink">{value}</strong>
+        <ArrowUpRight className="h-3.5 w-3.5 text-[#b5b0a4] transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-hcm-accent" />
+      </span>
+    </Link>
+  );
+}
+
+function PriorityPanel({ kpis, role }) {
+  const absentToday = Math.max(
+    0,
+    Number(kpis.totalEmployees || 0) -
+      Number(kpis.presentToday || 0) -
+      Number(kpis.onLeaveToday || 0),
+  );
+  const pending = Number(kpis.pendingLeaves || 0);
+  const late = Number(kpis.lateToday || 0);
+  const allClear = pending === 0 && late === 0;
+
+  return (
+    <SectionCard
+      title="Needs attention"
+      description="The few things worth acting on today."
+      action={
+        allClear ? (
+          <Badge tone="lime" dot>
+            All clear
+          </Badge>
+        ) : (
+          <Badge tone="warning" dot>
+            {pending + late} open
+          </Badge>
+        )
+      }
+      className="h-full"
+      bodyClassName="pt-3"
+    >
+      <div className="space-y-0.5">
+        <AttentionRow
+          to={`/${role}/leave`}
+          icon={FileText}
+          label="Leave approvals"
+          detail="Requests waiting for a decision"
+          value={pending}
+          tone="bg-amber-50 text-amber-700"
+        />
+        <AttentionRow
+          to={`/${role}/attendance`}
+          icon={Clock3}
+          label="Late arrivals"
+          detail="Checked in after the grace window"
+          value={late}
+          tone="bg-[#fdf0df] text-[#a96820]"
+        />
+        <AttentionRow
+          to={`/${role}/attendance`}
+          icon={CalendarDays}
+          label="On leave today"
+          detail="Approved time away"
+          value={kpis.onLeaveToday || 0}
+          tone="bg-[#e8f1f7] text-[#2d6384]"
+        />
+        <AttentionRow
+          to={`/${role}/attendance`}
+          icon={AlertCircle}
+          label="Not accounted for"
+          detail="No attendance or approved leave"
+          value={absentToday}
+          tone="bg-rose-50 text-rose-700"
+        />
+      </div>
+
+      <div className="mt-4 rounded-2xl bg-hcm-ink px-4 py-4 text-hcm-surface">
+        <div className="flex items-end justify-between gap-3">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9fb2a7]">
+              Attendance coverage
+            </p>
+            <p className="mt-1 font-display text-2xl tracking-tight text-white">
+              {formatPercent(kpis.attendanceRate)}
+            </p>
+          </div>
+          <Badge tone="dark">
+            {formatNumber(kpis.presentToday)} present
+          </Badge>
+        </div>
+        <ProgressBar
+          value={kpis.attendanceRate}
+          label="Attendance coverage"
+          tone="bg-hcm-lime"
+          className="mt-3"
+        />
+      </div>
+    </SectionCard>
+  );
+}
+
+function ChartTooltip({ unit = "" }) {
+  return (
+    <Tooltip
+      contentStyle={tooltipStyle}
+      cursor={{ fill: "rgba(47,93,77,.05)" }}
+      formatter={(value) =>
+        unit === "currency"
+          ? [formatCurrency(value), ""]
+          : [`${value}${unit}`, ""]
+      }
+    />
   );
 }
 
 function ChartSection({ title, description, children, className = "" }) {
   return (
-    <section
-      className={`rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm ${className}`}
-      aria-label={title}
+    <SectionCard
+      title={title}
+      description={description}
+      className={className}
+      bodyClassName="pt-4"
     >
-      <div className="mb-4">
-        <h2 className="text-base font-semibold text-slate-900">{title}</h2>
-        {description && (
-          <p className="mt-0.5 text-xs text-slate-400">{description}</p>
-        )}
-      </div>
       {children}
-    </section>
-  );
-}
-
-function DashboardSkeleton() {
-  return (
-    <div className="space-y-6">
-      <div className="h-44 animate-pulse rounded-3xl bg-slate-200" />
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <div
-            key={index}
-            className="h-32 animate-pulse rounded-2xl border border-slate-200 bg-white"
-          />
-        ))}
-      </div>
-      <div className="grid gap-4 xl:grid-cols-2">
-        <div className="h-80 animate-pulse rounded-2xl border border-slate-200 bg-white" />
-        <div className="h-80 animate-pulse rounded-2xl border border-slate-200 bg-white" />
-      </div>
-    </div>
+    </SectionCard>
   );
 }
 
 export default function DashboardAnalytics({ role }) {
   const [filters, setFilters] = useState(getDefaultFilters);
   const [appliedFilters, setAppliedFilters] = useState(getDefaultFilters);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [summary, setSummary] = useState([]);
@@ -165,6 +279,7 @@ export default function DashboardAnalytics({ role }) {
     setLoading(true);
     setSummary([]);
     setAppliedFilters({ ...filters });
+    setFiltersOpen(false);
   };
 
   const summarize = async () => {
@@ -183,474 +298,665 @@ export default function DashboardAnalytics({ role }) {
   };
 
   if (loading && !data) return <DashboardSkeleton />;
-  if (!data)
+
+  if (!data) {
     return (
-      <div className="rounded-2xl border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700">
-        Dashboard data is unavailable. Refresh the page or try again.
-      </div>
+      <EmptyState
+        icon={AlertCircle}
+        title="Dashboard unavailable"
+        description="Refresh the page or try again in a moment."
+        action={
+          <Button onClick={() => window.location.reload()} variant="secondary">
+            Refresh dashboard
+          </Button>
+        }
+      />
     );
+  }
 
   const { kpis } = data;
   const isAdmin = role === "admin";
+  const attendanceTrend = data.attendanceTrend || [];
+  const departmentData = isAdmin
+    ? data.employeesByDepartment || []
+    : data.absenteeismByDepartment || [];
+  const leaveUtilization = data.leaveUtilization || [];
+  const pending = Number(kpis.pendingLeaves || 0);
+
+  const attentionMessage =
+    pending > 0
+      ? `${pending} leave request${pending === 1 ? "" : "s"} need a decision.`
+      : "No leave approvals are waiting.";
 
   return (
-    <div className="space-y-6">
-      <header className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
-        <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-blue-500/25 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-28 left-1/4 h-64 w-64 rounded-full bg-emerald-500/15 blur-3xl" />
-        <div className="relative flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
-              {isAdmin ? "Company intelligence" : "People operations"}
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-              {isAdmin ? "Company overview" : "HR command center"}
-            </h1>
-            <p className="mt-2 max-w-xl text-sm leading-6 text-slate-300">
-              {isAdmin
-                ? "Headcount, payroll and workforce trends — computed live from your company data."
-                : "Attendance, leave and workforce signals for the people team."}
-            </p>
-            <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-300">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5">
-                <CalendarDays className="h-3.5 w-3.5" />
-                {data.filters.startDate} to {data.filters.endDate}
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5">
-                <Users className="h-3.5 w-3.5" />
-                {formatNumber(kpis.totalEmployees)} people
-              </span>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={summarize}
-            disabled={loadingSummary}
-            className="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-100 disabled:opacity-60"
-          >
-            {loadingSummary ? (
-              <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-slate-900" />
-            ) : (
-              <Sparkles className="h-4 w-4 text-blue-600" />
-            )}
-            {loadingSummary ? "Summarizing..." : "AI summary"}
-          </button>
-        </div>
-      </header>
-
-      {isAdmin && <AdminQuickStart />}
-
-      {!isAdmin && <CheckInCard compact />}
-
-      <form
-        onSubmit={applyFilters}
-        className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5"
-      >
-        <div className="mb-3 flex items-center gap-2 text-sm font-medium text-slate-700">
-          <Filter className="h-4 w-4 text-slate-400" />
-          Dashboard filters
-        </div>
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-[1fr_1fr_1.2fr_auto]">
-          <label className="text-xs font-medium text-slate-500">
-            From
-            <input
-              type="date"
-              className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
-              value={filters.startDate}
-              onChange={(event) =>
-                setFilters({ ...filters, startDate: event.target.value })
-              }
-              required
-            />
-          </label>
-          <label className="text-xs font-medium text-slate-500">
-            To
-            <input
-              type="date"
-              className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
-              value={filters.endDate}
-              onChange={(event) =>
-                setFilters({ ...filters, endDate: event.target.value })
-              }
-              required
-            />
-          </label>
-          <label className="text-xs font-medium text-slate-500">
-            Department
-            <select
-              className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
-              value={filters.departmentId}
-              onChange={(event) =>
-                setFilters({ ...filters, departmentId: event.target.value })
-              }
+    <div className="space-y-5" aria-busy={loading}>
+      <PageHeader
+        eyebrow={isAdmin ? "Company intelligence" : "People operations"}
+        title={isAdmin ? "Company overview" : "People operations"}
+        description={
+          isAdmin
+            ? "A calm, current view of headcount, attendance and payroll — with the exceptions that need a decision."
+            : "Attendance, leave and people signals for today, without the noise."
+        }
+        meta={
+          <>
+            <span className="hcm-chip-dark">
+              <CalendarDays className="h-3.5 w-3.5" />
+              {formatPeriodDate(data.filters.startDate)} –{" "}
+              {formatPeriodDate(data.filters.endDate)}
+            </span>
+            <span className="hcm-chip-dark">
+              <Users className="h-3.5 w-3.5" />
+              {formatNumber(kpis.totalEmployees)} people
+            </span>
+            <span className="hcm-chip-dark">
+              <span className="h-1.5 w-1.5 rounded-full bg-hcm-lime" />
+              Live workspace data
+            </span>
+          </>
+        }
+        actions={
+          <>
+            <Button
+              variant="inverse-ghost"
+              onClick={() => setFiltersOpen((value) => !value)}
+              aria-expanded={filtersOpen}
             >
-              <option value="">All departments</option>
-              {data.departments.map((department) => (
-                <option key={department._id} value={department._id}>
-                  {department.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <button
-            type="submit"
-            disabled={loading}
-            className="self-end rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-60"
-          >
-            {loading ? "Updating..." : "Apply"}
-          </button>
-        </div>
-      </form>
+              <Filter className="h-4 w-4" />
+              Filters
+            </Button>
+            <Button
+              variant="inverse"
+              onClick={summarize}
+              disabled={loadingSummary}
+            >
+              {loadingSummary ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-hcm-ink/25 border-t-hcm-ink" />
+              ) : (
+                <Sparkles className="h-4 w-4" />
+              )}
+              {loadingSummary ? "Summarizing..." : "AI summary"}
+            </Button>
+          </>
+        }
+      />
 
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <Metric
-          label="Total headcount"
-          value={formatNumber(kpis.totalEmployees)}
-          detail="Active workforce in range"
-          icon={Users}
-          tone="bg-blue-50 text-blue-600"
-          emphasis
-        />
+      {filtersOpen && (
+        <form
+          onSubmit={applyFilters}
+          className="hcm-card hcm-rise-in p-4 sm:p-5"
+        >
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-semibold text-hcm-ink">
+                Dashboard range
+              </h2>
+              <p className="mt-0.5 text-xs text-hcm-muted">
+                Compare a period or focus on one department.
+              </p>
+            </div>
+            <Badge tone="accent">{loading ? "Updating" : "Applied"}</Badge>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-[1fr_1fr_1.2fr_auto]">
+            <label className="hcm-label">
+              From
+              <input
+                type="date"
+                className="hcm-input"
+                value={filters.startDate}
+                onChange={(event) =>
+                  setFilters({ ...filters, startDate: event.target.value })
+                }
+                required
+              />
+            </label>
+            <label className="hcm-label">
+              To
+              <input
+                type="date"
+                className="hcm-input"
+                value={filters.endDate}
+                onChange={(event) =>
+                  setFilters({ ...filters, endDate: event.target.value })
+                }
+                required
+              />
+            </label>
+            <label className="hcm-label">
+              Department
+              <select
+                className="hcm-select"
+                value={filters.departmentId}
+                onChange={(event) =>
+                  setFilters({ ...filters, departmentId: event.target.value })
+                }
+              >
+                <option value="">All departments</option>
+                {(data.departments || []).map((department) => (
+                  <option key={department._id} value={department._id}>
+                    {department.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <Button type="submit" disabled={loading} className="self-end">
+              {loading ? "Updating..." : "Apply range"}
+            </Button>
+          </div>
+        </form>
+      )}
+
+      {isAdmin ? <AdminQuickStart /> : <CheckInCard compact />}
+
+      <section
+        className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
+        aria-label="Key performance indicators"
+      >
         {isAdmin ? (
           <>
-            <Metric
-              label="Attrition YTD"
-              value={formatPercent(kpis.attritionYtd)}
-              detail="Selected period"
-              icon={TrendingDown}
-              tone="bg-amber-50 text-amber-600"
+            <StatCard
+              label="Total headcount"
+              value={formatNumber(kpis.totalEmployees)}
+              detail="Active people in the selected range"
+              icon={Users}
+              emphasis
             />
-            <Metric
+            <StatCard
+              label="Attendance rate"
+              value={formatPercent(kpis.attendanceRate)}
+              detail="Present, late and half day"
+              icon={Activity}
+              tone="bg-[#e4f2e8] text-[#2f6b50]"
+            />
+            <StatCard
               label="Payroll cost"
-              value={`Rs ${formatNumber(kpis.payrollCost)}`}
-              detail="Finalized runs"
+              value={formatCurrency(kpis.payrollCost)}
+              detail="Finalized payroll runs"
               icon={Wallet}
-              tone="bg-violet-50 text-violet-600"
+              tone="bg-[#eee8f8] text-[#6c4f9c]"
             />
-            <Metric
-              label="Average salary"
-              value={`Rs ${formatNumber(kpis.averageSalary)}`}
-              detail="Monthly gross"
-              icon={BadgeDollarSign}
-              tone="bg-emerald-50 text-emerald-600"
+            <StatCard
+              label="Pending leave"
+              value={formatNumber(kpis.pendingLeaves)}
+              detail={attentionMessage}
+              icon={FileText}
+              tone="bg-[#fdf0df] text-[#a96820]"
+              action={
+                <Link
+                  to="/admin/leave"
+                  className="inline-flex items-center gap-1 text-[11px] font-semibold text-hcm-accent hover:underline"
+                >
+                  Review queue <ArrowUpRight className="h-3 w-3" />
+                </Link>
+              }
             />
           </>
         ) : (
           <>
-            <Metric
+            <StatCard
               label="Present today"
               value={formatNumber(kpis.presentToday)}
-              detail="On the selected end date"
+              detail="People currently accounted for"
               icon={CalendarCheck}
-              tone="bg-emerald-50 text-emerald-600"
+              emphasis
             />
-            <Metric
-              label="Late today"
+            <StatCard
+              label="Attendance rate"
+              value={formatPercent(kpis.attendanceRate)}
+              detail="Present, late and half day"
+              icon={Activity}
+              tone="bg-[#e4f2e8] text-[#2f6b50]"
+            />
+            <StatCard
+              label="Late arrivals"
               value={formatNumber(kpis.lateToday)}
-              detail="After grace window"
+              detail="After the grace window"
               icon={Clock3}
-              tone="bg-amber-50 text-amber-600"
+              tone="bg-[#fdf0df] text-[#a96820]"
             />
-            <Metric
+            <StatCard
               label="Pending leave"
               value={formatNumber(kpis.pendingLeaves)}
-              detail="Awaiting HR decision"
+              detail={attentionMessage}
               icon={FileText}
-              tone="bg-rose-50 text-rose-600"
+              tone="bg-[#e8f1f7] text-[#2d6384]"
+              action={
+                <Link
+                  to="/hr/leave"
+                  className="inline-flex items-center gap-1 text-[11px] font-semibold text-hcm-accent hover:underline"
+                >
+                  Review queue <ArrowUpRight className="h-3 w-3" />
+                </Link>
+              }
             />
           </>
         )}
-        <Metric
-          label="Attendance rate"
-          value={formatPercent(kpis.attendanceRate)}
-          detail="Present + late + half day"
-          icon={Activity}
-          tone="bg-emerald-50 text-emerald-600"
-        />
-        <Metric
-          label="Absenteeism"
-          value={formatPercent(kpis.absenteeismRate)}
-          detail="Unplanned absence"
-          icon={TrendingDown}
-          tone="bg-rose-50 text-rose-600"
-        />
-        <Metric
-          label="On leave today"
-          value={formatNumber(kpis.onLeaveToday)}
-          detail="Approved leave"
-          icon={CalendarDays}
-          tone="bg-indigo-50 text-indigo-600"
-        />
       </section>
 
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+      <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {isAdmin ? (
+          <>
+            <MiniSignal
+              icon={TrendingDown}
+              label="Attrition YTD"
+              value={formatPercent(kpis.attritionYtd)}
+              detail="Selected period"
+            />
+            <MiniSignal
+              icon={BadgeDollarSign}
+              label="Average salary"
+              value={formatCurrency(kpis.averageSalary)}
+              detail="Monthly gross"
+            />
+            <MiniSignal
+              icon={TrendingDown}
+              label="Absenteeism"
+              value={formatPercent(kpis.absenteeismRate)}
+              detail="Unplanned absence"
+            />
+            <MiniSignal
+              icon={CalendarDays}
+              label="On leave"
+              value={formatNumber(kpis.onLeaveToday)}
+              detail="Approved for today"
+            />
+          </>
+        ) : (
+          <>
+            <MiniSignal
+              icon={Users}
+              label="Headcount"
+              value={formatNumber(kpis.totalEmployees)}
+              detail="Active people"
+            />
+            <MiniSignal
+              icon={TrendingDown}
+              label="Absenteeism"
+              value={formatPercent(kpis.absenteeismRate)}
+              detail="Unplanned absence"
+            />
+            <MiniSignal
+              icon={CalendarDays}
+              label="On leave"
+              value={formatNumber(kpis.onLeaveToday)}
+              detail="Approved for today"
+            />
+            <MiniSignal
+              icon={Wallet}
+              label="Payroll cost"
+              value={formatCurrency(kpis.payrollCost)}
+              detail="Finalized runs"
+            />
+          </>
+        )}
+      </section>
+
+      <div className="grid gap-4 xl:grid-cols-[1.55fr_1fr]">
         <ChartSection
           title="Attendance trend"
-          description="Daily present, late and absent counts"
+          description="Present, late and absent counts across the selected range."
+          className="min-w-0"
         >
-          <ResponsiveContainer width="100%" height={280}>
-            <LineChart data={data.attendanceTrend}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="date" minTickGap={24} tick={{ fontSize: 11 }} />
-              <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
-              <Tooltip />
-              <Legend />
-              <Line
-                dataKey="present"
-                stroke="#059669"
-                strokeWidth={2.5}
-                dot={false}
-              />
-              <Line
-                dataKey="late"
-                stroke="#d97706"
-                strokeWidth={2.5}
-                dot={false}
-              />
-              <Line
-                dataKey="absent"
-                stroke="#e11d48"
-                strokeWidth={2.5}
-                dot={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          {attendanceTrend.length ? (
+            <ResponsiveContainer width="100%" height={290}>
+              <LineChart data={attendanceTrend}>
+                <CartesianGrid
+                  strokeDasharray="4 4"
+                  stroke="#e6e0d4"
+                  vertical={false}
+                />
+                <XAxis
+                  dataKey="date"
+                  minTickGap={24}
+                  tick={{ fontSize: 10, fill: "#6f7c76" }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis
+                  allowDecimals={false}
+                  tick={{ fontSize: 10, fill: "#6f7c76" }}
+                  axisLine={false}
+                  tickLine={false}
+                  width={26}
+                />
+                <ChartTooltip />
+                <Line
+                  type="monotone"
+                  dataKey="present"
+                  name="Present"
+                  stroke="#2f6b50"
+                  strokeWidth={2.5}
+                  dot={false}
+                  activeDot={{ r: 4 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="late"
+                  name="Late"
+                  stroke="#c98a2e"
+                  strokeWidth={2.2}
+                  dot={false}
+                  activeDot={{ r: 4 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="absent"
+                  name="Absent"
+                  stroke="#b7472a"
+                  strokeWidth={2.2}
+                  dot={false}
+                  activeDot={{ r: 4 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <ChartEmpty />
+          )}
+          <div className="mt-3 flex flex-wrap items-center gap-4 text-[10px] font-medium text-hcm-muted">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-[#2f6b50]" /> Present
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-[#c98a2e]" /> Late
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-[#b7472a]" /> Absent
+            </span>
+          </div>
+        </ChartSection>
+
+        <PriorityPanel kpis={kpis} role={role} />
+      </div>
+
+      <div className="grid gap-4 xl:grid-cols-2">
+        <ChartSection
+          title={
+            isAdmin ? "Headcount by department" : "Absenteeism by department"
+          }
+          description={
+            isAdmin
+              ? "Where your people sit today."
+              : "Where unplanned absence is concentrated."
+          }
+        >
+          {departmentData.length ? (
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={departmentData}>
+                <CartesianGrid
+                  strokeDasharray="4 4"
+                  stroke="#e6e0d4"
+                  vertical={false}
+                />
+                <XAxis
+                  dataKey="departmentName"
+                  tick={{ fontSize: 10, fill: "#6f7c76" }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis
+                  allowDecimals={false}
+                  unit={isAdmin ? "" : "%"}
+                  tick={{ fontSize: 10, fill: "#6f7c76" }}
+                  axisLine={false}
+                  tickLine={false}
+                  width={32}
+                />
+                <ChartTooltip unit={isAdmin ? "" : "%"} />
+                <Bar
+                  dataKey={isAdmin ? "employeeCount" : "absenteeismRate"}
+                  name={isAdmin ? "Employees" : "Absenteeism"}
+                  fill={isAdmin ? "#2f5d4d" : "#b7472a"}
+                  radius={[7, 7, 0, 0]}
+                  maxBarSize={42}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <ChartEmpty />
+          )}
         </ChartSection>
 
         {isAdmin ? (
           <ChartSection
-            title="Headcount by department"
-            description="Team distribution in the selected range"
-          >
-            <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={data.employeesByDepartment}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="departmentName" tick={{ fontSize: 11 }} />
-                <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
-                <Tooltip />
-                <Bar
-                  dataKey="employeeCount"
-                  name="Employees"
-                  fill="#0f172a"
-                  radius={[6, 6, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartSection>
-        ) : (
-          <ChartSection
-            title="Absenteeism by department"
-            description="Where unplanned absence is concentrated"
-          >
-            <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={data.absenteeismByDepartment}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="departmentName" tick={{ fontSize: 11 }} />
-                <YAxis unit="%" tick={{ fontSize: 11 }} />
-                <Tooltip formatter={(value) => `${value}%`} />
-                <Bar
-                  dataKey="absenteeismRate"
-                  name="Absenteeism"
-                  fill="#e11d48"
-                  radius={[6, 6, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartSection>
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-        {isAdmin ? (
-          <ChartSection
             title="Payroll cost by department"
-            description="Gross vs net for finalized payroll"
+            description="Gross and net cost for finalized payroll."
           >
-            <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={data.payrollByDepartment}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="department" tick={{ fontSize: 11 }} />
-                <YAxis tick={{ fontSize: 11 }} />
-                <Tooltip formatter={(value) => `Rs ${formatNumber(value)}`} />
-                <Legend />
-                <Bar
-                  dataKey="gross"
-                  name="Gross"
-                  fill="#0f172a"
-                  radius={[6, 6, 0, 0]}
-                />
-                <Bar
-                  dataKey="net"
-                  name="Net"
-                  fill="#059669"
-                  radius={[6, 6, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
+            {(data.payrollByDepartment || []).length ? (
+              <ResponsiveContainer width="100%" height={280}>
+                <BarChart data={data.payrollByDepartment}>
+                  <CartesianGrid
+                    strokeDasharray="4 4"
+                    stroke="#e6e0d4"
+                    vertical={false}
+                  />
+                  <XAxis
+                    dataKey="department"
+                    tick={{ fontSize: 10, fill: "#6f7c76" }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <YAxis
+                    tick={{ fontSize: 10, fill: "#6f7c76" }}
+                    axisLine={false}
+                    tickLine={false}
+                    width={48}
+                  />
+                  <ChartTooltip unit="currency" />
+                  <Bar
+                    dataKey="gross"
+                    name="Gross"
+                    fill="#10251f"
+                    radius={[6, 6, 0, 0]}
+                    maxBarSize={30}
+                  />
+                  <Bar
+                    dataKey="net"
+                    name="Net"
+                    fill="#9fcf76"
+                    radius={[6, 6, 0, 0]}
+                    maxBarSize={30}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <ChartEmpty />
+            )}
+            <div className="mt-3 flex items-center gap-4 text-[10px] font-medium text-hcm-muted">
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-sm bg-hcm-ink" /> Gross
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-sm bg-[#9fcf76]" /> Net
+              </span>
+            </div>
           </ChartSection>
         ) : (
           <ChartSection
             title="Approved leave by type"
-            description="Days approved in the selected range"
+            description="Days approved in the selected range."
           >
-            <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={data.leaveByType}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-                <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
-                <Tooltip />
-                <Bar
-                  dataKey="approvedDays"
-                  name="Approved days"
-                  fill="#2563eb"
-                  radius={[6, 6, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartSection>
-        )}
-
-        {isAdmin ? (
-          <ChartSection
-            title="Workforce profile"
-            description="Gender and tenure mix"
-          >
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              <div>
-                <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
-                  Gender
-                </h3>
-                {data.genderDistribution.map((entry) => (
-                  <p
-                    key={entry.gender}
-                    className="flex justify-between border-b border-slate-100 py-2 text-sm last:border-0"
-                  >
-                    <span className="capitalize text-slate-600">
-                      {entry.gender}
-                    </span>
-                    <span className="font-medium text-slate-900">
-                      {entry.count}
-                    </span>
-                  </p>
-                ))}
-              </div>
-              <div>
-                <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
-                  Tenure
-                </h3>
-                {data.tenureDistribution.map((entry) => (
-                  <p
-                    key={entry.tenure}
-                    className="flex justify-between border-b border-slate-100 py-2 text-sm last:border-0"
-                  >
-                    <span className="text-slate-600">{entry.tenure}</span>
-                    <span className="font-medium text-slate-900">
-                      {entry.count}
-                    </span>
-                  </p>
-                ))}
-              </div>
-            </div>
-          </ChartSection>
-        ) : (
-          <ChartSection
-            title="Top late-comers"
-            description="Coaching opportunities this period"
-          >
-            {data.topLateComers.length ? (
-              <ol className="divide-y divide-slate-100">
-                {data.topLateComers.map((entry, index) => (
-                  <li
-                    key={entry.employeeId}
-                    className="flex items-center justify-between gap-4 py-3 text-sm"
-                  >
-                    <span className="flex items-center gap-3">
-                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-500">
-                        {index + 1}
-                      </span>
-                      <span>
-                        <span className="font-medium text-slate-800">
-                          {entry.employeeName}
-                        </span>
-                        <span className="ml-2 text-slate-400">
-                          {entry.department}
-                        </span>
-                      </span>
-                    </span>
-                    <strong className="rounded-full bg-amber-50 px-2.5 py-1 text-xs text-amber-700">
-                      {entry.count} late
-                    </strong>
-                  </li>
-                ))}
-              </ol>
+            {(data.leaveByType || []).length ? (
+              <ResponsiveContainer width="100%" height={280}>
+                <BarChart data={data.leaveByType}>
+                  <CartesianGrid
+                    strokeDasharray="4 4"
+                    stroke="#e6e0d4"
+                    vertical={false}
+                  />
+                  <XAxis
+                    dataKey="name"
+                    tick={{ fontSize: 10, fill: "#6f7c76" }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <YAxis
+                    allowDecimals={false}
+                    tick={{ fontSize: 10, fill: "#6f7c76" }}
+                    axisLine={false}
+                    tickLine={false}
+                    width={28}
+                  />
+                  <ChartTooltip />
+                  <Bar
+                    dataKey="approvedDays"
+                    name="Approved days"
+                    fill="#2f5d4d"
+                    radius={[7, 7, 0, 0]}
+                    maxBarSize={42}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
             ) : (
-              <p className="rounded-xl bg-emerald-50 px-4 py-6 text-center text-sm text-emerald-700">
-                No late attendance in this period.
-              </p>
+              <ChartEmpty />
             )}
           </ChartSection>
         )}
       </div>
 
-      {data.leaveUtilization.length > 0 && (
-        <ChartSection
-          title="Leave utilization"
-          description="How much of each annual quota has been used"
-        >
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {data.leaveUtilization.map((leaveType) => (
-              <div
-                key={leaveType.name}
-                className="rounded-xl border border-slate-200 bg-slate-50 p-4"
-              >
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium text-slate-800">
-                    {leaveType.name}
-                  </p>
-                  <span className="text-xs font-semibold text-slate-500">
-                    {formatPercent(leaveType.utilizationRate)}
-                  </span>
-                </div>
-                <p className="mt-1 text-xs text-slate-500">
-                  {leaveType.used} of {leaveType.quota} days used
-                </p>
-                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-200">
-                  <div
-                    className="h-full rounded-full bg-indigo-500"
-                    style={{
-                      width: `${Math.min(
-                        100,
-                        Number(leaveType.utilizationRate) || 0,
-                      )}%`,
-                    }}
-                  />
+      <div className="grid gap-4 xl:grid-cols-[1fr_1fr]">
+        {isAdmin ? (
+          <SectionCard
+            title="Workforce profile"
+            description="Gender and tenure mix across the company."
+          >
+            <div className="grid gap-6 sm:grid-cols-2">
+              <div>
+                <h3 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-hcm-muted">
+                  Gender
+                </h3>
+                <div className="mt-3 space-y-2">
+                  {(data.genderDistribution || []).map((entry) => (
+                    <div
+                      key={entry.gender}
+                      className="flex items-center justify-between rounded-xl bg-[#faf7f0] px-3 py-2.5 text-xs"
+                    >
+                      <span className="capitalize text-hcm-muted">
+                        {entry.gender}
+                      </span>
+                      <strong className="text-hcm-ink">{entry.count}</strong>
+                    </div>
+                  ))}
                 </div>
               </div>
-            ))}
-          </div>
-        </ChartSection>
-      )}
+              <div>
+                <h3 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-hcm-muted">
+                  Tenure
+                </h3>
+                <div className="mt-3 space-y-2">
+                  {(data.tenureDistribution || []).map((entry) => (
+                    <div
+                      key={entry.tenure}
+                      className="flex items-center justify-between rounded-xl bg-[#faf7f0] px-3 py-2.5 text-xs"
+                    >
+                      <span className="text-hcm-muted">{entry.tenure}</span>
+                      <strong className="text-hcm-ink">{entry.count}</strong>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </SectionCard>
+        ) : (
+          <SectionCard
+            title="Top late-comers"
+            description="Coaching opportunities for this period."
+          >
+            {(data.topLateComers || []).length ? (
+              <ol className="divide-y divide-hcm-line">
+                {data.topLateComers.map((entry, index) => (
+                  <li
+                    key={entry.employeeId}
+                    className="flex items-center justify-between gap-4 py-3 text-sm first:pt-0 last:pb-0"
+                  >
+                    <span className="flex min-w-0 items-center gap-3">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f0ece2] text-[11px] font-semibold text-hcm-muted">
+                        {index + 1}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block truncate font-medium text-hcm-ink">
+                          {entry.employeeName}
+                        </span>
+                        <span className="block truncate text-[10px] text-hcm-muted">
+                          {entry.department}
+                        </span>
+                      </span>
+                    </span>
+                    <Badge tone="warning">{entry.count} late</Badge>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <EmptyState
+                icon={CheckCircle2}
+                title="No late attendance"
+                description="Everyone was on time in this period."
+              />
+            )}
+          </SectionCard>
+        )}
+
+        <SectionCard
+          title="Leave utilization"
+          description="How much of each annual quota has been used."
+        >
+          {leaveUtilization.length ? (
+            <div className="space-y-4">
+              {leaveUtilization.map((leaveType) => (
+                <div key={leaveType.name}>
+                  <div className="flex items-center justify-between gap-3 text-xs">
+                    <span className="font-medium text-hcm-ink">
+                      {leaveType.name}
+                    </span>
+                    <span className="font-semibold text-hcm-muted">
+                      {formatPercent(leaveType.utilizationRate)}
+                    </span>
+                  </div>
+                  <ProgressBar
+                    value={leaveType.utilizationRate}
+                    label={`${leaveType.name} utilization`}
+                    className="mt-2"
+                  />
+                  <p className="mt-1.5 text-[10px] text-hcm-muted">
+                    {leaveType.used} of {leaveType.quota} days used
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              icon={CalendarDays}
+              title="No leave utilization yet"
+              description="Leave quotas will appear here once employees use them."
+            />
+          )}
+        </SectionCard>
+      </div>
 
       {summary.length > 0 && (
-        <section className="relative overflow-hidden rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-emerald-50 p-5 sm:p-6">
-          <div className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white">
+        <section className="hcm-rise-in relative overflow-hidden rounded-3xl border border-[#c9dccd] bg-[#edf5e9] p-5 sm:p-6">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-hcm-lime/30 blur-3xl"
+          />
+          <div className="relative flex items-start gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-hcm-ink text-hcm-lime">
               <Sparkles className="h-4 w-4" />
             </span>
             <div>
-              <h2 className="font-semibold text-slate-900">
-                AI-generated insights
+              <p className="hcm-eyebrow text-[#4d6b55]">AI-generated insights</p>
+              <h2 className="mt-1 font-display text-2xl tracking-tight text-hcm-ink">
+                What the numbers are saying
               </h2>
-              <p className="text-xs text-slate-500">
-                Based only on the KPIs above.
+              <p className="mt-1 text-xs text-[#607568]">
+                Based only on the KPIs shown above.
               </p>
             </div>
           </div>
-          <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+          <ul className="relative mt-4 grid gap-2 sm:grid-cols-2">
             {summary.map((insight, index) => (
               <li
                 key={index}
-                className="rounded-xl border border-white bg-white/80 px-4 py-3 text-sm leading-6 text-slate-700 shadow-sm"
+                className="rounded-2xl border border-white/80 bg-white/75 px-4 py-3 text-sm leading-6 text-hcm-ink shadow-sm"
               >
                 {insight}
               </li>

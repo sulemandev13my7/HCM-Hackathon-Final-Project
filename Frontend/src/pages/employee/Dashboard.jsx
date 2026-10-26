@@ -6,6 +6,7 @@ import CheckInCard from "../../components/CheckInCard";
 import toast from "react-hot-toast";
 import {
   ArrowRight,
+  CalendarCheck,
   CalendarDays,
   Clock3,
   FileText,
@@ -13,29 +14,44 @@ import {
   Sparkles,
   Wallet,
 } from "lucide-react";
+import {
+  Badge,
+  Button,
+  EmptyState,
+  PageHeader,
+  ProgressBar,
+  SectionCard,
+  StatCard,
+} from "../../components/ui";
 
 const formatCurrency = (value) => `Rs ${Number(value || 0).toLocaleString()}`;
 
-function MetricCard({ icon: Icon, label, value, detail, tone }) {
-  return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-sm font-medium text-slate-500">{label}</p>
-          <p className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">
-            {value}
-          </p>
-          {detail && <p className="mt-1 text-xs text-slate-400">{detail}</p>}
-        </div>
-        <span
-          className={`flex h-10 w-10 items-center justify-center rounded-xl ${tone}`}
-        >
-          <Icon className="h-5 w-5" />
-        </span>
-      </div>
-    </div>
-  );
-}
+const dateLabel = new Intl.DateTimeFormat(undefined, {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+}).format(new Date());
+
+const quickActions = [
+  {
+    to: "/employee/attendance",
+    label: "View my attendance",
+    description: "Calendar, hours and corrections",
+    icon: CalendarCheck,
+  },
+  {
+    to: "/employee/leave",
+    label: "Apply for leave",
+    description: "See balance and request time off",
+    icon: CalendarDays,
+  },
+  {
+    to: "/employee/payroll",
+    label: "Open payslips",
+    description: "Download finalized payslips",
+    icon: Wallet,
+  },
+];
 
 export default function EmployeeDashboard() {
   const { user } = useAuth();
@@ -65,22 +81,32 @@ export default function EmployeeDashboard() {
 
   if (loading) {
     return (
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <div
-            key={index}
-            className="h-32 animate-pulse rounded-2xl border border-slate-200 bg-white"
-          />
-        ))}
+      <div className="space-y-4">
+        <div className="h-48 animate-pulse rounded-[30px] bg-[#e7e2d7]" />
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div
+              key={index}
+              className="h-32 animate-pulse rounded-2xl bg-[#e7e2d7]"
+            />
+          ))}
+        </div>
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div className="rounded-2xl border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700">
-        Your dashboard could not be loaded. Refresh the page or contact HR.
-      </div>
+      <EmptyState
+        icon={FileText}
+        title="Your dashboard could not be loaded"
+        description="Refresh the page or contact HR if this continues."
+        action={
+          <Button variant="secondary" onClick={() => window.location.reload()}>
+            Try again
+          </Button>
+        }
+      />
     );
   }
 
@@ -89,214 +115,260 @@ export default function EmployeeDashboard() {
     Math.round(((Number(data.hoursThisWeek) || 0) / 40) * 100),
   );
   const leaveBalances = data.leaveBalances || [];
+  const leaveRemaining = leaveBalances.reduce(
+    (sum, balance) => sum + Number(balance.remaining || 0),
+    0,
+  );
 
   return (
-    <div className="space-y-6">
-      <header className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
-        <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-emerald-500/25 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-24 left-1/3 h-64 w-64 rounded-full bg-blue-500/20 blur-3xl" />
-        <div className="relative flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">
-              Employee workspace
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Good to see you, {user?.firstName || "there"}.
-            </h1>
-            <p className="mt-2 max-w-xl text-sm leading-6 text-slate-300">
-              Your day, leave balance and payslips — all in one place.
-            </p>
-          </div>
+    <div className="space-y-5">
+      <PageHeader
+        eyebrow="Employee workspace"
+        title={`Good to see you, ${user?.firstName || "there"}.`}
+        description="Your day, leave balance and payslips — all in one calm place."
+        meta={
+          <>
+            <span className="hcm-chip-dark">
+              <CalendarDays className="h-3.5 w-3.5" />
+              {dateLabel}
+            </span>
+            <span className="hcm-chip-dark">
+              <span className="h-1.5 w-1.5 rounded-full bg-hcm-lime" />
+              The people team is here to help
+            </span>
+          </>
+        }
+        actions={
           <Link
             to="/employee/ai"
-            className="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-hcm-lime px-4 text-sm font-semibold text-hcm-ink transition hover:bg-[#c9ee86]"
           >
-            <Sparkles className="h-4 w-4 text-emerald-600" />
+            <Sparkles className="h-4 w-4" />
             Ask my assistant
           </Link>
-        </div>
-      </header>
+        }
+      />
 
       <div className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
         <CheckInCard />
+
         <div className="grid gap-4 sm:grid-cols-2">
-          <MetricCard
+          <StatCard
             icon={Clock3}
             label="Hours this week"
             value={`${data.hoursThisWeek || 0} hrs`}
-            detail={`${weekProgress}% of 40 hr target`}
-            tone="bg-blue-50 text-blue-600"
+            detail={`${weekProgress}% of a 40 hour week`}
+            tone="bg-[#e8f1f7] text-[#2d6384]"
           />
-          <MetricCard
-            icon={CalendarDays}
+          <StatCard
+            icon={CalendarCheck}
             label="Late this month"
             value={`${data.lateCountThisMonth || 0} days`}
             detail="Based on check-in time"
-            tone="bg-amber-50 text-amber-600"
+            tone="bg-[#fdf0df] text-[#a96820]"
           />
-          <div className="sm:col-span-2 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
-            <div className="flex items-center justify-between">
+          <div className="hcm-card p-5 sm:col-span-2">
+            <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-sm font-medium text-slate-500">
+                <p className="text-xs font-semibold text-hcm-muted">
                   Weekly rhythm
                 </p>
-                <p className="mt-1 text-sm text-slate-400">
+                <p className="mt-1 text-xs leading-5 text-hcm-muted">
                   Keep each week moving toward a healthy 40 hours.
                 </p>
               </div>
-              <span className="text-sm font-semibold text-slate-700">
+              <Badge tone={weekProgress >= 80 ? "lime" : "accent"}>
                 {weekProgress}%
-              </span>
+              </Badge>
             </div>
-            <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-slate-100">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-blue-500 to-emerald-500 transition-all"
-                style={{ width: `${weekProgress}%` }}
-              />
-            </div>
+            <ProgressBar
+              value={weekProgress}
+              label="Weekly hours progress"
+              className="mt-4"
+              tone={
+                weekProgress >= 80 ? "bg-[#76b85a]" : "bg-hcm-accent"
+              }
+            />
           </div>
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:col-span-2 xl:col-span-1">
-          <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-slate-900">Leave balance</h2>
-            <Link
-              to="/employee/leave"
-              className="text-xs font-semibold text-blue-600 hover:underline"
-            >
+      <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr_0.8fr]">
+        <SectionCard
+          title="Leave balance"
+          description="Your remaining allowance this year."
+          action={
+            <Link to="/employee/leave" className="hcm-link text-xs">
               Apply
             </Link>
-          </div>
-          <div className="mt-4 space-y-3">
-            {leaveBalances.length ? (
-              leaveBalances.slice(0, 4).map((balance) => {
+          }
+        >
+          {leaveBalances.length ? (
+            <div className="space-y-4">
+              {leaveBalances.slice(0, 4).map((balance) => {
                 const quota = Number(balance.quota) || 0;
                 const remaining = Number(balance.remaining) || 0;
-                const used = quota ? Math.round((remaining / quota) * 100) : 0;
+                const remainingPercent = quota
+                  ? Math.round((remaining / quota) * 100)
+                  : 0;
                 return (
                   <div key={balance._id}>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="font-medium text-slate-700">
+                    <div className="flex items-center justify-between gap-3 text-xs">
+                      <span className="font-medium text-hcm-ink">
                         {balance.leaveType?.name || "Leave"}
                       </span>
-                      <span className="text-slate-500">
-                        <strong className="text-slate-800">{remaining}</strong>{" "}
-                        / {quota}
+                      <span className="text-hcm-muted">
+                        <strong className="font-semibold text-hcm-ink">
+                          {remaining}
+                        </strong>{" "}
+                        of {quota} left
                       </span>
                     </div>
-                    <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-100">
-                      <div
-                        className="h-full rounded-full bg-emerald-500"
-                        style={{ width: `${used}%` }}
-                      />
-                    </div>
+                    <ProgressBar
+                      value={remainingPercent}
+                      label={`${balance.leaveType?.name || "Leave"} balance`}
+                      className="mt-2"
+                      tone="bg-[#76b85a]"
+                    />
                   </div>
                 );
-              })
-            ) : (
-              <p className="text-sm text-slate-500">
-                Leave balances will appear after HR sets up your profile.
-              </p>
-            )}
-          </div>
-        </section>
+              })}
+            </div>
+          ) : (
+            <EmptyState
+              icon={CalendarDays}
+              title="No leave balances yet"
+              description="They will appear after HR sets up your profile."
+            />
+          )}
+        </SectionCard>
 
-        <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-slate-900">Last payslip</h2>
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
+        <SectionCard
+          title="Last payslip"
+          description="Your latest finalized pay."
+          action={
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#eee8f8] text-[#6c4f9c]">
               <Wallet className="h-4 w-4" />
             </span>
-          </div>
+          }
+        >
           {data.lastPayslip ? (
             <>
-              <p className="mt-4 text-3xl font-semibold tracking-tight text-slate-900">
+              <p className="mt-1 font-display text-4xl tracking-[-0.04em] text-hcm-ink">
                 {formatCurrency(data.lastPayslip.netPay)}
               </p>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-xs text-hcm-muted">
                 Net pay · {data.lastPayslip.month}/{data.lastPayslip.year}
               </p>
               <Link
                 to="/employee/payroll"
-                className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:underline"
+                className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-hcm-accent hover:underline"
               >
-                View payslips <ArrowRight className="h-4 w-4" />
+                View payslips <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </>
           ) : (
-            <p className="mt-4 text-sm leading-6 text-slate-500">
-              No finalized payslip yet. Your next finalized payroll run will
-              appear here.
+            <p className="mt-1 text-sm leading-6 text-hcm-muted">
+              No finalized payslip yet. Your next payroll run will appear here.
             </p>
           )}
-        </section>
+        </SectionCard>
 
-        <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-slate-900">Quick actions</h2>
-            <Megaphone className="h-4 w-4 text-slate-400" />
-          </div>
-          <div className="mt-4 grid gap-2">
-            <Link
-              to="/employee/attendance"
-              className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-            >
-              My attendance <ArrowRight className="h-4 w-4 text-slate-400" />
-            </Link>
-            <Link
-              to="/employee/leave"
-              className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-            >
-              Apply for leave <ArrowRight className="h-4 w-4 text-slate-400" />
-            </Link>
-            <Link
-              to="/employee/profile"
-              className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-            >
-              Update profile <ArrowRight className="h-4 w-4 text-slate-400" />
-            </Link>
-          </div>
-        </section>
-      </div>
-
-      <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="font-semibold text-slate-900">Announcements</h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Updates from your people team.
+        <SectionCard
+          title="Upcoming"
+          description="A quick read on your time."
+          action={<CalendarDays className="h-4 w-4 text-hcm-muted" />}
+        >
+          <div className="rounded-2xl bg-[#faf7f0] px-4 py-4">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-hcm-muted">
+              Leave remaining
+            </p>
+            <p className="mt-1 font-display text-4xl tracking-[-0.04em] text-hcm-ink">
+              {leaveRemaining}
+            </p>
+            <p className="text-xs text-hcm-muted">
+              days across {leaveBalances.length} leave types
             </p>
           </div>
-          <FileText className="h-5 w-5 text-slate-300" />
-        </div>
-        {data.announcements?.length ? (
-          <ul className="mt-5 divide-y divide-slate-100">
-            {data.announcements.map((announcement) => (
-              <li key={announcement._id} className="py-4 first:pt-0 last:pb-0">
-                <div className="flex items-start gap-3">
-                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
-                    <Megaphone className="h-4 w-4" />
+          <Link
+            to="/employee/attendance"
+            className="mt-3 flex items-center justify-between rounded-xl border border-hcm-line bg-white px-3.5 py-3 text-xs font-semibold text-hcm-ink transition hover:border-hcm-line-strong"
+          >
+            Review my attendance
+            <ArrowRight className="h-3.5 w-3.5 text-hcm-muted" />
+          </Link>
+        </SectionCard>
+      </div>
+
+      <div className="grid gap-4 xl:grid-cols-[0.85fr_1.15fr]">
+        <SectionCard
+          title="Quick actions"
+          description="The things people ask for most."
+          action={<Megaphone className="h-4 w-4 text-hcm-muted" />}
+        >
+          <div className="space-y-2">
+            {quickActions.map((action) => (
+              <Link
+                key={action.to}
+                to={action.to}
+                className="group flex items-center gap-3 rounded-xl border border-hcm-line bg-white px-3.5 py-3 transition hover:border-hcm-line-strong hover:bg-[#faf7f0]"
+              >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-hcm-accent-soft text-hcm-accent">
+                  <action.icon className="h-4 w-4" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-xs font-semibold text-hcm-ink">
+                    {action.label}
                   </span>
-                  <div>
-                    <h3 className="font-medium text-slate-900">
+                  <span className="block truncate text-[10px] text-hcm-muted">
+                    {action.description}
+                  </span>
+                </span>
+                <ArrowRight className="h-3.5 w-3.5 text-[#b5b0a4] transition group-hover:translate-x-0.5 group-hover:text-hcm-accent" />
+              </Link>
+            ))}
+          </div>
+        </SectionCard>
+
+        <SectionCard
+          title="Announcements"
+          description="Updates from your people team."
+          action={
+            <Link to="/employee/announcements" className="hcm-link text-xs">
+              View all
+            </Link>
+          }
+        >
+          {data.announcements?.length ? (
+            <ul className="divide-y divide-hcm-line">
+              {data.announcements.map((announcement) => (
+                <li
+                  key={announcement._id}
+                  className="flex items-start gap-3 py-3.5 first:pt-0 last:pb-0"
+                >
+                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#eef9d6] text-[#4d6b25]">
+                    <Megaphone className="h-3.5 w-3.5" />
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="text-xs font-semibold text-hcm-ink">
                       {announcement.title}
                     </h3>
-                    <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-600">
+                    <p className="mt-1 line-clamp-3 whitespace-pre-wrap text-xs leading-5 text-hcm-muted">
                       {announcement.content}
                     </p>
                   </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="mt-5 rounded-xl bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">
-            No announcements yet.
-          </p>
-        )}
-      </section>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <EmptyState
+              icon={Megaphone}
+              title="No announcements yet"
+              description="Updates from your people team will appear here."
+            />
+          )}
+        </SectionCard>
+      </div>
     </div>
   );
 }
