@@ -1,6 +1,11 @@
 const User = require('../models/User');
 const CompanySettings = require('../models/CompanySettings');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const {
+  hashPasswordResetToken,
+  isValidPasswordResetToken,
+} = require('../utils/passwordReset');
 
 const MIN_PASSWORD_LENGTH = 8;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -10,6 +15,9 @@ const generateToken = (id) => {
     expiresIn: process.env.JWT_EXPIRE || '7d'
   });
 };
+
+const isValidNewPassword = (password) =>
+  typeof password === 'string' && password.length >= MIN_PASSWORD_LENGTH;
 
 // Check if first run setup needed
 exports.checkFirstRun = async (req, res) => {
@@ -35,7 +43,7 @@ exports.firstRunSetup = async (req, res) => {
 
     const { companyName, adminEmail, adminPassword, firstName, lastName } = req.body;
     const normalizedCompanyName = String(companyName || '').trim();
-    const normalizedEmail = String(adminEmail || '').trim();
+    const normalizedEmail = String(adminEmail || '').trim().toLowerCase();
 
     if (!normalizedCompanyName || !normalizedEmail || !adminPassword) {
       return res.status(400).json({ message: 'Please provide all required fields' });
@@ -45,7 +53,7 @@ exports.firstRunSetup = async (req, res) => {
       return res.status(400).json({ message: 'Please provide a valid admin email' });
     }
 
-    if (typeof adminPassword !== 'string' || adminPassword.length < MIN_PASSWORD_LENGTH) {
+    if (!isValidNewPassword(adminPassword)) {
       return res.status(400).json({
         message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`
       });
@@ -94,7 +102,7 @@ exports.firstRunSetup = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const normalizedEmail = String(email || '').trim();
+    const normalizedEmail = String(email || '').trim().toLowerCase();
 
     if (!normalizedEmail || !password) {
       return res.status(400).json({ message: 'Please provide email and password' });
@@ -135,7 +143,7 @@ exports.changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
 
-    if (typeof newPassword !== 'string' || newPassword.length < MIN_PASSWORD_LENGTH) {
+    if (!isValidNewPassword(newPassword)) {
       return res.status(400).json({
         message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`
       });
@@ -162,6 +170,55 @@ exports.changePassword = async (req, res) => {
     await user.save();
 
     res.json({ message: 'Password changed successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Complete a password reset using an admin-issued one-time link
+exports.resetPasswordWithToken = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    if (!isValidPasswordResetToken(token)) {
+      return res.status(400).json({
+        message: 'This password reset link is invalid or has expired'
+      });
+    }
+
+    if (!isValidNewPassword(newPassword)) {
+      return res.status(400).json({
+        message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`
+      });
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    const user = await User.findOneAndUpdate(
+      {
+        passwordResetTokenHash: hashPasswordResetToken(token),
+        passwordResetExpiresAt: { $gt: new Date() },
+        isActive: true
+      },
+      {
+        $set: {
+          password: passwordHash,
+          mustChangePassword: false,
+          passwordResetTokenHash: null,
+          passwordResetExpiresAt: null
+        }
+        },
+      { returnDocument: 'after', runValidators: true }
+    );
+
+    if (!user) {
+      return res.status(400).json({
+        message: 'This password reset link is invalid or has expired'
+      });
+    }
+
+    res.json({
+      message: 'Password reset successfully. Sign in with your new password.'
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

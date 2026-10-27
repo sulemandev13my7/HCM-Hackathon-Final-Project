@@ -10,7 +10,7 @@ The app starts empty. There is no seed or demo data: the first admin creates the
 
 - **First-run setup** - Create the company and first Admin account on an empty database.
 - **Admin launch checklist** - Live, data-backed onboarding progress for leave types, HR, employees and the first payroll run.
-- **Authentication and RBAC** - JWT authentication, temporary-password onboarding, forced first-login password change, and role-specific routes.
+- **Authentication and RBAC** - JWT authentication, temporary-password onboarding, forced first-login password change, admin-issued one-time reset links, and role-specific routes.
 - **Organization settings** - Company profile, office hours, grace period, half-day threshold, weekends, departments, designations, leave types and public holidays.
 - **Employee management** - Directory, search and filters, Employee 360, CSV import with dry-run validation, CSV export, salary structures and salary history.
 - **Attendance** - Web check-in/out, optional camera check-in with geofence validation, HR self-service attendance, company attendance board and correction requests.
@@ -116,7 +116,9 @@ Open the Vite URL. On a fresh database, the app opens first-run setup. Create th
 
 ### Reset between evaluators
 
-The production API has no public reset endpoint. To hand the demo to another evaluator, reset the dedicated database from the operator machine:
+Admins can create a single-use password reset link for any active account from **Users & access**. Links expire after 30 minutes and are stored only as a SHA-256 hash. There is no public sign-up and no email delivery provider, so users request reset links from their workspace admin.
+
+To wipe the whole demo workspace between evaluators, reset the dedicated database from the operator machine:
 
 ```powershell
 npm --prefix Backend run db:reset -- --yes
@@ -168,6 +170,8 @@ The production build is verified to call the hosted backend rather than `localho
 - JWT-protected routes with server-side role checks.
 - Passwords hashed with bcrypt.
 - Temporary passwords are generated server-side and must be changed on first login.
+- Password reset links use 256-bit tokens, are stored only as SHA-256 hashes, expire after 30 minutes, and are consumed atomically on first use.
+- Login and password-reset endpoints are rate-limited.
 - AI API keys stay on the backend.
 - Audit snapshots redact credential fields before storage.
 - Audit logs record critical create, update, approval, payroll, attendance and authentication events.
@@ -185,7 +189,7 @@ npm --prefix Frontend run build
 
 Current local verification:
 
-- Backend unit tests: **45/45 passing**.
+- Backend unit tests: **49/49 passing**.
 - Frontend ESLint: passing.
 - Frontend production build: passing with route-level code splitting.
 - Isolated end-to-end smoke test: **55/55 passing**, covering setup, RBAC, HR self-service, camera geofence rejection and check-in, attendance, leave, payroll, payslip PDFs, dashboards, notifications, announcements, audit logs, CSV import/export, Employee 360, AI chat and smart leave.
@@ -197,6 +201,7 @@ Current local verification:
 ## Notes
 
 - Starts empty; no dummy data is included.
+- Single-tenant by design: first-run `/setup` creates the only workspace, with no public sign-up.
 - All financial and attendance calculations run on the server.
 - AI tools inherit the caller's role permissions.
 - Mobile layouts are supported from 375px upward.

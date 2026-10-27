@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/useAuth";
 import toast from "react-hot-toast";
 import {
@@ -191,6 +191,15 @@ export default function Login() {
           }
         />
 
+        <div className="-mt-1 flex justify-end">
+          <Link
+            to="/forgot-password"
+            className="text-[11px] font-semibold text-[#5d6c65] underline-offset-2 transition hover:text-[#14241e] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f5d4d]/25"
+          >
+            Forgot password?
+          </Link>
+        </div>
+
         <button
           type="submit"
           disabled={submitting}
@@ -236,7 +245,7 @@ export default function Login() {
       )}
 
       <p className="mt-5 text-center text-[11px] leading-5 text-[#8a948f]">
-        Need an account or a password reset? Ask your workspace administrator.
+        Need an account? Ask your workspace administrator.
       </p>
     </AuthShell>
   );

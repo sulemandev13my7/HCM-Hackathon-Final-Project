@@ -12,6 +12,8 @@ import API from "./services/api";
 import FirstRunSetup from "./pages/FirstRunSetup";
 import Login from "./pages/Login";
 import ChangePassword from "./pages/ChangePassword";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import AdminLayout from "./layouts/AdminLayout";
 import HRLayout from "./layouts/HRLayout";
 import EmployeeLayout from "./layouts/EmployeeLayout";
@@ -87,6 +89,8 @@ function App() {
           <Route path="/" element={<RootRedirect />} />
           <Route path="/setup" element={<FirstRunSetup />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/change-password" element={<ChangePassword />} />
 
           <Route

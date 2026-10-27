@@ -17,7 +17,12 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
-const AUTH_ENDPOINTS = ["/auth/login", "/auth/setup", "/auth/change-password"];
+const AUTH_ENDPOINTS = [
+  "/auth/login",
+  "/auth/setup",
+  "/auth/change-password",
+  "/auth/reset-password",
+];
 
 API.interceptors.response.use(
   (response) => response,

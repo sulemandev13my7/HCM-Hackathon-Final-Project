@@ -4,6 +4,7 @@ const {
   createHR,
   getUsers,
   resetPassword,
+  createResetLink,
   toggleUserStatus,
 } = require("../controllers/userController");
 const { protect, authorize } = require("../middleware/auth");
@@ -23,6 +24,13 @@ router.put(
   authorize("admin"),
   logAudit("reset_password", "user"),
   resetPassword,
+);
+router.post(
+  "/:id/reset-link",
+  protect,
+  authorize("admin"),
+  logAudit("create_reset_link", "user"),
+  createResetLink,
 );
 router.put(
   "/:id/toggle-status",

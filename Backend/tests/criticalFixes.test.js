@@ -26,10 +26,18 @@ const {
 const { buildErrorResponse } = require("../utils/errorResponse");
 const { generateTemporaryPassword } = require("../utils/temporaryPassword");
 const {
+  createPasswordResetToken,
+  hashPasswordResetToken,
+  isValidPasswordResetToken,
+  PASSWORD_RESET_TTL_MS,
+} = require("../utils/passwordReset");
+const {
   canUseAITool,
   filterAIToolsForRole,
 } = require("../ai/aiToolPermissions");
 const leaveController = require("../controllers/leaveController");
+const authController = require("../controllers/authController");
+const userController = require("../controllers/userController");
 const LeaveRequest = require("../models/LeaveRequest");
 const User = require("../models/User");
 const { createPayslipPdf } = require("../utils/payslipPdf");
@@ -196,6 +204,109 @@ test("Admin can deactivate HR and employee accounts but not Admin accounts or se
 test("temporary passwords use 192 bits of hexadecimal randomness", () => {
   const password = generateTemporaryPassword();
   assert.match(password, /^[A-Fa-f0-9]{48}$/);
+});
+
+test("password reset tokens are random, hashed, and expire after 30 minutes", () => {
+  const first = createPasswordResetToken();
+  const second = createPasswordResetToken();
+
+  assert.match(first.token, /^[a-f0-9]{64}$/);
+  assert.notEqual(first.token, second.token);
+  assert.equal(first.tokenHash, hashPasswordResetToken(first.token));
+  assert.equal(isValidPasswordResetToken(first.token), true);
+  assert.equal(isValidPasswordResetToken("short-token"), false);
+  assert.equal(isValidPasswordResetToken(undefined), false);
+  assert.ok(first.expiresAt.getTime() >= Date.now() + PASSWORD_RESET_TTL_MS - 1000);
+});
+
+test("a valid reset token atomically sets a new password and is consumed", async (t) => {
+  const { token } = createPasswordResetToken();
+  let query;
+  let update;
+  t.mock.method(User, "findOneAndUpdate", (filter, changes) => {
+    query = filter;
+    update = changes;
+    return { _id: "user-1" };
+  });
+  const response = {
+    status(code) {
+      this.statusCode = code;
+      return this;
+    },
+    json(body) {
+      this.body = body;
+      return this;
+    },
+  };
+
+  await authController.resetPasswordWithToken(
+    { body: { token, newPassword: "NewPassword!123" } },
+    response,
+  );
+
+  assert.equal(response.statusCode, undefined);
+  assert.match(response.body.message, /reset successfully/i);
+  assert.equal(query.passwordResetTokenHash, hashPasswordResetToken(token));
+  assert.ok(query.passwordResetExpiresAt.$gt instanceof Date);
+  assert.equal(query.isActive, true);
+  assert.notEqual(update.$set.password, "NewPassword!123");
+  assert.match(update.$set.password, /^\$2[aby]\$/);
+  assert.equal(update.$set.mustChangePassword, false);
+  assert.equal(update.$set.passwordResetTokenHash, null);
+  assert.equal(update.$set.passwordResetExpiresAt, null);
+});
+
+test("malformed reset tokens are rejected without a database lookup", async (t) => {
+  const findOne = t.mock.method(User, "findOne", async () => null);
+  const response = {
+    status(code) {
+      this.statusCode = code;
+      return this;
+    },
+    json(body) {
+      this.body = body;
+      return this;
+    },
+  };
+
+  await authController.resetPasswordWithToken(
+    { body: { token: "bad-token", newPassword: "NewPassword!123" } },
+    response,
+  );
+
+  assert.equal(response.statusCode, 400);
+  assert.match(response.body.message, /invalid or has expired/i);
+  assert.equal(findOne.mock.callCount(), 0);
+});
+
+test("HR account creation rejects weak passwords before database access", async (t) => {
+  const findOne = t.mock.method(User, "findOne", async () => null);
+  const response = {
+    status(code) {
+      this.statusCode = code;
+      return this;
+    },
+    json(body) {
+      this.body = body;
+      return this;
+    },
+  };
+
+  await userController.createHR(
+    {
+      body: {
+        email: "HR@Example.com",
+        password: "short",
+        firstName: "New",
+        lastName: "HR",
+      },
+    },
+    response,
+  );
+
+  assert.equal(response.statusCode, 400);
+  assert.match(response.body.message, /at least 8/);
+  assert.equal(findOne.mock.callCount(), 0);
 });
 
 test("UTC date-only parsing is independent of the server timezone", () => {

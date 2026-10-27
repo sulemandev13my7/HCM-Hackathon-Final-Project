@@ -6,8 +6,10 @@ import { Button, PageHeader } from "../../components/ui";
 import {
   Check,
   CheckCircle2,
+  Clock3,
   Copy,
   KeyRound,
+  Link2,
   Loader2,
   Plus,
   Search,
@@ -40,9 +42,11 @@ export default function Users() {
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [busy, setBusy] = useState("");
+  const [linkBusy, setLinkBusy] = useState("");
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [tempPassword, setTempPassword] = useState("");
+  const [resetLink, setResetLink] = useState(null);
 
   const refresh = useCallback(async () => {
     try {
@@ -119,6 +123,7 @@ export default function Users() {
     try {
       const response = await API.put(`/users/${id}/reset-password`);
       setTempPassword(response.data.tempPassword);
+      setResetLink(null);
       toast.success("Temporary password generated");
       await refresh();
     } catch (error) {
@@ -128,12 +133,38 @@ export default function Users() {
     }
   };
 
+  const createResetLink = async (targetUser) => {
+    setLinkBusy(targetUser._id);
+    try {
+      const response = await API.post(`/users/${targetUser._id}/reset-link`);
+      const url = `${window.location.origin}/reset-password?token=${encodeURIComponent(response.data.token)}`;
+      setResetLink({
+        url,
+        email: targetUser.email,
+        expiresAt: response.data.expiresAt,
+      });
+      setTempPassword("");
+      toast.success("One-time reset link created");
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to create reset link",
+      );
+    } finally {
+      setLinkBusy("");
+    }
+  };
+
   const toggleStatus = async (targetUser) => {
     const action = targetUser.isActive ? "deactivate" : "activate";
     if (!window.confirm(`${action} ${targetUser.email}?`)) return;
     setBusy(targetUser._id);
     try {
       await API.put(`/users/${targetUser._id}/toggle-status`);
+      if (targetUser.isActive) {
+        setResetLink((current) =>
+          current?.email === targetUser.email ? null : current,
+        );
+      }
       toast.success(`User ${action}d`);
       await refresh();
     } catch (error) {
@@ -152,12 +183,31 @@ export default function Users() {
     }
   };
 
+  const copyResetLink = async () => {
+    try {
+      await navigator.clipboard.writeText(resetLink.url);
+      toast.success("Reset link copied");
+    } catch {
+      toast.error("Copy failed — select the link manually");
+    }
+  };
+
+  const formatResetExpiry = (value) => {
+    if (!value) return "";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   return (
     <div className="space-y-6">
       <PageHeader
         eyebrow="Access control"
         title="Users & access"
-        description="Create HR accounts, reset credentials and control who can sign in. Each HR user automatically receives an employee profile."
+        description="Create HR accounts, issue one-time reset links and control who can sign in. Each HR user automatically receives an employee profile."
         meta={
           <>
             <span className="hcm-chip-dark">
@@ -202,6 +252,47 @@ export default function Users() {
           </div>
         ))}
       </section>
+
+      {resetLink && (
+        <section
+          aria-live="polite"
+          className="flex flex-col justify-between gap-3 rounded-2xl border border-blue-200 bg-blue-50 p-4 sm:flex-row sm:items-start"
+        >
+          <div className="min-w-0">
+            <p className="flex items-center gap-2 text-sm font-semibold text-blue-800">
+              <Link2 className="h-4 w-4" /> One-time reset link ready
+            </p>
+            <p className="mt-1 text-xs text-blue-700">
+              Send this link to{" "}
+              <span className="font-semibold">{resetLink.email}</span>. It works
+              once and is not stored anywhere.
+            </p>
+            <p className="mt-2 break-all rounded-lg border border-blue-200 bg-white px-2.5 py-2 font-mono text-[11px] leading-5 text-blue-900">
+              {resetLink.url}
+            </p>
+            <p className="mt-1.5 flex items-center gap-1 text-[11px] text-blue-700">
+              <Clock3 className="h-3 w-3" />
+              Expires at {formatResetExpiry(resetLink.expiresAt)}
+            </p>
+          </div>
+          <div className="flex shrink-0 gap-2">
+            <button
+              type="button"
+              onClick={copyResetLink}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-blue-700 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-800"
+            >
+              <Copy className="h-3.5 w-3.5" /> Copy link
+            </button>
+            <button
+              type="button"
+              onClick={() => setResetLink(null)}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-blue-300 px-3 py-2 text-xs font-semibold text-blue-800 hover:bg-blue-100"
+            >
+              <X className="h-3.5 w-3.5" /> Dismiss
+            </button>
+          </div>
+        </section>
+      )}
 
       {tempPassword && (
         <section className="flex flex-col justify-between gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 sm:flex-row sm:items-center">
@@ -301,13 +392,13 @@ export default function Users() {
               Temporary password
               <input
                 type="text"
-                minLength={6}
+                minLength={8}
                 className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
                 value={formData.password}
                 onChange={(event) =>
                   setFormData({ ...formData, password: event.target.value })
                 }
-                placeholder="At least 6 characters"
+                placeholder="At least 8 characters"
                 required
               />
             </label>
@@ -430,16 +521,37 @@ export default function Users() {
                           <div className="flex items-center justify-end gap-2">
                             <button
                               type="button"
+                              onClick={() => createResetLink(user)}
+                              disabled={
+                                !user.isActive || linkBusy === user._id
+                              }
+                              title={
+                                user.isActive
+                                  ? "Create a one-time reset link"
+                                  : "Activate this account first"
+                              }
+                              className="inline-flex whitespace-nowrap items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-medium text-blue-700 hover:bg-blue-100 disabled:opacity-60"
+                            >
+                              {linkBusy === user._id ? (
+                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                              ) : (
+                                <Link2 className="h-3.5 w-3.5" />
+                              )}
+                              Reset link
+                            </button>
+                            <button
+                              type="button"
                               onClick={() => resetPassword(user._id)}
                               disabled={busy === user._id}
-                              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+                              title="Generate a temporary password instead"
+                              className="inline-flex whitespace-nowrap items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
                             >
                               {busy === user._id ? (
                                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
                               ) : (
                                 <KeyRound className="h-3.5 w-3.5" />
                               )}
-                              Reset
+                              Temp password
                             </button>
                             <button
                               type="button"
@@ -493,25 +605,38 @@ export default function Users() {
                         {user.role}
                       </span>
                     </div>
-                    <div className="mt-3 flex gap-2">
+                    <div className="mt-3 grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => createResetLink(user)}
+                        disabled={!user.isActive || linkBusy === user._id}
+                        className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-medium text-blue-700 disabled:opacity-60"
+                      >
+                        {linkBusy === user._id ? (
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        ) : (
+                          <Link2 className="h-3.5 w-3.5" />
+                        )}
+                        Reset link
+                      </button>
                       <button
                         type="button"
                         onClick={() => resetPassword(user._id)}
                         disabled={busy === user._id}
-                        className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 disabled:opacity-60"
+                        className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 disabled:opacity-60"
                       >
                         {busy === user._id ? (
                           <Loader2 className="h-3.5 w-3.5 animate-spin" />
                         ) : (
                           <KeyRound className="h-3.5 w-3.5" />
                         )}
-                        Reset password
+                        Temp password
                       </button>
                       <button
                         type="button"
                         onClick={() => toggleStatus(user)}
                         disabled={isProtected || busy === user._id}
-                        className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-slate-600 disabled:text-slate-300"
+                        className="col-span-2 inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-slate-600 disabled:text-slate-300"
                       >
                         {user.isActive ? (
                           <UserX className="h-3.5 w-3.5" />
