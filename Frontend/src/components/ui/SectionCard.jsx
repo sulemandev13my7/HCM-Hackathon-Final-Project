@@ -13,10 +13,10 @@ export default function SectionCard({
       className={`hcm-card overflow-hidden ${className}`}
     >
       {(title || action) && (
-        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-hcm-line px-5 py-4 sm:px-6">
+        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-hcm-line/80 px-5 py-4 sm:px-6">
           <div className="flex min-w-0 items-start gap-3">
             {Icon && (
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-hcm-accent-soft text-hcm-accent">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-hcm-accent-soft text-hcm-accent">
                 <Icon className="h-4 w-4" />
               </span>
             )}

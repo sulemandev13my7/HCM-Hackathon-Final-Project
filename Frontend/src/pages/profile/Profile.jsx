@@ -80,7 +80,7 @@ export default function Profile() {
   if (loading) {
     return (
       <div className="space-y-4">
-        <div className="h-44 animate-pulse rounded-3xl bg-slate-200" />
+        <div className="h-44 animate-pulse rounded-2xl bg-hcm-canvas-deep" />
         <div className="grid gap-4 lg:grid-cols-2">
           <div className="h-80 animate-pulse rounded-2xl bg-white" />
           <div className="h-80 animate-pulse rounded-2xl bg-white" />
@@ -111,7 +111,7 @@ export default function Profile() {
           </span>
         }
         actions={
-          <span className="inline-flex h-10 items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 text-xs font-semibold capitalize text-[#d7e0da]">
+          <span className="inline-flex h-10 items-center gap-2 rounded-[10px] border border-hcm-line bg-hcm-surface px-4 text-xs font-semibold capitalize text-hcm-muted">
             <CheckCircle2 className="h-4 w-4 text-hcm-lime" />
             {titleCase(employee.status)}
           </span>
@@ -119,17 +119,17 @@ export default function Profile() {
       />
 
       <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
-        <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+        <section className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm sm:p-6">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-hcm-muted">
                 Employment
               </p>
-              <h2 className="mt-1 text-lg font-semibold text-slate-900">
+              <h2 className="mt-1 text-lg font-semibold text-hcm-ink">
                 Your details
               </h2>
             </div>
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-hcm-accent-soft text-hcm-accent">
               <BadgeCheck className="h-5 w-5" />
             </span>
           </div>
@@ -174,14 +174,14 @@ export default function Profile() {
             ].map((row) => (
               <div
                 key={row.label}
-                className="flex items-start gap-3 rounded-xl bg-slate-50 px-3.5 py-3"
+                className="flex items-start gap-3 rounded-xl bg-hcm-surface-soft px-3.5 py-3"
               >
-                <row.icon className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
+                <row.icon className="mt-0.5 h-4 w-4 shrink-0 text-hcm-muted" />
                 <div className="min-w-0">
-                  <dt className="text-[11px] font-medium uppercase tracking-wide text-slate-400">
+                  <dt className="text-[11px] font-medium uppercase tracking-wide text-hcm-muted">
                     {row.label}
                   </dt>
-                  <dd className="mt-0.5 break-words text-sm text-slate-700">
+                  <dd className="mt-0.5 break-words text-sm text-hcm-ink">
                     {row.value}
                   </dd>
                 </div>
@@ -189,31 +189,31 @@ export default function Profile() {
             ))}
           </dl>
 
-          <p className="mt-4 flex items-center gap-1.5 text-[11px] text-slate-400">
+          <p className="mt-4 flex items-center gap-1.5 text-[11px] text-hcm-muted">
             <ShieldCheck className="h-3.5 w-3.5" />
             Employment details are managed by HR.
           </p>
         </section>
 
-        <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+        <section className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm sm:p-6">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-600">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-hcm-accent">
               Contact information
             </p>
-            <h2 className="mt-1 text-lg font-semibold text-slate-900">
+            <h2 className="mt-1 text-lg font-semibold text-hcm-ink">
               Update your contact details
             </h2>
-            <p className="mt-1 text-sm leading-6 text-slate-500">
+            <p className="mt-1 text-sm leading-6 text-hcm-muted">
               Keep your phone and address current so HR can reach you when it
               matters.
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="mt-5 space-y-4">
-            <label className="block text-xs font-medium text-slate-500">
+            <label className="block text-xs font-medium text-hcm-muted">
               Phone number
               <div className="relative mt-1">
-                <Phone className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Phone className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-hcm-muted" />
                 <input
                   type="tel"
                   value={formData.phone}
@@ -221,11 +221,11 @@ export default function Profile() {
                     setFormData({ ...formData, phone: event.target.value })
                   }
                   placeholder="+92 300 0000000"
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-9 pr-3 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+                  className="w-full rounded-xl border border-hcm-line bg-hcm-surface-soft py-2.5 pl-9 pr-3 text-sm text-hcm-ink outline-none transition focus:border-hcm-accent/50 focus:bg-white focus:ring-4 focus:ring-hcm-accent/10"
                 />
               </div>
             </label>
-            <label className="block text-xs font-medium text-slate-500">
+            <label className="block text-xs font-medium text-hcm-muted">
               Home address
               <textarea
                 rows={4}
@@ -234,13 +234,13 @@ export default function Profile() {
                   setFormData({ ...formData, address: event.target.value })
                 }
                 placeholder="House, street, city"
-                className="mt-1 w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+                className="mt-1 w-full resize-none rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm text-hcm-ink outline-none transition focus:border-hcm-accent/50 focus:bg-white focus:ring-4 focus:ring-hcm-accent/10"
               />
             </label>
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-60"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-hcm-accent px-4 py-3 text-sm font-medium text-white transition hover:bg-hcm-accent-strong disabled:opacity-60"
             >
               {saving ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -251,7 +251,7 @@ export default function Profile() {
             </button>
           </form>
 
-          <div className="mt-5 rounded-xl border border-slate-100 bg-slate-50 p-3 text-xs leading-5 text-slate-500">
+          <div className="mt-5 rounded-xl border border-hcm-line/80 bg-hcm-surface-soft p-3 text-xs leading-5 text-hcm-muted">
             Changing your email or job title? HR manages those through the
             employee directory.
           </div>

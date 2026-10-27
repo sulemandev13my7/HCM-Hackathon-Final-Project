@@ -68,7 +68,7 @@ function PasswordStrength({ password }) {
             ? "Strong password"
             : "Excellent password";
   const tone =
-    passed >= 3 ? "bg-[#2f6b50]" : passed === 2 ? "bg-[#c98a3d]" : "bg-[#cdb6a5]";
+    passed >= 3 ? "bg-hcm-accent" : passed === 2 ? "bg-amber-500" : "bg-hcm-line-strong";
 
   return (
     <div className="space-y-2">
@@ -78,16 +78,16 @@ function PasswordStrength({ password }) {
             <span
               key={index}
               className={`h-1.5 flex-1 rounded-full ${
-                index < passed ? tone : "bg-[#e6e1d7]"
+                index < passed ? tone : "bg-hcm-canvas-deep"
               }`}
             />
           ))}
         </div>
-        <span className="w-28 text-right text-[10px] font-medium text-[#7d8882]">
+        <span className="w-28 text-right text-[10px] font-medium text-hcm-muted">
           {label}
         </span>
       </div>
-      <p className="text-[11px] leading-5 text-[#8a948f]">
+      <p className="text-[11px] leading-5 text-hcm-muted">
         Add a number, mixed case or symbol for a stronger password.
       </p>
     </div>
@@ -201,11 +201,11 @@ export default function FirstRunSetup() {
 
   if (checking) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#f4f1e9] text-[#14241e]">
-        <span className="flex h-12 w-12 items-center justify-center rounded-[14px] bg-[#10251f] text-[#d7f59f]">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-hcm-canvas text-hcm-ink">
+        <span className="flex h-12 w-12 items-center justify-center rounded-[12px] bg-hcm-ink text-hcm-lime">
           <Building2 className="h-6 w-6" />
         </span>
-        <div className="flex items-center gap-2 text-sm text-[#5d6c65]">
+        <div className="flex items-center gap-2 text-sm text-hcm-muted">
           <Loader2 className="h-4 w-4 animate-spin" />
           Checking your workspace...
         </div>
@@ -216,14 +216,14 @@ export default function FirstRunSetup() {
   return (
     <AuthShell variant="setup">
       <div>
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-[#dfe8de] bg-[#f3f8f0] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#32624f]">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-hcm-accent/15 bg-hcm-accent-soft px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-hcm-accent">
           <CheckCircle2 className="h-3 w-3" />
           First-run setup
         </span>
-        <h2 className="mt-4 text-[30px] font-semibold leading-tight tracking-[-0.04em] text-[#14241e]">
+        <h2 className="mt-4 font-display text-[28px] font-bold leading-tight tracking-[-0.03em] text-hcm-ink">
           Create your workspace.
         </h2>
-        <p className="mt-2 text-sm leading-6 text-[#6f7b75]">
+        <p className="mt-2 text-sm leading-6 text-hcm-muted">
           Three short steps. Your admin account is created at the end.
         </p>
       </div>
@@ -235,10 +235,10 @@ export default function FirstRunSetup() {
               key={item.id}
               className={`h-1.5 flex-1 rounded-full transition-colors ${
                 step > item.id
-                  ? "bg-[#2f6b50]"
+                  ? "bg-hcm-accent"
                   : step === item.id
-                    ? "bg-[#10251f]"
-                    : "bg-[#e7e2d7]"
+                    ? "bg-hcm-ink"
+                    : "bg-hcm-canvas-deep"
               }`}
             />
           ))}
@@ -262,19 +262,19 @@ export default function FirstRunSetup() {
                 aria-current={current ? "step" : undefined}
                 className={`flex items-center gap-1.5 rounded-lg px-1 py-1 text-left text-[11px] font-semibold transition ${
                   complete
-                    ? "text-[#32624f] hover:bg-[#f1f6ef]"
+                    ? "text-hcm-accent hover:bg-hcm-accent-soft"
                     : current
-                      ? "text-[#14241e]"
-                      : "cursor-default text-[#9aa39d]"
+                      ? "text-hcm-ink"
+                      : "cursor-default text-hcm-muted"
                 }`}
               >
                 <span
                   className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] ${
                     complete
-                      ? "bg-[#e6f0e5] text-[#2f6b50]"
+                      ? "bg-hcm-accent-soft text-hcm-accent"
                       : current
-                        ? "bg-[#10251f] text-white"
-                        : "bg-[#eee9df] text-[#9aa39d]"
+                        ? "bg-hcm-ink text-white"
+                        : "bg-hcm-canvas-deep text-hcm-muted"
                   }`}
                 >
                   {complete ? <Check className="h-3 w-3" /> : item.id}
@@ -289,7 +289,7 @@ export default function FirstRunSetup() {
       {checkError && (
         <div
           role="alert"
-          className="mt-5 flex items-start gap-2.5 rounded-xl border border-[#efd3ad] bg-[#fdf7ed] px-3.5 py-3 text-[12px] leading-5 text-[#8a5a14]"
+          className="mt-5 flex items-start gap-2.5 rounded-[10px] border border-amber-200 bg-amber-50 px-3.5 py-3 text-[12px] leading-5 text-amber-900"
         >
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
           We could not verify whether setup is already complete. Check your
@@ -301,7 +301,7 @@ export default function FirstRunSetup() {
         <div
           role="alert"
           aria-live="polite"
-          className="mt-5 flex items-start gap-2.5 rounded-xl border border-[#f0c8c4] bg-[#fef4f2] px-3.5 py-3 text-[13px] leading-5 text-[#9d2d24]"
+          className="mt-5 flex items-start gap-2.5 rounded-[10px] border border-rose-200 bg-rose-50 px-3.5 py-3 text-[13px] leading-5 text-rose-800"
         >
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
           {submitError}
@@ -329,8 +329,8 @@ export default function FirstRunSetup() {
               required
               autoFocus
             />
-            <div className="flex gap-2.5 rounded-xl border border-[#e6e1d7] bg-[#faf8f2] p-3.5 text-[12px] leading-5 text-[#6f7b75]">
-              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#3d7a5d]" />
+            <div className="flex gap-2.5 rounded-[10px] border border-hcm-line bg-hcm-surface-soft p-3.5 text-[12px] leading-5 text-hcm-muted">
+              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-hcm-accent" />
               This name appears on dashboards, payslips and announcements. You
               can update it later in Settings.
             </div>
@@ -398,7 +398,7 @@ export default function FirstRunSetup() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((current) => !current)}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-[#7d8882] transition hover:bg-[#f1eee6] hover:text-[#14241e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f5d4d]/30"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-hcm-muted transition hover:bg-hcm-canvas hover:text-hcm-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-accent/25"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
@@ -430,23 +430,23 @@ export default function FirstRunSetup() {
 
         {step === 3 && (
           <div className="space-y-3">
-            <div className="overflow-hidden rounded-2xl border border-[#e6e1d7] bg-[#fbfaf6]">
-              <div className="flex items-center gap-3 border-b border-[#e9e4da] p-4">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-[#2f5d4d]">
+            <div className="overflow-hidden rounded-2xl border border-hcm-line bg-hcm-surface-soft">
+              <div className="flex items-center gap-3 border-b border-hcm-line p-4">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-white text-hcm-accent">
                   <Building2 className="h-4 w-4" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8a948f]">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-hcm-muted">
                     Company
                   </p>
-                  <p className="truncate text-sm font-semibold text-[#14241e]">
+                  <p className="truncate text-sm font-semibold text-hcm-ink">
                     {formData.companyName}
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg text-[#7d8882] transition hover:bg-white hover:text-[#14241e]"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-hcm-muted transition hover:bg-white hover:text-hcm-ink"
                   aria-label="Edit company details"
                 >
                   <Pencil className="h-3.5 w-3.5" />
@@ -454,24 +454,24 @@ export default function FirstRunSetup() {
               </div>
 
               <div className="flex items-center gap-3 p-4">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-[#2f5d4d]">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-white text-hcm-accent">
                   <UserRound className="h-4 w-4" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8a948f]">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-hcm-muted">
                     Administrator
                   </p>
-                  <p className="truncate text-sm font-semibold text-[#14241e]">
+                  <p className="truncate text-sm font-semibold text-hcm-ink">
                     {formData.firstName} {formData.lastName}
                   </p>
-                  <p className="truncate text-xs text-[#7d8882]">
+                  <p className="truncate text-xs text-hcm-muted">
                     {formData.adminEmail}
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg text-[#7d8882] transition hover:bg-white hover:text-[#14241e]"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-hcm-muted transition hover:bg-white hover:text-hcm-ink"
                   aria-label="Edit administrator details"
                 >
                   <Pencil className="h-3.5 w-3.5" />
@@ -479,7 +479,7 @@ export default function FirstRunSetup() {
               </div>
             </div>
 
-            <div className="flex items-start gap-2.5 rounded-xl border border-[#dfe8de] bg-[#f3f8f0] p-3.5 text-[12px] leading-5 text-[#32624f]">
+            <div className="flex items-start gap-2.5 rounded-[10px] border border-hcm-accent/15 bg-hcm-accent-soft p-3.5 text-[12px] leading-5 text-hcm-accent">
               <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
               Completing setup creates your admin account and signs you in
               automatically. No demo data will be added.
@@ -497,7 +497,7 @@ export default function FirstRunSetup() {
                 setStep((current) => current - 1);
               }}
               disabled={submitting}
-              className="flex h-12 items-center justify-center gap-1.5 rounded-xl border border-[#ddd7cb] bg-white px-4 text-[13px] font-semibold text-[#32433c] transition hover:border-[#c9c1b2] hover:bg-[#fbfaf6] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2f5d4d]/10 disabled:opacity-60"
+              className="flex h-11 items-center justify-center gap-1.5 rounded-[10px] border border-hcm-line bg-white px-4 text-[13px] font-semibold text-hcm-ink transition hover:border-hcm-line-strong hover:bg-hcm-surface-soft focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/10 disabled:opacity-60"
             >
               <ArrowLeft className="h-4 w-4" />
               Back
@@ -506,7 +506,7 @@ export default function FirstRunSetup() {
           <button
             type="submit"
             disabled={submitting}
-            className="group flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-[#10251f] px-4 text-sm font-semibold text-[#f8f5eb] transition hover:bg-[#1a3a30] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2f5d4d]/20 disabled:cursor-wait disabled:opacity-70"
+            className="group flex h-11 flex-1 items-center justify-center gap-2 rounded-[10px] bg-hcm-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-hcm-accent-strong focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/15 disabled:cursor-wait disabled:opacity-70"
           >
             {submitting ? (
               <>
@@ -528,11 +528,11 @@ export default function FirstRunSetup() {
         </div>
       </form>
 
-      <p className="mt-4 text-center text-[11px] text-[#8a948f]">
+      <p className="mt-4 text-center text-[11px] text-hcm-muted">
         Already set up?{" "}
         <Link
           to="/login"
-          className="font-semibold text-[#32624f] underline decoration-[#b8c9bd] underline-offset-2 transition hover:text-[#10251f]"
+          className="font-semibold text-hcm-accent underline decoration-hcm-line-strong underline-offset-2 transition hover:text-hcm-ink"
         >
           Sign in to your workspace
         </Link>

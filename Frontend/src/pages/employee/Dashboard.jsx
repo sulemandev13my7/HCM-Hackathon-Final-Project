@@ -82,12 +82,12 @@ export default function EmployeeDashboard() {
   if (loading) {
     return (
       <div className="space-y-4">
-        <div className="h-48 animate-pulse rounded-[30px] bg-[#e7e2d7]" />
+        <div className="h-40 animate-pulse rounded-2xl bg-hcm-canvas-deep" />
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {Array.from({ length: 4 }).map((_, index) => (
             <div
               key={index}
-              className="h-32 animate-pulse rounded-2xl bg-[#e7e2d7]"
+              className="h-32 animate-pulse rounded-2xl bg-hcm-canvas-deep"
             />
           ))}
         </div>
@@ -123,28 +123,27 @@ export default function EmployeeDashboard() {
   return (
     <div className="space-y-5">
       <PageHeader
-        eyebrow="Employee workspace"
+        eyebrow="Home"
         title={`Good to see you, ${user?.firstName || "there"}.`}
-        description="Your day, leave balance and payslips — all in one calm place."
+        description="Your day, leave balance and payslips."
         meta={
           <>
-            <span className="hcm-chip-dark">
+            <span className="hcm-chip">
               <CalendarDays className="h-3.5 w-3.5" />
               {dateLabel}
             </span>
-            <span className="hcm-chip-dark">
-              <span className="h-1.5 w-1.5 rounded-full bg-hcm-lime" />
-              The people team is here to help
+            <span className="hcm-chip">
+              {leaveRemaining} leave days remaining
             </span>
           </>
         }
         actions={
           <Link
             to="/employee/ai"
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-hcm-lime px-4 text-sm font-semibold text-hcm-ink transition hover:bg-[#c9ee86]"
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-[10px] bg-hcm-accent px-4 text-sm font-semibold text-white transition hover:bg-hcm-accent-strong"
           >
             <Sparkles className="h-4 w-4" />
-            Ask my assistant
+            Ask assistant
           </Link>
         }
       />
@@ -158,14 +157,14 @@ export default function EmployeeDashboard() {
             label="Hours this week"
             value={`${data.hoursThisWeek || 0} hrs`}
             detail={`${weekProgress}% of a 40 hour week`}
-            tone="bg-[#e8f1f7] text-[#2d6384]"
+            tone="bg-sky-50 text-sky-700"
           />
           <StatCard
             icon={CalendarCheck}
             label="Late this month"
             value={`${data.lateCountThisMonth || 0} days`}
             detail="Based on check-in time"
-            tone="bg-[#fdf0df] text-[#a96820]"
+            tone="bg-amber-50 text-amber-700"
           />
           <div className="hcm-card p-5 sm:col-span-2">
             <div className="flex items-start justify-between gap-3">
@@ -185,9 +184,7 @@ export default function EmployeeDashboard() {
               value={weekProgress}
               label="Weekly hours progress"
               className="mt-4"
-              tone={
-                weekProgress >= 80 ? "bg-[#76b85a]" : "bg-hcm-accent"
-              }
+              tone="bg-hcm-accent"
             />
           </div>
         </div>
@@ -228,7 +225,7 @@ export default function EmployeeDashboard() {
                       value={remainingPercent}
                       label={`${balance.leaveType?.name || "Leave"} balance`}
                       className="mt-2"
-                      tone="bg-[#76b85a]"
+                      tone="bg-hcm-accent"
                     />
                   </div>
                 );
@@ -247,7 +244,7 @@ export default function EmployeeDashboard() {
           title="Last payslip"
           description="Your latest finalized pay."
           action={
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#eee8f8] text-[#6c4f9c]">
+            <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-hcm-canvas-deep text-hcm-ink">
               <Wallet className="h-4 w-4" />
             </span>
           }
@@ -279,7 +276,7 @@ export default function EmployeeDashboard() {
           description="A quick read on your time."
           action={<CalendarDays className="h-4 w-4 text-hcm-muted" />}
         >
-          <div className="rounded-2xl bg-[#faf7f0] px-4 py-4">
+          <div className="rounded-[10px] bg-hcm-surface-soft px-4 py-4">
             <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-hcm-muted">
               Leave remaining
             </p>
@@ -311,7 +308,7 @@ export default function EmployeeDashboard() {
               <Link
                 key={action.to}
                 to={action.to}
-                className="group flex items-center gap-3 rounded-xl border border-hcm-line bg-white px-3.5 py-3 transition hover:border-hcm-line-strong hover:bg-[#faf7f0]"
+                className="group flex items-center gap-3 rounded-[10px] border border-hcm-line bg-white px-3.5 py-3 transition hover:border-hcm-line-strong hover:bg-hcm-canvas"
               >
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-hcm-accent-soft text-hcm-accent">
                   <action.icon className="h-4 w-4" />
@@ -324,7 +321,7 @@ export default function EmployeeDashboard() {
                     {action.description}
                   </span>
                 </span>
-                <ArrowRight className="h-3.5 w-3.5 text-[#b5b0a4] transition group-hover:translate-x-0.5 group-hover:text-hcm-accent" />
+                <ArrowRight className="h-3.5 w-3.5 text-hcm-muted/50 transition group-hover:translate-x-0.5 group-hover:text-hcm-accent" />
               </Link>
             ))}
           </div>
@@ -346,7 +343,7 @@ export default function EmployeeDashboard() {
                   key={announcement._id}
                   className="flex items-start gap-3 py-3.5 first:pt-0 last:pb-0"
                 >
-                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#eef9d6] text-[#4d6b25]">
+                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-hcm-accent-soft text-hcm-accent">
                     <Megaphone className="h-3.5 w-3.5" />
                   </span>
                   <div className="min-w-0">

@@ -23,11 +23,11 @@ const timeLabel = (value) =>
     : "—";
 
 const statusTone = {
-  present: "bg-[#e9f3eb] text-[#2f6b50] ring-[#2f6b50]/20",
-  late: "bg-[#fdf0df] text-[#a96820] ring-[#a96820]/20",
-  half_day: "bg-[#f8eadb] text-[#a05a1e] ring-[#a05a1e]/20",
-  on_leave: "bg-[#e8f1f7] text-[#2d6384] ring-[#2d6384]/20",
-  absent: "bg-[#fbeae5] text-[#a8442b] ring-[#a8442b]/20",
+  present: "bg-hcm-accent-soft text-hcm-accent ring-hcm-accent/20",
+  late: "bg-amber-50 text-amber-700 ring-amber-600/20",
+  half_day: "bg-amber-50 text-amber-800 ring-amber-600/20",
+  on_leave: "bg-sky-50 text-sky-700 ring-sky-600/20",
+  absent: "bg-rose-50 text-rose-700 ring-rose-600/20",
   missing_checkout: "bg-rose-50 text-rose-700 ring-rose-600/20",
 };
 
@@ -229,21 +229,19 @@ function CameraCheckIn({ settings, onClose, onSuccess }) {
     (!faceApiSupported || faces === 1);
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-end justify-center bg-slate-950/70 p-0 backdrop-blur-sm sm:items-center sm:p-4">
-      <div className="max-h-[94vh] w-full max-w-lg overflow-y-auto rounded-t-3xl bg-white shadow-2xl sm:rounded-3xl">
-        <div className="flex items-start justify-between border-b border-slate-100 px-5 py-4 sm:px-6">
+    <div className="fixed inset-0 z-[70] flex items-end justify-center bg-hcm-ink/60 p-0 backdrop-blur-sm sm:items-center sm:p-4">
+      <div className="max-h-[94vh] w-full max-w-lg overflow-y-auto rounded-t-2xl bg-hcm-surface shadow-hcm sm:rounded-2xl">
+        <div className="flex items-start justify-between border-b border-hcm-line px-5 py-4 sm:px-6">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-600">
-              Camera attendance
-            </p>
-            <h2 className="mt-1 text-xl font-semibold text-slate-900">
+            <p className="hcm-eyebrow">Camera attendance</p>
+            <h2 className="mt-1 font-display text-lg font-bold text-hcm-ink">
               Verify and check in
             </h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            className="rounded-[10px] p-2 text-hcm-muted transition hover:bg-hcm-canvas hover:text-hcm-ink"
             aria-label="Close camera check-in"
           >
             <X className="h-5 w-5" />
@@ -251,7 +249,7 @@ function CameraCheckIn({ settings, onClose, onSuccess }) {
         </div>
 
         <div className="space-y-4 p-5 sm:p-6">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-slate-900">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-hcm-ink">
             <video
               ref={videoRef}
               autoPlay
@@ -264,8 +262,8 @@ function CameraCheckIn({ settings, onClose, onSuccess }) {
                 <div
                   className={`h-48 w-40 rounded-[45%] border-2 transition ${
                     faces === 1
-                      ? "border-emerald-400 shadow-[0_0_0_9999px_rgba(2,6,23,0.35)]"
-                      : "border-white/70 shadow-[0_0_0_9999px_rgba(2,6,23,0.55)]"
+                      ? "border-hcm-lime shadow-[0_0_0_9999px_rgba(16,42,34,0.35)]"
+                      : "border-white/70 shadow-[0_0_0_9999px_rgba(16,42,34,0.55)]"
                   }`}
                 />
               ) : null}
@@ -286,13 +284,13 @@ function CameraCheckIn({ settings, onClose, onSuccess }) {
               </div>
             )}
             <div className="absolute bottom-3 left-3 flex flex-wrap gap-2 text-[11px] font-medium">
-              <span className="inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-slate-800">
+              <span className="inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-hcm-ink">
                 <MapPin className="h-3 w-3" />
                 {locationState === "ready"
                   ? `${Math.round(location.accuracy)}m accuracy`
                   : "Locating..."}
               </span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-slate-800">
+              <span className="inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-hcm-ink">
                 <ShieldCheck className="h-3 w-3" />
                 {faceApiSupported
                   ? faces === 1
@@ -304,14 +302,14 @@ function CameraCheckIn({ settings, onClose, onSuccess }) {
           </div>
 
           {!settings?.officeConfigured && (
-            <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            <div className="rounded-[10px] border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
               Office coordinates are not set. Ask Admin to configure the office
               location before using camera check-in.
             </div>
           )}
 
           {locationError && (
-            <div className="flex items-start justify-between gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+            <div className="flex items-start justify-between gap-3 rounded-[10px] border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
               <span>{locationError}</span>
               <button
                 type="button"
@@ -324,7 +322,7 @@ function CameraCheckIn({ settings, onClose, onSuccess }) {
           )}
 
           {!faceApiSupported && cameraState === "ready" && (
-            <p className="rounded-xl bg-slate-50 px-4 py-3 text-xs leading-5 text-slate-500">
+            <p className="rounded-[10px] bg-hcm-surface-soft px-4 py-3 text-xs leading-5 text-hcm-muted">
               This browser does not expose face detection. Camera check-in will
               still verify the office geofence, and the result is recorded as
               camera-sourced.
@@ -334,7 +332,7 @@ function CameraCheckIn({ settings, onClose, onSuccess }) {
           {error && (
             <div
               role="alert"
-              className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700"
+              className="rounded-[10px] border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700"
             >
               {error}
             </div>
@@ -345,7 +343,7 @@ function CameraCheckIn({ settings, onClose, onSuccess }) {
               type="button"
               onClick={submitCamera}
               disabled={!ready || submitting}
-              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-[10px] bg-hcm-accent px-4 py-3 text-sm font-semibold text-white transition hover:bg-hcm-accent-strong disabled:cursor-not-allowed disabled:opacity-50"
             >
               {submitting ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -357,12 +355,12 @@ function CameraCheckIn({ settings, onClose, onSuccess }) {
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
+              className="rounded-[10px] border border-hcm-line px-4 py-3 text-sm font-semibold text-hcm-muted transition hover:bg-hcm-canvas hover:text-hcm-ink"
             >
               Use web instead
             </button>
           </div>
-          <p className="text-center text-[11px] leading-5 text-slate-400">
+          <p className="text-center text-[11px] leading-5 text-hcm-muted">
             Only the verification result and location are stored. No photo is
             uploaded.
           </p>
@@ -428,31 +426,30 @@ export default function CheckInCard({ className = "", compact = false }) {
 
   const tone =
     statusTone[attendance?.status] ||
-    "bg-[#f0ece2] text-hcm-muted ring-hcm-line";
+    "bg-hcm-canvas-deep text-hcm-muted ring-hcm-line";
 
   return (
     <>
       <section
-        className={`relative overflow-hidden rounded-3xl border border-hcm-line bg-hcm-surface shadow-hcm ${className}`}
+        className={`rounded-2xl border border-hcm-line bg-hcm-surface ${className}`}
         aria-labelledby="today-attendance-title"
       >
-        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-hcm-accent via-[#76b85a] to-hcm-lime" />
         <div className={compact ? "p-5" : "p-5 sm:p-6"}>
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="hcm-eyebrow">
-                <span className="h-1.5 w-1.5 rounded-full bg-hcm-lime" />
+                <span className="h-1.5 w-1.5 rounded-full bg-hcm-accent" />
                 Today
               </p>
               <h2
                 id="today-attendance-title"
-                className="mt-1.5 text-lg font-semibold tracking-tight text-hcm-ink"
+                className="mt-1.5 font-display text-lg font-bold tracking-tight text-hcm-ink"
               >
                 Your attendance
               </h2>
             </div>
             {loading ? (
-              <Loader2 className="h-5 w-5 animate-spin text-[#b5b0a4]" />
+              <Loader2 className="h-5 w-5 animate-spin text-hcm-muted" />
             ) : (
               <span
                 className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold capitalize ring-1 ring-inset ${tone}`}
@@ -463,7 +460,7 @@ export default function CheckInCard({ className = "", compact = false }) {
             )}
           </div>
 
-          <div className="mt-5 grid grid-cols-3 divide-x divide-hcm-line rounded-2xl border border-hcm-line bg-[#faf7f0] px-2 py-3.5 text-center">
+          <div className="mt-5 grid grid-cols-3 divide-x divide-hcm-line rounded-[10px] border border-hcm-line bg-hcm-surface-soft px-2 py-3.5 text-center">
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-hcm-muted">
                 Check in
@@ -497,7 +494,7 @@ export default function CheckInCard({ className = "", compact = false }) {
                   type="button"
                   onClick={() => markAttendance("check-in")}
                   disabled={Boolean(busy)}
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-hcm-ink px-4 py-3 text-sm font-semibold text-hcm-surface shadow-[0_12px_28px_-18px_rgba(16,37,31,0.8)] transition hover:bg-hcm-ink-soft disabled:opacity-60"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-[10px] bg-hcm-accent px-4 py-3 text-sm font-semibold text-white transition hover:bg-hcm-accent-strong disabled:opacity-60"
                 >
                   {busy === "check-in" ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -509,7 +506,7 @@ export default function CheckInCard({ className = "", compact = false }) {
                 <button
                   type="button"
                   onClick={() => setCameraOpen(true)}
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-hcm-line bg-white px-4 py-3 text-sm font-semibold text-hcm-accent transition hover:border-hcm-line-strong hover:bg-[#faf7f0]"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-[10px] border border-hcm-line bg-white px-4 py-3 text-sm font-semibold text-hcm-accent transition hover:border-hcm-line-strong hover:bg-hcm-canvas"
                 >
                   <Camera className="h-4 w-4" />
                   Camera + location
@@ -522,7 +519,7 @@ export default function CheckInCard({ className = "", compact = false }) {
                 type="button"
                 onClick={() => markAttendance("check-out")}
                 disabled={Boolean(busy)}
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-hcm-danger px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#913a25] disabled:opacity-60"
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-[10px] bg-hcm-danger px-4 py-3 text-sm font-semibold text-white transition hover:bg-hcm-danger/90 disabled:opacity-60"
               >
                 {busy === "check-out" ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -534,7 +531,7 @@ export default function CheckInCard({ className = "", compact = false }) {
             )}
 
             {checkedOut && (
-              <div className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-[#cfe2d3] bg-[#e9f3eb] px-4 py-3 text-sm font-semibold text-[#2f6b50]">
+              <div className="flex flex-1 items-center justify-center gap-2 rounded-[10px] border border-hcm-accent/20 bg-hcm-accent-soft px-4 py-3 text-sm font-semibold text-hcm-accent">
                 <CheckCircle2 className="h-4 w-4" />
                 Day complete — {attendance.hoursWorked || 0} hours logged
               </div>

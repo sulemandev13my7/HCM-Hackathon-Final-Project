@@ -1,5 +1,5 @@
 const tones = {
-  neutral: "border-hcm-line bg-white text-hcm-muted",
+  neutral: "border-hcm-line bg-hcm-surface-soft text-hcm-muted",
   accent: "border-hcm-accent/15 bg-hcm-accent-soft text-hcm-accent",
   lime: "border-[#c4e880] bg-hcm-lime-soft text-[#3d5b20]",
   warning: "border-amber-200 bg-amber-50 text-amber-800",

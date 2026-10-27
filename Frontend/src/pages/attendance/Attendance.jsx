@@ -20,14 +20,14 @@ import {
 } from "lucide-react";
 
 const statusClasses = {
-  present: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
+  present: "bg-hcm-accent-soft text-hcm-accent ring-hcm-accent/20",
   late: "bg-amber-50 text-amber-700 ring-amber-600/20",
   half_day: "bg-orange-50 text-orange-700 ring-orange-600/20",
   absent: "bg-rose-50 text-rose-700 ring-rose-600/20",
   on_leave: "bg-indigo-50 text-indigo-700 ring-indigo-600/20",
   missing_checkout: "bg-rose-50 text-rose-700 ring-rose-600/20",
   pending: "bg-amber-50 text-amber-700 ring-amber-600/20",
-  approved: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
+  approved: "bg-hcm-accent-soft text-hcm-accent ring-hcm-accent/20",
   rejected: "bg-rose-50 text-rose-700 ring-rose-600/20",
 };
 
@@ -65,7 +65,7 @@ function StatusBadge({ status }) {
   return (
     <span
       className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold capitalize ring-1 ring-inset ${
-        statusClasses[status] || "bg-slate-100 text-slate-600 ring-slate-500/20"
+        statusClasses[status] || "bg-hcm-canvas-deep text-hcm-muted ring-hcm-muted/20"
       }`}
     >
       {statusLabel(status)}
@@ -216,29 +216,29 @@ export default function Attendance() {
 
       {isSelfService && (
         <section className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+          <div className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm sm:p-6">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-600">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-hcm-accent">
                   Correction request
                 </p>
-                <h2 className="mt-1 text-lg font-semibold text-slate-900">
+                <h2 className="mt-1 text-lg font-semibold text-hcm-ink">
                   Something not recorded?
                 </h2>
-                <p className="mt-1 text-sm leading-6 text-slate-500">
+                <p className="mt-1 text-sm leading-6 text-hcm-muted">
                   Request a fix. HR will review it with your reason.
                 </p>
               </div>
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-hcm-accent-soft text-hcm-accent">
                 <RefreshCw className="h-5 w-5" />
               </span>
             </div>
             <form onSubmit={requestCorrection} className="mt-5 space-y-3">
-              <label className="block text-xs font-medium text-slate-500">
+              <label className="block text-xs font-medium text-hcm-muted">
                 Date
                 <input
                   type="date"
-                  className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+                  className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm text-hcm-ink outline-none transition focus:border-hcm-accent/50 focus:bg-white focus:ring-4 focus:ring-hcm-accent/10"
                   value={formData.date}
                   onChange={(event) =>
                     setFormData({ ...formData, date: event.target.value })
@@ -247,22 +247,22 @@ export default function Attendance() {
                 />
               </label>
               <div className="grid gap-3 sm:grid-cols-2">
-                <label className="block text-xs font-medium text-slate-500">
+                <label className="block text-xs font-medium text-hcm-muted">
                   Correct check-in
                   <input
                     type="time"
-                    className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+                    className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm text-hcm-ink outline-none transition focus:border-hcm-accent/50 focus:bg-white focus:ring-4 focus:ring-hcm-accent/10"
                     value={formData.checkIn}
                     onChange={(event) =>
                       setFormData({ ...formData, checkIn: event.target.value })
                     }
                   />
                 </label>
-                <label className="block text-xs font-medium text-slate-500">
+                <label className="block text-xs font-medium text-hcm-muted">
                   Correct check-out
                   <input
                     type="time"
-                    className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+                    className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm text-hcm-ink outline-none transition focus:border-hcm-accent/50 focus:bg-white focus:ring-4 focus:ring-hcm-accent/10"
                     value={formData.checkOut}
                     onChange={(event) =>
                       setFormData({ ...formData, checkOut: event.target.value })
@@ -270,11 +270,11 @@ export default function Attendance() {
                   />
                 </label>
               </div>
-              <label className="block text-xs font-medium text-slate-500">
+              <label className="block text-xs font-medium text-hcm-muted">
                 Reason
                 <textarea
                   rows={3}
-                  className="mt-1 w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+                  className="mt-1 w-full resize-none rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm text-hcm-ink outline-none transition focus:border-hcm-accent/50 focus:bg-white focus:ring-4 focus:ring-hcm-accent/10"
                   placeholder="What happened?"
                   value={formData.reason}
                   onChange={(event) =>
@@ -286,7 +286,7 @@ export default function Attendance() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-60"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-hcm-accent px-4 py-3 text-sm font-medium text-white transition hover:bg-hcm-accent-strong disabled:opacity-60"
               >
                 {submitting ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -298,17 +298,17 @@ export default function Attendance() {
             </form>
           </div>
 
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+          <div className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-hcm-muted">
                   Your requests
                 </p>
-                <h2 className="mt-1 text-lg font-semibold text-slate-900">
+                <h2 className="mt-1 text-lg font-semibold text-hcm-ink">
                   Correction history
                 </h2>
               </div>
-              <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">
+              <span className="rounded-full bg-hcm-canvas-deep px-2.5 py-1 text-xs font-semibold text-hcm-muted">
                 {corrections.length}
               </span>
             </div>
@@ -317,15 +317,15 @@ export default function Attendance() {
                 corrections.slice(0, 5).map((correction) => (
                   <div
                     key={correction._id}
-                    className="rounded-xl border border-slate-100 bg-slate-50/70 p-3"
+                    className="rounded-xl border border-hcm-line/80 bg-hcm-surface-soft p-3"
                   >
                     <div className="flex items-center justify-between gap-3">
-                      <p className="text-sm font-medium text-slate-800">
+                      <p className="text-sm font-medium text-hcm-ink">
                         {formatDate(correction.date)}
                       </p>
                       <StatusBadge status={correction.status} />
                     </div>
-                    <p className="mt-1 text-xs text-slate-500">
+                    <p className="mt-1 text-xs text-hcm-muted">
                       {correction.requestedCheckIn
                         ? `In ${formatTime(correction.requestedCheckIn)}`
                         : "No check-in"}{" "}
@@ -334,13 +334,13 @@ export default function Attendance() {
                         ? `Out ${formatTime(correction.requestedCheckOut)}`
                         : "No check-out"}
                     </p>
-                    <p className="mt-1 line-clamp-2 text-xs text-slate-500">
+                    <p className="mt-1 line-clamp-2 text-xs text-hcm-muted">
                       {correction.reason}
                     </p>
                   </div>
                 ))
               ) : (
-                <p className="rounded-xl bg-slate-50 px-4 py-8 text-center text-sm text-slate-500">
+                <p className="rounded-xl bg-hcm-surface-soft px-4 py-8 text-center text-sm text-hcm-muted">
                   No correction requests yet.
                 </p>
               )}
@@ -350,13 +350,13 @@ export default function Attendance() {
       )}
 
       {isReviewer && (
-        <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+        <section className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm sm:p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-600">
                 HR approval queue
               </p>
-              <h2 className="mt-1 text-lg font-semibold text-slate-900">
+              <h2 className="mt-1 text-lg font-semibold text-hcm-ink">
                 Attendance corrections
               </h2>
             </div>
@@ -371,18 +371,18 @@ export default function Attendance() {
               {corrections.map((correction) => (
                 <div
                   key={correction._id}
-                  className="rounded-xl border border-slate-200 p-4"
+                  className="rounded-xl border border-hcm-line p-4"
                 >
                   <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <p className="font-medium text-slate-900">
+                        <p className="font-medium text-hcm-ink">
                           {correction.employee?.firstName}{" "}
                           {correction.employee?.lastName}
                         </p>
                         <StatusBadge status={correction.status} />
                       </div>
-                      <p className="mt-1 text-xs text-slate-500">
+                      <p className="mt-1 text-xs text-hcm-muted">
                         {formatDate(correction.date)} ·{" "}
                         {correction.requestedCheckIn
                           ? `In ${formatTime(correction.requestedCheckIn)}`
@@ -392,11 +392,11 @@ export default function Attendance() {
                           ? `Out ${formatTime(correction.requestedCheckOut)}`
                           : "No check-out"}
                       </p>
-                      <p className="mt-2 text-sm text-slate-600">
+                      <p className="mt-2 text-sm text-hcm-muted">
                         {correction.reason}
                       </p>
                       {correction.reviewComment && (
-                        <p className="mt-1 text-xs text-slate-400">
+                        <p className="mt-1 text-xs text-hcm-muted">
                           HR comment: {correction.reviewComment}
                         </p>
                       )}
@@ -405,7 +405,7 @@ export default function Attendance() {
                       <div className="flex min-w-56 flex-col gap-2 sm:items-end">
                         <input
                           aria-label={`Review comment for ${correction.employee?.firstName || "employee"}`}
-                          className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-500/10"
+                          className="w-full rounded-lg border border-hcm-line px-3 py-2 text-sm outline-none focus:border-hcm-accent/50 focus:ring-2 focus:ring-hcm-accent/10"
                           placeholder="Optional comment"
                           value={reviewComments[correction._id] || ""}
                           onChange={(event) =>
@@ -421,7 +421,7 @@ export default function Attendance() {
                             onClick={() =>
                               reviewCorrection(correction, "approve")
                             }
-                            className="inline-flex flex-1 items-center justify-center gap-1 rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
+                            className="inline-flex flex-1 items-center justify-center gap-1 rounded-lg bg-hcm-accent px-3 py-2 text-xs font-semibold text-white hover:bg-hcm-accent-strong"
                           >
                             <Check className="h-3.5 w-3.5" /> Approve
                           </button>
@@ -442,20 +442,20 @@ export default function Attendance() {
               ))}
             </div>
           ) : (
-            <p className="mt-4 rounded-xl bg-emerald-50 px-4 py-8 text-center text-sm text-emerald-700">
+            <p className="mt-4 rounded-xl bg-hcm-accent-soft px-4 py-8 text-center text-sm text-hcm-accent">
               No correction requests in the queue.
             </p>
           )}
         </section>
       )}
 
-      <section className="rounded-2xl border border-slate-200/80 bg-white shadow-sm">
-        <div className="flex flex-col justify-between gap-4 border-b border-slate-100 p-5 sm:flex-row sm:items-end sm:p-6">
+      <section className="rounded-2xl border border-hcm-line bg-white shadow-sm">
+        <div className="flex flex-col justify-between gap-4 border-b border-hcm-line/80 p-5 sm:flex-row sm:items-end sm:p-6">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-hcm-muted">
               {isSelfService ? "My calendar" : "Daily board"}
             </p>
-            <h2 className="mt-1 text-lg font-semibold text-slate-900">
+            <h2 className="mt-1 text-lg font-semibold text-hcm-ink">
               Attendance history
             </h2>
           </div>
@@ -463,22 +463,22 @@ export default function Attendance() {
             onSubmit={applyFilters}
             className="flex flex-wrap items-end gap-2"
           >
-            <label className="text-xs font-medium text-slate-500">
+            <label className="text-xs font-medium text-hcm-muted">
               From
               <input
                 type="date"
-                className="mt-1 block rounded-lg border border-slate-200 px-2.5 py-2 text-xs text-slate-800 outline-none focus:border-blue-400"
+                className="mt-1 block rounded-lg border border-hcm-line px-2.5 py-2 text-xs text-hcm-ink outline-none focus:border-hcm-accent/50"
                 value={filters.startDate}
                 onChange={(event) =>
                   setFilters({ ...filters, startDate: event.target.value })
                 }
               />
             </label>
-            <label className="text-xs font-medium text-slate-500">
+            <label className="text-xs font-medium text-hcm-muted">
               To
               <input
                 type="date"
-                className="mt-1 block rounded-lg border border-slate-200 px-2.5 py-2 text-xs text-slate-800 outline-none focus:border-blue-400"
+                className="mt-1 block rounded-lg border border-hcm-line px-2.5 py-2 text-xs text-hcm-ink outline-none focus:border-hcm-accent/50"
                 value={filters.endDate}
                 onChange={(event) =>
                   setFilters({ ...filters, endDate: event.target.value })
@@ -487,7 +487,7 @@ export default function Attendance() {
             </label>
             <button
               type="submit"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-hcm-accent px-3 py-2 text-xs font-semibold text-white hover:bg-hcm-accent-strong"
             >
               <Filter className="h-3.5 w-3.5" /> Filter
             </button>
@@ -499,7 +499,7 @@ export default function Attendance() {
                   setFilters({ startDate: "", endDate: "" });
                   setAppliedFilters({ startDate: "", endDate: "" });
                 }}
-                className="rounded-lg px-2 py-2 text-xs font-medium text-slate-500 hover:bg-slate-100"
+                className="rounded-lg px-2 py-2 text-xs font-medium text-hcm-muted hover:bg-hcm-canvas"
               >
                 Clear
               </button>
@@ -508,14 +508,14 @@ export default function Attendance() {
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center gap-2 p-12 text-sm text-slate-500">
+          <div className="flex items-center justify-center gap-2 p-12 text-sm text-hcm-muted">
             <Loader2 className="h-4 w-4 animate-spin" /> Loading attendance...
           </div>
         ) : attendance.length ? (
           <>
             <div className="hidden overflow-x-auto md:block">
               <table className="w-full text-sm">
-                <thead className="bg-slate-50/80 text-left text-[11px] uppercase tracking-wide text-slate-400">
+                <thead className="bg-hcm-surface-soft text-left text-[11px] uppercase tracking-wide text-hcm-muted">
                   <tr>
                     {!isSelfService && <th className="px-5 py-3">Employee</th>}
                     <th className="px-5 py-3">Date</th>
@@ -526,41 +526,41 @@ export default function Attendance() {
                     <th className="px-5 py-3">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-hcm-line">
                   {attendance.map((record) => (
                     <tr
                       key={record._id}
-                      className="transition hover:bg-slate-50/60"
+                      className="transition hover:bg-hcm-surface-soft"
                     >
                       {!isSelfService && (
                         <td className="px-5 py-3.5">
-                          <p className="font-medium text-slate-800">
+                          <p className="font-medium text-hcm-ink">
                             {record.employee?.firstName}{" "}
                             {record.employee?.lastName}
                           </p>
-                          <p className="text-xs text-slate-400">
+                          <p className="text-xs text-hcm-muted">
                             {record.employee?.employeeId}
                           </p>
                         </td>
                       )}
-                      <td className="px-5 py-3.5 text-slate-600">
+                      <td className="px-5 py-3.5 text-hcm-muted">
                         {formatDate(record.date)}
                       </td>
-                      <td className="px-5 py-3.5 text-slate-600">
+                      <td className="px-5 py-3.5 text-hcm-muted">
                         {formatTime(record.checkIn)}
                       </td>
-                      <td className="px-5 py-3.5 text-slate-600">
+                      <td className="px-5 py-3.5 text-hcm-muted">
                         {formatTime(record.checkOut)}
                       </td>
-                      <td className="px-5 py-3.5 font-medium text-slate-800">
+                      <td className="px-5 py-3.5 font-medium text-hcm-ink">
                         {record.hoursWorked || 0}
                       </td>
                       <td className="px-5 py-3.5">
-                        <span className="inline-flex items-center gap-1 text-xs capitalize text-slate-500">
+                        <span className="inline-flex items-center gap-1 text-xs capitalize text-hcm-muted">
                           {record.source === "camera" ? (
-                            <Camera className="h-3.5 w-3.5 text-blue-500" />
+                            <Camera className="h-3.5 w-3.5 text-hcm-accent" />
                           ) : (
-                            <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                            <MapPin className="h-3.5 w-3.5 text-hcm-muted" />
                           )}
                           {record.source || "web"}
                         </span>
@@ -574,17 +574,17 @@ export default function Attendance() {
               </table>
             </div>
 
-            <div className="divide-y divide-slate-100 md:hidden">
+            <div className="divide-y divide-hcm-line md:hidden">
               {attendance.map((record) => (
                 <div key={record._id} className="p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="font-medium text-slate-900">
+                      <p className="font-medium text-hcm-ink">
                         {isSelfService
                           ? formatDate(record.date)
                           : `${record.employee?.firstName || ""} ${record.employee?.lastName || ""}`}
                       </p>
-                      <p className="mt-0.5 text-xs text-slate-500">
+                      <p className="mt-0.5 text-xs text-hcm-muted">
                         {isSelfService
                           ? "Your record"
                           : formatDate(record.date)}
@@ -592,24 +592,24 @@ export default function Attendance() {
                     </div>
                     <StatusBadge status={record.status} />
                   </div>
-                  <div className="mt-3 grid grid-cols-3 gap-2 rounded-xl bg-slate-50 p-2 text-center">
+                  <div className="mt-3 grid grid-cols-3 gap-2 rounded-xl bg-hcm-surface-soft p-2 text-center">
                     <div>
-                      <p className="text-[10px] uppercase text-slate-400">In</p>
-                      <p className="text-xs font-semibold text-slate-700">
+                      <p className="text-[10px] uppercase text-hcm-muted">In</p>
+                      <p className="text-xs font-semibold text-hcm-ink">
                         {formatTime(record.checkIn)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-[10px] uppercase text-slate-400">Out</p>
-                      <p className="text-xs font-semibold text-slate-700">
+                      <p className="text-[10px] uppercase text-hcm-muted">Out</p>
+                      <p className="text-xs font-semibold text-hcm-ink">
                         {formatTime(record.checkOut)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-[10px] uppercase text-slate-400">
+                      <p className="text-[10px] uppercase text-hcm-muted">
                         Hours
                       </p>
-                      <p className="text-xs font-semibold text-slate-700">
+                      <p className="text-xs font-semibold text-hcm-ink">
                         {record.hoursWorked || 0}
                       </p>
                     </div>
@@ -620,11 +620,11 @@ export default function Attendance() {
           </>
         ) : (
           <div className="p-12 text-center">
-            <CalendarDays className="mx-auto h-8 w-8 text-slate-300" />
-            <p className="mt-2 text-sm font-medium text-slate-700">
+            <CalendarDays className="mx-auto h-8 w-8 text-hcm-muted/40" />
+            <p className="mt-2 text-sm font-medium text-hcm-ink">
               No attendance records
             </p>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-hcm-muted">
               Records appear after the first check-in.
             </p>
           </div>
@@ -632,7 +632,7 @@ export default function Attendance() {
       </section>
 
       {!isSelfService && !isReviewer && (
-        <div className="flex items-start gap-3 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-800">
+        <div className="flex items-start gap-3 rounded-2xl border border-hcm-accent/15 bg-hcm-accent-soft p-4 text-sm text-hcm-accent">
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
           Admin can view every attendance record and correction. HR approves or
           rejects correction requests.
@@ -640,7 +640,7 @@ export default function Attendance() {
       )}
 
       {isReviewer && (
-        <p className="flex items-center justify-center gap-1.5 text-xs text-slate-400">
+        <p className="flex items-center justify-center gap-1.5 text-xs text-hcm-muted">
           <Sparkles className="h-3.5 w-3.5" />
           Approved corrections update the attendance record through the server.
         </p>

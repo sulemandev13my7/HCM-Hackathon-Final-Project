@@ -52,18 +52,18 @@ const emptyForm = {
 };
 
 const statusTone = {
-  active: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
+  active: "bg-hcm-accent-soft text-hcm-accent ring-hcm-accent/20",
   probation: "bg-amber-50 text-amber-700 ring-amber-600/20",
   terminated: "bg-rose-50 text-rose-700 ring-rose-600/20",
-  resigned: "bg-slate-100 text-slate-600 ring-slate-500/20",
+  resigned: "bg-hcm-canvas-deep text-hcm-muted ring-hcm-muted/20",
 };
 
 const attendanceTone = {
-  present: "bg-emerald-50 text-emerald-700",
+  present: "bg-hcm-accent-soft text-hcm-accent",
   late: "bg-amber-50 text-amber-700",
   absent: "bg-rose-50 text-rose-700",
   "half-day": "bg-orange-50 text-orange-700",
-  leave: "bg-blue-50 text-blue-700",
+  leave: "bg-hcm-accent-soft text-hcm-accent",
 };
 
 const formatCurrency = (value) =>
@@ -415,16 +415,16 @@ export default function Employees() {
       />
 
       {tempPassword && (
-        <div className="flex flex-col gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 rounded-2xl border border-hcm-accent/20 bg-hcm-accent-soft p-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="flex items-center gap-1.5 text-sm font-semibold text-emerald-900">
+            <p className="flex items-center gap-1.5 text-sm font-semibold text-hcm-accent-strong">
               <BadgeCheck className="h-4 w-4" /> Employee login created
             </p>
-            <p className="mt-1 text-xs leading-5 text-emerald-800">
+            <p className="mt-1 text-xs leading-5 text-hcm-accent">
               Share this temporary password securely. The employee must change
               it on first sign-in.
             </p>
-            <code className="mt-2 inline-block rounded-lg bg-white px-3 py-1.5 font-mono text-sm font-semibold text-emerald-900">
+            <code className="mt-2 inline-block rounded-lg bg-white px-3 py-1.5 font-mono text-sm font-semibold text-hcm-accent-strong">
               {tempPassword}
             </code>
           </div>
@@ -432,7 +432,7 @@ export default function Employees() {
             <button
               type="button"
               onClick={copyPassword}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-200 bg-white px-3 py-2 text-xs font-medium text-emerald-800 hover:bg-emerald-100"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-hcm-accent/20 bg-white px-3 py-2 text-xs font-medium text-hcm-accent hover:bg-hcm-accent-soft"
             >
               {copied ? (
                 <Check className="h-3.5 w-3.5" />
@@ -444,7 +444,7 @@ export default function Employees() {
             <button
               type="button"
               onClick={() => setTempPassword("")}
-              className="rounded-xl p-2 text-emerald-700 hover:bg-emerald-100"
+              className="rounded-xl p-2 text-hcm-accent hover:bg-hcm-accent-soft"
               aria-label="Dismiss temporary password"
             >
               <X className="h-4 w-4" />
@@ -462,13 +462,13 @@ export default function Employees() {
         ].map((stat) => (
           <div
             key={stat.label}
-            className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm"
+            className="rounded-2xl border border-hcm-line bg-white p-4 shadow-sm"
           >
             <div className="flex items-center justify-between">
-              <p className="text-xs font-medium text-slate-500">{stat.label}</p>
-              <stat.icon className="h-4 w-4 text-slate-300" />
+              <p className="text-xs font-medium text-hcm-muted">{stat.label}</p>
+              <stat.icon className="h-4 w-4 text-hcm-muted/40" />
             </div>
-            <p className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">
+            <p className="mt-2 text-2xl font-semibold tracking-tight text-hcm-ink">
               {stat.value}
             </p>
           </div>
@@ -476,17 +476,17 @@ export default function Employees() {
       </section>
 
       {canManageEmployees && showImport && (
-        <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+        <section className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm sm:p-6">
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
             <div className="flex items-start gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-hcm-accent-soft text-hcm-accent">
                 <UploadCloud className="h-5 w-5" />
               </span>
               <div>
-                <h2 className="text-lg font-semibold text-slate-900">
+                <h2 className="text-lg font-semibold text-hcm-ink">
                   Bulk CSV import
                 </h2>
-                <p className="mt-0.5 text-sm text-slate-500">
+                <p className="mt-0.5 text-sm text-hcm-muted">
                   Validate first with a dry run. Nothing is saved until you
                   commit.
                 </p>
@@ -495,13 +495,13 @@ export default function Employees() {
             <button
               type="button"
               onClick={downloadTemplate}
-              className="inline-flex w-fit items-center gap-1.5 text-xs font-medium text-violet-700 hover:underline"
+              className="inline-flex w-fit items-center gap-1.5 text-xs font-medium text-hcm-accent hover:underline"
             >
               <FileText className="h-3.5 w-3.5" /> Download template
             </button>
           </div>
 
-          <div className="mt-4 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4">
+          <div className="mt-4 rounded-xl border border-dashed border-hcm-line-strong bg-hcm-surface-soft p-4">
             <input
               type="file"
               accept=".csv"
@@ -509,9 +509,9 @@ export default function Employees() {
                 setImportFile(event.target.files?.[0] || null);
                 setDryRunResult(null);
               }}
-              className="block w-full text-sm text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-900 file:px-3 file:py-2 file:text-xs file:font-medium file:text-white hover:file:bg-slate-800"
+              className="block w-full text-sm text-hcm-muted file:mr-3 file:rounded-lg file:border-0 file:bg-hcm-accent file:px-3 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-hcm-accent-strong"
             />
-            <p className="mt-2 text-[11px] leading-5 text-slate-400">
+            <p className="mt-2 text-[11px] leading-5 text-hcm-muted">
               Expected headers: firstName, lastName, email, phone, department,
               designation, joinDate, basicSalary
             </p>
@@ -522,7 +522,7 @@ export default function Employees() {
               type="button"
               onClick={runDryRun}
               disabled={importBusy !== ""}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-hcm-accent px-4 py-2.5 text-sm font-medium text-white disabled:opacity-60"
             >
               {importBusy === "dry" ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -536,7 +536,7 @@ export default function Employees() {
                 type="button"
                 onClick={commitImport}
                 disabled={importBusy !== ""}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white disabled:opacity-60"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-hcm-accent px-4 py-2.5 text-sm font-medium text-white disabled:opacity-60"
               >
                 {importBusy === "commit" ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -551,10 +551,10 @@ export default function Employees() {
           {dryRunResult && (
             <div className="mt-4 space-y-3">
               <div className="flex flex-wrap gap-2 text-xs font-medium">
-                <span className="rounded-full bg-slate-100 px-3 py-1.5 text-slate-700">
+                <span className="rounded-full bg-hcm-canvas-deep px-3 py-1.5 text-hcm-ink">
                   {dryRunResult.totalRows} rows
                 </span>
-                <span className="rounded-full bg-emerald-50 px-3 py-1.5 text-emerald-700">
+                <span className="rounded-full bg-hcm-accent-soft px-3 py-1.5 text-hcm-accent">
                   {dryRunResult.validRows} valid
                 </span>
                 <span className="rounded-full bg-rose-50 px-3 py-1.5 text-rose-700">
@@ -584,22 +584,22 @@ export default function Employees() {
         </section>
       )}
 
-      <section className="rounded-2xl border border-slate-200/80 bg-white shadow-sm">
-        <div className="flex flex-col gap-3 border-b border-slate-100 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between">
+      <section className="rounded-2xl border border-hcm-line bg-white shadow-sm">
+        <div className="flex flex-col gap-3 border-b border-hcm-line/80 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative flex-1 lg:max-w-sm">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-hcm-muted" />
             <input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Search name, email, ID or phone"
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-9 pr-3 text-sm text-slate-800 outline-none focus:border-blue-400 focus:bg-white"
+              className="w-full rounded-xl border border-hcm-line bg-hcm-surface-soft py-2.5 pl-9 pr-3 text-sm text-hcm-ink outline-none focus:border-hcm-accent/50 focus:bg-white"
             />
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <select
               value={departmentFilter}
               onChange={(event) => setDepartmentFilter(event.target.value)}
-              className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-blue-400 focus:bg-white"
+              className="rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm text-hcm-ink outline-none focus:border-hcm-accent/50 focus:bg-white"
             >
               <option value="all">All departments</option>
               {departments.map((department) => (
@@ -611,7 +611,7 @@ export default function Employees() {
             <select
               value={statusFilter}
               onChange={(event) => setStatusFilter(event.target.value)}
-              className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm capitalize text-slate-700 outline-none focus:border-blue-400 focus:bg-white"
+              className="rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm capitalize text-hcm-ink outline-none focus:border-hcm-accent/50 focus:bg-white"
             >
               <option value="all">All statuses</option>
               <option value="active">Active</option>
@@ -627,7 +627,7 @@ export default function Employees() {
                   setStatusFilter("all");
                   setDepartmentFilter("all");
                 }}
-                className="rounded-xl px-3 py-2.5 text-xs font-medium text-slate-500 hover:bg-slate-100"
+                className="rounded-xl px-3 py-2.5 text-xs font-medium text-hcm-muted hover:bg-hcm-canvas"
               >
                 Reset
               </button>
@@ -636,14 +636,14 @@ export default function Employees() {
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center gap-2 p-12 text-sm text-slate-500">
+          <div className="flex items-center justify-center gap-2 p-12 text-sm text-hcm-muted">
             <Loader2 className="h-4 w-4 animate-spin" /> Loading employees...
           </div>
         ) : filtered.length ? (
           <>
             <div className="hidden overflow-x-auto lg:block">
               <table className="w-full text-sm">
-                <thead className="bg-slate-50/80 text-left text-[11px] uppercase tracking-wide text-slate-400">
+                <thead className="bg-hcm-surface-soft text-left text-[11px] uppercase tracking-wide text-hcm-muted">
                   <tr>
                     <th className="px-5 py-3">Employee</th>
                     <th className="px-5 py-3">ID</th>
@@ -654,40 +654,40 @@ export default function Employees() {
                     <th className="px-5 py-3 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-hcm-line">
                   {filtered.map((employee) => (
-                    <tr key={employee._id} className="hover:bg-slate-50/60">
+                    <tr key={employee._id} className="hover:bg-hcm-surface-soft">
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
-                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-xs font-semibold text-white">
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-hcm-accent text-xs font-semibold text-white">
                             {employee.firstName?.[0]}
                             {employee.lastName?.[0]}
                           </span>
                           <div className="min-w-0">
-                            <p className="truncate font-medium text-slate-900">
+                            <p className="truncate font-medium text-hcm-ink">
                               {employee.firstName} {employee.lastName}
                             </p>
-                            <p className="truncate text-xs text-slate-400">
+                            <p className="truncate text-xs text-hcm-muted">
                               {employee.email}
                             </p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-5 py-4 font-mono text-xs text-slate-600">
+                      <td className="px-5 py-4 font-mono text-xs text-hcm-muted">
                         {employee.employeeId}
                       </td>
                       <td className="px-5 py-4">
-                        <p className="text-slate-700">
+                        <p className="text-hcm-ink">
                           {employee.designation?.title || "—"}
                         </p>
-                        <p className="text-xs text-slate-400">
+                        <p className="text-xs text-hcm-muted">
                           {employee.department?.name || "Unassigned"}
                         </p>
                       </td>
-                      <td className="px-5 py-4 text-xs text-slate-500">
+                      <td className="px-5 py-4 text-xs text-hcm-muted">
                         {employee.phone || "No phone"}
                       </td>
-                      <td className="whitespace-nowrap px-5 py-4 text-xs text-slate-500">
+                      <td className="whitespace-nowrap px-5 py-4 text-xs text-hcm-muted">
                         {formatDate(employee.joinDate)}
                       </td>
                       <td className="px-5 py-4">
@@ -702,7 +702,7 @@ export default function Employees() {
                           <button
                             type="button"
                             onClick={() => openEmployee360(employee._id)}
-                            className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+                            className="rounded-lg p-2 text-hcm-muted hover:bg-hcm-canvas hover:text-hcm-ink"
                             title={`View ${employee.firstName}`}
                             aria-label={`View ${employee.firstName} ${employee.lastName}`}
                           >
@@ -712,7 +712,7 @@ export default function Employees() {
                             <button
                               type="button"
                               onClick={() => openEdit(employee)}
-                              className="rounded-lg p-2 text-blue-600 hover:bg-blue-50"
+                              className="rounded-lg p-2 text-hcm-accent hover:bg-hcm-accent-soft"
                               title={`Edit ${employee.firstName}`}
                               aria-label={`Edit ${employee.firstName} ${employee.lastName}`}
                             >
@@ -727,21 +727,21 @@ export default function Employees() {
               </table>
             </div>
 
-            <div className="divide-y divide-slate-100 lg:hidden">
+            <div className="divide-y divide-hcm-line lg:hidden">
               {filtered.map((employee) => (
                 <div key={employee._id} className="p-4">
                   <div className="flex items-start gap-3">
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-xs font-semibold text-white">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-hcm-accent text-xs font-semibold text-white">
                       {employee.firstName?.[0]}
                       {employee.lastName?.[0]}
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
-                          <p className="truncate font-medium text-slate-900">
+                          <p className="truncate font-medium text-hcm-ink">
                             {employee.firstName} {employee.lastName}
                           </p>
-                          <p className="truncate text-xs text-slate-400">
+                          <p className="truncate text-xs text-hcm-muted">
                             {employee.employeeId} ·{" "}
                             {employee.designation?.title || "No designation"}
                           </p>
@@ -752,7 +752,7 @@ export default function Employees() {
                           {employee.status}
                         </span>
                       </div>
-                      <p className="mt-1 truncate text-xs text-slate-500">
+                      <p className="mt-1 truncate text-xs text-hcm-muted">
                         {employee.department?.name || "Unassigned"} ·{" "}
                         {employee.email}
                       </p>
@@ -760,7 +760,7 @@ export default function Employees() {
                         <button
                           type="button"
                           onClick={() => openEmployee360(employee._id)}
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-hcm-line px-3 py-1.5 text-xs font-medium text-hcm-ink"
                         >
                           <Eye className="h-3.5 w-3.5" /> View
                         </button>
@@ -768,7 +768,7 @@ export default function Employees() {
                           <button
                             type="button"
                             onClick={() => openEdit(employee)}
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-blue-700"
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-hcm-line px-3 py-1.5 text-xs font-medium text-hcm-accent"
                           >
                             <Pencil className="h-3.5 w-3.5" /> Edit
                           </button>
@@ -782,13 +782,13 @@ export default function Employees() {
           </>
         ) : (
           <div className="p-12 text-center">
-            <Users className="mx-auto h-8 w-8 text-slate-300" />
-            <p className="mt-2 text-sm font-medium text-slate-700">
+            <Users className="mx-auto h-8 w-8 text-hcm-muted/40" />
+            <p className="mt-2 text-sm font-medium text-hcm-ink">
               {filtersActive
                 ? "No employees match these filters"
                 : "No employees yet"}
             </p>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-hcm-muted">
               {filtersActive
                 ? "Try clearing the search or filters."
                 : "Register your first employee to get started."}
@@ -797,7 +797,7 @@ export default function Employees() {
               <button
                 type="button"
                 onClick={openCreate}
-                className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white"
+                className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-hcm-accent px-4 py-2.5 text-sm font-medium text-white"
               >
                 <UserPlus className="h-4 w-4" /> Add employee
               </button>
@@ -808,24 +808,24 @@ export default function Employees() {
 
       {formOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/60 backdrop-blur-sm sm:items-center sm:p-4"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-hcm-ink/60 backdrop-blur-sm sm:items-center sm:p-4"
           role="dialog"
           aria-modal="true"
           aria-labelledby="employee-form-title"
         >
-          <div className="flex max-h-[94vh] w-full max-w-2xl flex-col overflow-hidden rounded-t-2xl bg-white shadow-2xl sm:rounded-2xl">
-            <div className="flex items-start justify-between border-b border-slate-100 p-5 sm:p-6">
+          <div className="flex max-h-[94vh] w-full max-w-2xl flex-col overflow-hidden rounded-t-2xl bg-hcm-surface shadow-hcm sm:rounded-2xl">
+            <div className="flex items-start justify-between border-b border-hcm-line/80 p-5 sm:p-6">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-600">
                   {editingEmployeeId ? "Update record" : "New hire"}
                 </p>
                 <h2
                   id="employee-form-title"
-                  className="mt-1 text-xl font-semibold text-slate-900"
+                  className="mt-1 text-xl font-semibold text-hcm-ink"
                 >
                   {editingEmployeeId ? "Edit employee" : "Register employee"}
                 </h2>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-hcm-muted">
                   {editingEmployeeId
                     ? "Changes are recorded in the audit trail."
                     : "A login is generated automatically with a temporary password."}
@@ -834,7 +834,7 @@ export default function Employees() {
               <button
                 type="button"
                 onClick={resetForm}
-                className="rounded-lg p-2 text-slate-400 hover:bg-slate-100"
+                className="rounded-lg p-2 text-hcm-muted hover:bg-hcm-canvas"
                 aria-label="Close employee form"
               >
                 <X className="h-5 w-5" />
@@ -845,11 +845,11 @@ export default function Employees() {
               onSubmit={handleSubmit}
               className="flex-1 overflow-y-auto p-5 sm:p-6"
             >
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+              <p className="text-xs font-semibold uppercase tracking-wide text-hcm-muted">
                 Personal information
               </p>
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <label className="block text-xs font-medium text-slate-500">
+                <label className="block text-xs font-medium text-hcm-muted">
                   First name
                   <input
                     value={formData.firstName}
@@ -857,10 +857,10 @@ export default function Employees() {
                       setFormData({ ...formData, firstName: event.target.value })
                     }
                     required
-                    className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                    className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                   />
                 </label>
-                <label className="block text-xs font-medium text-slate-500">
+                <label className="block text-xs font-medium text-hcm-muted">
                   Last name
                   <input
                     value={formData.lastName}
@@ -868,10 +868,10 @@ export default function Employees() {
                       setFormData({ ...formData, lastName: event.target.value })
                     }
                     required
-                    className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                    className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                   />
                 </label>
-                <label className="block text-xs font-medium text-slate-500">
+                <label className="block text-xs font-medium text-hcm-muted">
                   Email
                   <input
                     type="email"
@@ -880,10 +880,10 @@ export default function Employees() {
                       setFormData({ ...formData, email: event.target.value })
                     }
                     required
-                    className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                    className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                   />
                 </label>
-                <label className="block text-xs font-medium text-slate-500">
+                <label className="block text-xs font-medium text-hcm-muted">
                   Phone
                   <input
                     type="tel"
@@ -891,10 +891,10 @@ export default function Employees() {
                     onChange={(event) =>
                       setFormData({ ...formData, phone: event.target.value })
                     }
-                    className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                    className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                   />
                 </label>
-                <label className="block text-xs font-medium text-slate-500 sm:col-span-2">
+                <label className="block text-xs font-medium text-hcm-muted sm:col-span-2">
                   Address
                   <input
                     value={formData.address}
@@ -902,16 +902,16 @@ export default function Employees() {
                       setFormData({ ...formData, address: event.target.value })
                     }
                     placeholder="Optional"
-                    className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                    className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                   />
                 </label>
               </div>
 
-              <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-slate-400">
+              <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-hcm-muted">
                 Employment
               </p>
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <label className="block text-xs font-medium text-slate-500">
+                <label className="block text-xs font-medium text-hcm-muted">
                   Department
                   <select
                     value={formData.department}
@@ -921,7 +921,7 @@ export default function Employees() {
                         department: event.target.value,
                       })
                     }
-                    className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                    className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                   >
                     <option value="">Unassigned</option>
                     {departments.map((department) => (
@@ -931,7 +931,7 @@ export default function Employees() {
                     ))}
                   </select>
                 </label>
-                <label className="block text-xs font-medium text-slate-500">
+                <label className="block text-xs font-medium text-hcm-muted">
                   Designation
                   <select
                     value={formData.designation}
@@ -941,7 +941,7 @@ export default function Employees() {
                         designation: event.target.value,
                       })
                     }
-                    className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                    className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                   >
                     <option value="">Unassigned</option>
                     {designations.map((designation) => (
@@ -951,7 +951,7 @@ export default function Employees() {
                     ))}
                   </select>
                 </label>
-                <label className="block text-xs font-medium text-slate-500">
+                <label className="block text-xs font-medium text-hcm-muted">
                   Joining date
                   <input
                     type="date"
@@ -963,10 +963,10 @@ export default function Employees() {
                       })
                     }
                     required
-                    className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                    className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                   />
                 </label>
-                <label className="block text-xs font-medium text-slate-500">
+                <label className="block text-xs font-medium text-hcm-muted">
                   Employment type
                   <select
                     value={formData.employmentType}
@@ -976,7 +976,7 @@ export default function Employees() {
                         employmentType: event.target.value,
                       })
                     }
-                    className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                    className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                   >
                     <option value="full-time">Full-time</option>
                     <option value="part-time">Part-time</option>
@@ -985,7 +985,7 @@ export default function Employees() {
                 </label>
                 {editingEmployeeId ? (
                   <>
-                    <label className="block text-xs font-medium text-slate-500">
+                    <label className="block text-xs font-medium text-hcm-muted">
                       Status
                       <select
                         value={formData.status}
@@ -1000,7 +1000,7 @@ export default function Employees() {
                                 : formData.terminationDate,
                           })
                         }
-                        className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                        className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                       >
                         <option value="active">Active</option>
                         <option value="probation">Probation</option>
@@ -1010,7 +1010,7 @@ export default function Employees() {
                     </label>
                     {(formData.status === "terminated" ||
                       formData.status === "resigned") && (
-                      <label className="block text-xs font-medium text-slate-500">
+                      <label className="block text-xs font-medium text-hcm-muted">
                         Termination date
                         <input
                           type="date"
@@ -1022,16 +1022,16 @@ export default function Employees() {
                             })
                           }
                           required
-                          className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                          className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                         />
                       </label>
                     )}
                   </>
                 ) : (
-                  <label className="block text-xs font-medium text-slate-500">
+                  <label className="block text-xs font-medium text-hcm-muted">
                     Basic salary (Rs)
                     <div className="relative mt-1">
-                      <CircleDollarSign className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                      <CircleDollarSign className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-hcm-muted" />
                       <input
                         type="number"
                         min="1"
@@ -1043,7 +1043,7 @@ export default function Employees() {
                           })
                         }
                         required
-                        className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-9 pr-3 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                        className="w-full rounded-xl border border-hcm-line bg-hcm-surface-soft py-2.5 pl-9 pr-3 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                       />
                     </div>
                   </label>
@@ -1054,14 +1054,14 @@ export default function Employees() {
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                  className="rounded-xl border border-hcm-line px-4 py-2.5 text-sm font-medium text-hcm-ink hover:bg-hcm-canvas"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-medium text-white disabled:opacity-60"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-hcm-accent px-5 py-2.5 text-sm font-medium text-white disabled:opacity-60"
                 >
                   {saving ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -1078,20 +1078,20 @@ export default function Employees() {
 
       {profileOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/60 backdrop-blur-sm sm:items-center sm:p-4"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-hcm-ink/60 backdrop-blur-sm sm:items-center sm:p-4"
           role="dialog"
           aria-modal="true"
           aria-labelledby="employee-360-title"
         >
-          <div className="flex max-h-[94vh] w-full max-w-4xl flex-col overflow-hidden rounded-t-2xl bg-white shadow-2xl sm:rounded-2xl">
-            <div className="flex items-start justify-between border-b border-slate-100 p-5 sm:p-6">
+          <div className="flex max-h-[94vh] w-full max-w-4xl flex-col overflow-hidden rounded-t-2xl bg-hcm-surface shadow-hcm sm:rounded-2xl">
+            <div className="flex items-start justify-between border-b border-hcm-line/80 p-5 sm:p-6">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-hcm-muted">
                   Employee 360
                 </p>
                 <h2
                   id="employee-360-title"
-                  className="mt-1 text-xl font-semibold text-slate-900"
+                  className="mt-1 text-xl font-semibold text-hcm-ink"
                 >
                   {employee360
                     ? `${employee360.employee.firstName} ${employee360.employee.lastName}`
@@ -1101,7 +1101,7 @@ export default function Employees() {
               <button
                 type="button"
                 onClick={() => setProfileOpen(false)}
-                className="rounded-lg p-2 text-slate-400 hover:bg-slate-100"
+                className="rounded-lg p-2 text-hcm-muted hover:bg-hcm-canvas"
                 aria-label="Close employee profile"
               >
                 <X className="h-5 w-5" />
@@ -1109,22 +1109,22 @@ export default function Employees() {
             </div>
 
             {profileLoading || !employee360 ? (
-              <div className="flex flex-1 items-center justify-center gap-2 p-16 text-sm text-slate-500">
+              <div className="flex flex-1 items-center justify-center gap-2 p-16 text-sm text-hcm-muted">
                 <Loader2 className="h-4 w-4 animate-spin" /> Loading profile...
               </div>
             ) : (
               <div className="flex-1 overflow-y-auto">
-                <div className="flex flex-col gap-4 border-b border-slate-100 bg-slate-50/70 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+                <div className="flex flex-col gap-4 border-b border-hcm-line/80 bg-hcm-surface-soft p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
                   <div className="flex items-center gap-4">
-                    <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-400 to-blue-500 text-lg font-bold text-slate-950 shadow">
+                    <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-hcm-ink text-lg font-bold text-white">
                       {employee360.employee.firstName?.[0]}
                       {employee360.employee.lastName?.[0]}
                     </span>
                     <div>
-                      <p className="text-sm font-medium text-slate-900">
+                      <p className="text-sm font-medium text-hcm-ink">
                         {employee360.employee.employeeId}
                       </p>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-hcm-muted">
                         {employee360.employee.designation?.title || "—"} ·{" "}
                         {employee360.employee.department?.name || "—"}
                       </p>
@@ -1139,7 +1139,7 @@ export default function Employees() {
                     <button
                       type="button"
                       onClick={() => openEdit(employee360.employee)}
-                      className="inline-flex w-fit items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                      className="inline-flex w-fit items-center gap-1.5 rounded-xl border border-hcm-line bg-white px-3.5 py-2 text-sm font-medium text-hcm-ink hover:bg-hcm-canvas"
                     >
                       <Pencil className="h-3.5 w-3.5" /> Edit employee
                     </button>
@@ -1174,12 +1174,12 @@ export default function Employees() {
                     ].map((item) => (
                       <div
                         key={item.label}
-                        className="rounded-xl border border-slate-100 bg-slate-50 p-3"
+                        className="rounded-xl border border-hcm-line/80 bg-hcm-surface-soft p-3"
                       >
-                        <p className="flex items-center gap-1 text-[11px] text-slate-400">
+                        <p className="flex items-center gap-1 text-[11px] text-hcm-muted">
                           <item.icon className="h-3 w-3" /> {item.label}
                         </p>
-                        <p className="mt-1 truncate text-sm font-medium capitalize text-slate-800">
+                        <p className="mt-1 truncate text-sm font-medium capitalize text-hcm-ink">
                           {item.value}
                         </p>
                       </div>
@@ -1187,17 +1187,17 @@ export default function Employees() {
                   </div>
 
                   <div className="grid gap-4 lg:grid-cols-2">
-                    <section className="rounded-2xl border border-slate-200/80 p-4">
+                    <section className="rounded-2xl border border-hcm-line p-4">
                       <div className="flex items-center justify-between">
-                        <h3 className="flex items-center gap-1.5 text-sm font-semibold text-slate-900">
-                          <Wallet className="h-4 w-4 text-slate-400" /> Current
+                        <h3 className="flex items-center gap-1.5 text-sm font-semibold text-hcm-ink">
+                          <Wallet className="h-4 w-4 text-hcm-muted" /> Current
                           salary
                         </h3>
                         {canManageEmployees && !showSalaryEditor && (
                           <button
                             type="button"
                             onClick={() => setShowSalaryEditor(true)}
-                            className="text-xs font-medium text-blue-700 hover:underline"
+                            className="text-xs font-medium text-hcm-accent hover:underline"
                           >
                             Update
                           </button>
@@ -1206,7 +1206,7 @@ export default function Employees() {
 
                       {showSalaryEditor ? (
                         <form onSubmit={saveSalary} className="mt-3 space-y-3">
-                          <label className="block text-xs font-medium text-slate-500">
+                          <label className="block text-xs font-medium text-hcm-muted">
                             Basic salary
                             <input
                               type="number"
@@ -1220,10 +1220,10 @@ export default function Employees() {
                                   basic: event.target.value,
                                 })
                               }
-                              className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                              className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                             />
                           </label>
-                          <label className="block text-xs font-medium text-slate-500">
+                          <label className="block text-xs font-medium text-hcm-muted">
                             Effective date
                             <input
                               type="date"
@@ -1234,14 +1234,14 @@ export default function Employees() {
                                   effectiveDate: event.target.value,
                                 })
                               }
-                              className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                              className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                             />
                           </label>
                           <div className="flex gap-2">
                             <button
                               type="submit"
                               disabled={savingSalary}
-                              className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-medium text-white disabled:opacity-60"
+                              className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-hcm-accent px-3 py-2.5 text-xs font-medium text-white disabled:opacity-60"
                             >
                               {savingSalary ? (
                                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -1259,7 +1259,7 @@ export default function Employees() {
                                   effectiveDate: "",
                                 });
                               }}
-                              className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs font-medium text-slate-600"
+                              className="rounded-xl border border-hcm-line px-3 py-2.5 text-xs font-medium text-hcm-muted"
                             >
                               Cancel
                             </button>
@@ -1274,13 +1274,13 @@ export default function Employees() {
                           ].map(([label, value]) => (
                             <div
                               key={label}
-                              className="flex justify-between text-xs text-slate-500"
+                              className="flex justify-between text-xs text-hcm-muted"
                             >
                               <span>{label}</span>
                               <span>{formatCurrency(value)}</span>
                             </div>
                           ))}
-                          <div className="flex justify-between border-t border-slate-100 pt-2 text-sm font-semibold text-slate-900">
+                          <div className="flex justify-between border-t border-hcm-line/80 pt-2 text-sm font-semibold text-hcm-ink">
                             <span>Gross</span>
                             <span>
                               {formatCurrency(employee360.salary.gross)}
@@ -1288,40 +1288,40 @@ export default function Employees() {
                           </div>
                         </div>
                       ) : (
-                        <div className="mt-3 rounded-xl bg-slate-50 p-3 text-xs text-slate-500">
+                        <div className="mt-3 rounded-xl bg-hcm-surface-soft p-3 text-xs text-hcm-muted">
                           No active salary structure.
                         </div>
                       )}
 
-                      <h4 className="mt-4 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                      <h4 className="mt-4 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-hcm-muted">
                         <History className="h-3.5 w-3.5" /> Salary history
                       </h4>
                       <ul className="mt-2 space-y-1">
                         {employee360.salaryHistory.slice(0, 4).map((salary) => (
                           <li
                             key={salary._id}
-                            className="flex justify-between gap-2 rounded-lg bg-slate-50 px-2.5 py-2 text-xs"
+                            className="flex justify-between gap-2 rounded-lg bg-hcm-surface-soft px-2.5 py-2 text-xs"
                           >
-                            <span className="text-slate-500">
+                            <span className="text-hcm-muted">
                               {formatDate(salary.effectiveDate)}
                             </span>
-                            <span className="font-medium text-slate-700">
+                            <span className="font-medium text-hcm-ink">
                               {formatCurrency(salary.gross)}
                               {salary.isActive ? " · Current" : ""}
                             </span>
                           </li>
                         ))}
                         {!employee360.salaryHistory.length && (
-                          <li className="py-2 text-xs text-slate-400">
+                          <li className="py-2 text-xs text-hcm-muted">
                             No salary history
                           </li>
                         )}
                       </ul>
                     </section>
 
-                    <section className="rounded-2xl border border-slate-200/80 p-4">
-                      <h3 className="flex items-center gap-1.5 text-sm font-semibold text-slate-900">
-                        <ClipboardList className="h-4 w-4 text-slate-400" />{" "}
+                    <section className="rounded-2xl border border-hcm-line p-4">
+                      <h3 className="flex items-center gap-1.5 text-sm font-semibold text-hcm-ink">
+                        <ClipboardList className="h-4 w-4 text-hcm-muted" />{" "}
                         Contact details
                       </h3>
                       <div className="mt-3 space-y-2">
@@ -1349,9 +1349,9 @@ export default function Employees() {
                         ].map((item, index) => (
                           <p
                             key={index}
-                            className="flex items-start gap-2 rounded-lg bg-slate-50 px-2.5 py-2 text-xs text-slate-600"
+                            className="flex items-start gap-2 rounded-lg bg-hcm-surface-soft px-2.5 py-2 text-xs text-hcm-muted"
                           >
-                            <item.icon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-400" />
+                            <item.icon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-hcm-muted" />
                             <span className="break-words">{item.value}</span>
                           </p>
                         ))}
@@ -1360,26 +1360,26 @@ export default function Employees() {
                   </div>
 
                   <div className="grid gap-4 lg:grid-cols-2">
-                    <section className="rounded-2xl border border-slate-200/80 p-4">
-                      <h3 className="flex items-center gap-1.5 text-sm font-semibold text-slate-900">
-                        <CalendarDays className="h-4 w-4 text-slate-400" />{" "}
+                    <section className="rounded-2xl border border-hcm-line p-4">
+                      <h3 className="flex items-center gap-1.5 text-sm font-semibold text-hcm-ink">
+                        <CalendarDays className="h-4 w-4 text-hcm-muted" />{" "}
                         Recent attendance
                       </h3>
                       <ul className="mt-3 space-y-1.5">
                         {employee360.attendance.map((record) => (
                           <li
                             key={record._id}
-                            className="flex items-center justify-between gap-2 rounded-lg bg-slate-50 px-2.5 py-2 text-xs"
+                            className="flex items-center justify-between gap-2 rounded-lg bg-hcm-surface-soft px-2.5 py-2 text-xs"
                           >
-                            <span className="text-slate-500">
+                            <span className="text-hcm-muted">
                               {formatDate(record.date)}
                             </span>
                             <span className="flex items-center gap-2">
-                              <span className="text-slate-500">
+                              <span className="text-hcm-muted">
                                 {record.hoursWorked || 0} hrs
                               </span>
                               <span
-                                className={`rounded-full px-2 py-0.5 text-[10px] font-medium capitalize ${attendanceTone[record.status] || "bg-slate-100 text-slate-600"}`}
+                                className={`rounded-full px-2 py-0.5 text-[10px] font-medium capitalize ${attendanceTone[record.status] || "bg-hcm-canvas-deep text-hcm-muted"}`}
                               >
                                 {record.status}
                               </span>
@@ -1387,35 +1387,35 @@ export default function Employees() {
                           </li>
                         ))}
                         {!employee360.attendance.length && (
-                          <li className="py-3 text-xs text-slate-400">
+                          <li className="py-3 text-xs text-hcm-muted">
                             No attendance records
                           </li>
                         )}
                       </ul>
                     </section>
 
-                    <section className="rounded-2xl border border-slate-200/80 p-4">
-                      <h3 className="flex items-center gap-1.5 text-sm font-semibold text-slate-900">
-                        <History className="h-4 w-4 text-slate-400" /> Recent
+                    <section className="rounded-2xl border border-hcm-line p-4">
+                      <h3 className="flex items-center gap-1.5 text-sm font-semibold text-hcm-ink">
+                        <History className="h-4 w-4 text-hcm-muted" /> Recent
                         leave
                       </h3>
                       <ul className="mt-3 space-y-1.5">
                         {employee360.leaveRequests.map((leave) => (
                           <li
                             key={leave._id}
-                            className="flex items-center justify-between gap-2 rounded-lg bg-slate-50 px-2.5 py-2 text-xs"
+                            className="flex items-center justify-between gap-2 rounded-lg bg-hcm-surface-soft px-2.5 py-2 text-xs"
                           >
-                            <span className="text-slate-500">
+                            <span className="text-hcm-muted">
                               {leave.leaveType?.name || "Leave"} ·{" "}
                               {formatDate(leave.startDate)}
                             </span>
-                            <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-medium capitalize text-slate-600 ring-1 ring-inset ring-slate-200">
+                            <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-medium capitalize text-hcm-muted ring-1 ring-inset ring-hcm-line">
                               {leave.status}
                             </span>
                           </li>
                         ))}
                         {!employee360.leaveRequests.length && (
-                          <li className="py-3 text-xs text-slate-400">
+                          <li className="py-3 text-xs text-hcm-muted">
                             No leave requests
                           </li>
                         )}
@@ -1423,7 +1423,7 @@ export default function Employees() {
                     </section>
                   </div>
 
-                  <p className="flex items-center gap-1.5 text-[11px] text-slate-400">
+                  <p className="flex items-center gap-1.5 text-[11px] text-hcm-muted">
                     <BadgeCheck className="h-3.5 w-3.5" />
                     Employee profile, salary and activity snapshots are visible
                     to Admin and HR only.

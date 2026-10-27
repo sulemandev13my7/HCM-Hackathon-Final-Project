@@ -24,8 +24,8 @@ const strengthColors = [
   "bg-rose-500",
   "bg-orange-500",
   "bg-amber-500",
-  "bg-emerald-500",
-  "bg-emerald-600",
+  "bg-hcm-accent",
+  "bg-hcm-accent",
 ];
 
 export default function ResetPassword() {
@@ -102,28 +102,28 @@ export default function ResetPassword() {
         <div>
           <Link
             to="/login"
-            className="mb-5 inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#7d8882] transition hover:text-[#14241e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f5d4d]/25"
+            className="mb-5 inline-flex items-center gap-1.5 text-[11px] font-semibold text-hcm-muted transition hover:text-hcm-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-accent/20"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Back to sign in
           </Link>
 
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#f0c8c4] bg-[#fef4f2] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9d2d24]">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-rose-800">
             <Link2Off className="h-3 w-3" />
             Invalid link
           </span>
-          <h2 className="mt-4 text-[30px] font-semibold leading-tight tracking-[-0.04em] text-[#14241e]">
+          <h2 className="mt-4 font-display text-[28px] font-bold leading-tight tracking-[-0.03em] text-hcm-ink">
             This link can’t be used.
           </h2>
-          <p className="mt-2 text-sm leading-6 text-[#6f7b75]">
-            The reset link is missing, incomplete, or no longer valid. Ask your
-            workspace admin for a fresh one-time link.
+          <p className="mt-2 text-sm leading-6 text-hcm-muted">
+            The link is missing, incomplete, or no longer valid. Ask your admin
+            for a fresh one-time link.
           </p>
         </div>
 
         <Link
           to="/forgot-password"
-          className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#10251f] px-4 text-sm font-semibold text-[#f8f5eb] transition hover:bg-[#1a3a30] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2f5d4d]/20"
+          className="mt-6 flex h-11 w-full items-center justify-center gap-2 rounded-[10px] bg-hcm-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-hcm-accent-strong focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/15"
         >
           <KeyRound className="h-4 w-4" />
           Password recovery help
@@ -137,22 +137,21 @@ export default function ResetPassword() {
       <div>
         <Link
           to="/login"
-          className="mb-5 inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#7d8882] transition hover:text-[#14241e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f5d4d]/25"
+          className="mb-5 inline-flex items-center gap-1.5 text-[11px] font-semibold text-hcm-muted transition hover:text-hcm-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-accent/20"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           Back to sign in
         </Link>
 
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-[#dfe8de] bg-[#f3f8f0] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#32624f]">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-hcm-accent/15 bg-hcm-accent-soft px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-hcm-accent">
           <KeyRound className="h-3 w-3" />
           Secure reset
         </span>
-        <h2 className="mt-4 text-[30px] font-semibold leading-tight tracking-[-0.04em] text-[#14241e]">
+        <h2 className="mt-4 font-display text-[28px] font-bold leading-tight tracking-[-0.03em] text-hcm-ink">
           Choose a new password.
         </h2>
-        <p className="mt-2 text-sm leading-6 text-[#6f7b75]">
-          This one-time link will stop working as soon as your password is
-          updated.
+        <p className="mt-2 text-sm leading-6 text-hcm-muted">
+          This one-time link stops working after your password is updated.
         </p>
       </div>
 
@@ -161,7 +160,7 @@ export default function ResetPassword() {
           id="reset-error"
           role="alert"
           aria-live="polite"
-          className="mt-5 flex items-start gap-2.5 rounded-xl border border-[#f0c8c4] bg-[#fef4f2] px-3.5 py-3 text-[13px] leading-5 text-[#9d2d24]"
+          className="mt-5 flex items-start gap-2.5 rounded-[10px] border border-rose-200 bg-rose-50 px-3.5 py-3 text-[13px] leading-5 text-rose-800"
         >
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
           {error}
@@ -207,7 +206,7 @@ export default function ResetPassword() {
             <button
               type="button"
               onClick={() => setShowPassword((current) => !current)}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-[#7d8882] transition hover:bg-[#f1eee6] hover:text-[#14241e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f5d4d]/30"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-hcm-muted transition hover:bg-hcm-canvas hover:text-hcm-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-accent/25"
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? (
@@ -227,12 +226,12 @@ export default function ResetPassword() {
                 className={`h-1.5 flex-1 rounded-full ${
                   index < strength
                     ? strengthColors[strength - 1]
-                    : "bg-[#e7e2d7]"
+                    : "bg-hcm-canvas-deep"
                 }`}
               />
             ))}
           </div>
-          <p className="mt-2 flex items-center justify-between text-[11px] text-[#8a948f]">
+          <p className="mt-2 flex items-center justify-between text-[11px] text-hcm-muted">
             <span>{strengthLabels[strength]}</span>
             <span>{newPassword.length}/8+ characters</span>
           </p>
@@ -246,7 +245,7 @@ export default function ResetPassword() {
               <span
                 key={label}
                 className={`inline-flex items-center gap-1 ${
-                  met ? "text-[#2f6b50]" : "text-[#9aa39d]"
+                  met ? "text-hcm-accent" : "text-hcm-muted"
                 }`}
               >
                 <Check
@@ -282,7 +281,7 @@ export default function ResetPassword() {
             <button
               type="button"
               onClick={() => setShowConfirm((current) => !current)}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-[#7d8882] transition hover:bg-[#f1eee6] hover:text-[#14241e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f5d4d]/30"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-hcm-muted transition hover:bg-hcm-canvas hover:text-hcm-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-accent/25"
               aria-label={
                 showConfirm ? "Hide confirm password" : "Show confirm password"
               }
@@ -299,7 +298,7 @@ export default function ResetPassword() {
         {confirmPassword.length > 0 && (
           <p
             className={`flex items-center gap-1.5 text-xs ${
-              passwordsMatch ? "text-[#2f6b50]" : "text-[#b42318]"
+              passwordsMatch ? "text-hcm-accent" : "text-rose-700"
             }`}
           >
             <Check className="h-3.5 w-3.5" />
@@ -312,7 +311,7 @@ export default function ResetPassword() {
         <button
           type="submit"
           disabled={submitting}
-          className="group flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#10251f] px-4 text-sm font-semibold text-[#f8f5eb] transition hover:bg-[#1a3a30] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2f5d4d]/20 disabled:cursor-wait disabled:opacity-70"
+          className="group flex h-11 w-full items-center justify-center gap-2 rounded-[10px] bg-hcm-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-hcm-accent-strong focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/15 disabled:cursor-wait disabled:opacity-70"
         >
           {submitting ? (
             <>
@@ -328,8 +327,8 @@ export default function ResetPassword() {
         </button>
       </form>
 
-      <p className="mt-4 flex items-start justify-center gap-1.5 text-center text-[11px] leading-5 text-[#8a948f]">
-        <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#3d7a5d]" />
+      <p className="mt-4 flex items-start justify-center gap-1.5 text-center text-[11px] leading-5 text-hcm-muted">
+        <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-hcm-accent" />
         Need a new link? Ask your workspace admin.
       </p>
     </AuthShell>

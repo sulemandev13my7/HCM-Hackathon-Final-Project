@@ -110,20 +110,19 @@ export default function AIChat() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-9.5rem)] min-h-[32rem] flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm">
-      <header className="relative shrink-0 overflow-hidden bg-slate-950 px-5 py-4 text-white sm:px-6">
-        <div className="pointer-events-none absolute -right-10 -top-16 h-48 w-48 rounded-full bg-blue-500/25 blur-3xl" />
-        <div className="relative flex items-center justify-between gap-4">
+    <div className="flex h-[calc(100vh-9.5rem)] min-h-[32rem] flex-col overflow-hidden rounded-2xl border border-hcm-line bg-white shadow-sm">
+      <header className="shrink-0 border-b border-hcm-line bg-hcm-surface px-5 py-4 sm:px-6">
+        <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10">
-              <Sparkles className="h-5 w-5 text-blue-300" />
+            <span className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-hcm-accent-soft text-hcm-accent">
+              <Sparkles className="h-5 w-5" />
             </span>
             <div>
-              <h1 className="text-lg font-semibold tracking-tight">
+              <h1 className="font-display text-lg font-bold tracking-tight text-hcm-ink">
                 AI Assistant
               </h1>
-              <p className="flex items-center gap-1.5 text-xs text-slate-300">
-                <ShieldCheck className="h-3.5 w-3.5 text-emerald-300" />
+              <p className="flex items-center gap-1.5 text-xs text-hcm-muted">
+                <ShieldCheck className="h-3.5 w-3.5 text-hcm-accent" />
                 Live data · {role} scope
               </p>
             </div>
@@ -135,7 +134,7 @@ export default function AIChat() {
                 setMessages([]);
                 setCopiedIndex(null);
               }}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-2 text-xs font-medium text-slate-200 transition hover:bg-white/20"
+              className="inline-flex items-center gap-1.5 rounded-[10px] bg-hcm-surface-soft px-3 py-2 text-xs font-semibold text-hcm-muted transition hover:bg-hcm-canvas hover:text-hcm-ink"
             >
               <Trash2 className="h-3.5 w-3.5" />
               Clear
@@ -144,17 +143,17 @@ export default function AIChat() {
         </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto bg-slate-50/60 px-4 py-5 sm:px-6">
+      <div className="flex-1 overflow-y-auto bg-hcm-surface-soft px-4 py-5 sm:px-6">
         {messages.length === 0 ? (
           <div className="mx-auto flex h-full max-w-2xl flex-col justify-center">
             <div className="text-center">
-              <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-lg">
+              <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-hcm-accent text-white shadow-lg">
                 <Bot className="h-7 w-7" />
               </span>
-              <h2 className="mt-4 text-xl font-semibold text-slate-900">
+              <h2 className="mt-4 text-xl font-semibold text-hcm-ink">
                 How can I help today?
               </h2>
-              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-hcm-muted">
                 {welcomeByRole[role] || welcomeByRole.employee}
               </p>
             </div>
@@ -164,9 +163,9 @@ export default function AIChat() {
                   key={suggestion}
                   type="button"
                   onClick={() => submitMessage(suggestion)}
-                  className="flex items-start gap-2.5 rounded-xl border border-slate-200 bg-white p-3 text-left text-sm text-slate-700 shadow-sm transition hover:border-blue-300 hover:bg-blue-50/50"
+                  className="flex items-start gap-2.5 rounded-xl border border-hcm-line bg-white p-3 text-left text-sm text-hcm-ink shadow-sm transition hover:border-hcm-accent/25 hover:bg-hcm-accent-soft/50"
                 >
-                  <MessageSquare className="mt-0.5 h-4 w-4 shrink-0 text-blue-500" />
+                  <MessageSquare className="mt-0.5 h-4 w-4 shrink-0 text-hcm-accent" />
                   {suggestion}
                 </button>
               ))}
@@ -182,20 +181,20 @@ export default function AIChat() {
                   className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}
                 >
                   {!isUser && (
-                    <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-900 text-white">
+                    <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-hcm-accent text-white">
                       <Bot className="h-4 w-4" />
                     </span>
                   )}
                   <div
                     className={`group max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-6 shadow-sm sm:max-w-[75%] ${
                       isUser
-                        ? "rounded-br-md bg-blue-600 text-white"
-                        : "rounded-bl-md border border-slate-200 bg-white text-slate-700"
+                        ? "rounded-br-md bg-hcm-accent text-white"
+                        : "rounded-bl-md border border-hcm-line bg-white text-hcm-ink"
                     }`}
                   >
                     {!isUser && (
-                      <p className="mb-1 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-slate-400">
-                        <Sparkles className="h-3 w-3 text-blue-500" />
+                      <p className="mb-1 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-hcm-muted">
+                        <Sparkles className="h-3 w-3 text-hcm-accent" />
                         AI-generated
                       </p>
                     )}
@@ -206,7 +205,7 @@ export default function AIChat() {
                       <button
                         type="button"
                         onClick={() => copyMessage(message.content, index)}
-                        className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-slate-400 opacity-100 transition hover:text-slate-700 sm:opacity-0 sm:group-hover:opacity-100"
+                        className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-hcm-muted opacity-100 transition hover:text-hcm-ink sm:opacity-0 sm:group-hover:opacity-100"
                       >
                         {copiedIndex === index ? (
                           <>
@@ -221,7 +220,7 @@ export default function AIChat() {
                     )}
                   </div>
                   {isUser && (
-                    <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-700">
+                    <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-hcm-accent-soft text-hcm-accent">
                       <UserRound className="h-4 w-4" />
                     </span>
                   )}
@@ -230,11 +229,11 @@ export default function AIChat() {
             })}
             {loading && (
               <div className="flex justify-start gap-3">
-                <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-900 text-white">
+                <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-hcm-accent text-white">
                   <Bot className="h-4 w-4" />
                 </span>
-                <div className="rounded-2xl rounded-bl-md border border-slate-200 bg-white px-4 py-3">
-                  <p className="flex items-center gap-2 text-sm text-slate-500">
+                <div className="rounded-2xl rounded-bl-md border border-hcm-line bg-white px-4 py-3">
+                  <p className="flex items-center gap-2 text-sm text-hcm-muted">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Checking live data...
                   </p>
@@ -251,9 +250,9 @@ export default function AIChat() {
           event.preventDefault();
           submitMessage();
         }}
-        className="shrink-0 border-t border-slate-200 bg-white p-3 sm:p-4"
+        className="shrink-0 border-t border-hcm-line bg-white p-3 sm:p-4"
       >
-        <div className="mx-auto flex max-w-3xl items-end gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-2 focus-within:border-blue-400 focus-within:bg-white focus-within:ring-4 focus-within:ring-blue-500/10">
+        <div className="mx-auto flex max-w-3xl items-end gap-2 rounded-2xl border border-hcm-line bg-hcm-surface-soft p-2 focus-within:border-hcm-accent/50 focus-within:bg-white focus-within:ring-4 focus-within:ring-hcm-accent/10">
           <textarea
             ref={inputRef}
             rows={1}
@@ -266,13 +265,13 @@ export default function AIChat() {
               }
             }}
             placeholder="Ask about attendance, leave, payroll..."
-            className="max-h-28 min-h-10 flex-1 resize-none bg-transparent px-2 py-2 text-sm text-slate-800 outline-none placeholder:text-slate-400"
+            className="max-h-28 min-h-10 flex-1 resize-none bg-transparent px-2 py-2 text-sm text-hcm-ink outline-none placeholder:text-hcm-muted"
             disabled={loading}
           />
           <button
             type="submit"
             disabled={loading || !input.trim()}
-            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-white transition hover:bg-slate-800 disabled:opacity-40"
+            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-hcm-accent text-white transition hover:bg-hcm-accent-strong disabled:opacity-40"
             aria-label="Send message"
           >
             {loading ? (
@@ -282,7 +281,7 @@ export default function AIChat() {
             )}
           </button>
         </div>
-        <p className="mx-auto mt-2 flex max-w-3xl items-center justify-center gap-1 text-[11px] text-slate-400">
+        <p className="mx-auto mt-2 flex max-w-3xl items-center justify-center gap-1 text-[11px] text-hcm-muted">
           <CornerDownLeft className="h-3 w-3" />
           Enter to send · Shift + Enter for a new line · Verify important
           decisions

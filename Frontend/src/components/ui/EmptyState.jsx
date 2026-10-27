@@ -7,10 +7,10 @@ export default function EmptyState({
 }) {
   return (
     <div
-      className={`flex flex-col items-center justify-center rounded-2xl border border-dashed border-hcm-line-strong bg-[#faf7f0] px-5 py-9 text-center ${className}`}
+      className={`flex flex-col items-center justify-center rounded-2xl border border-dashed border-hcm-line-strong bg-hcm-surface-soft px-5 py-9 text-center ${className}`}
     >
       {Icon && (
-        <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-hcm-accent shadow-sm">
+        <span className="flex h-11 w-11 items-center justify-center rounded-[10px] bg-white text-hcm-accent shadow-sm">
           <Icon className="h-5 w-5" />
         </span>
       )}

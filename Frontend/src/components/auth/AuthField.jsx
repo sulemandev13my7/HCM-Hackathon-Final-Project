@@ -20,12 +20,12 @@ export default function AuthField({
       <div className="mb-2 flex items-center justify-between gap-3">
         <label
           htmlFor={id}
-          className="text-[13px] font-semibold text-[#32433c]"
+          className="text-[13px] font-semibold text-[#3b4f46]"
         >
           {label}
         </label>
         {optional && (
-          <span className="text-[11px] font-medium text-[#8a948f]">
+          <span className="text-[11px] font-medium text-hcm-muted">
             Optional
           </span>
         )}
@@ -33,18 +33,18 @@ export default function AuthField({
 
       <div className="relative">
         {Icon && (
-          <Icon className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#8a948f]" />
+          <Icon className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-hcm-muted" />
         )}
         <input
           id={id}
           aria-invalid={Boolean(error)}
           aria-describedby={describedBy || undefined}
-          className={`h-12 w-full rounded-xl border bg-[#fbfaf6] pl-11 text-[15px] text-[#16251f] outline-none transition placeholder:text-[#9aa39d] focus:bg-white disabled:cursor-not-allowed disabled:opacity-60 ${
+          className={`h-12 w-full rounded-[10px] border bg-hcm-surface pl-11 text-[15px] text-hcm-ink outline-none transition placeholder:text-[#8b9a93] disabled:cursor-not-allowed disabled:opacity-60 ${
             action ? "pr-12" : "pr-4"
           } ${
             error
               ? "border-[#e7a6a0] focus:border-[#b42318] focus:ring-4 focus:ring-[#b42318]/10"
-              : "border-[#ded8cb] hover:border-[#c9c1b2] focus:border-[#2f5d4d] focus:ring-4 focus:ring-[#2f5d4d]/10"
+              : "border-hcm-line hover:border-hcm-line-strong focus:border-hcm-accent focus:ring-4 focus:ring-hcm-accent/10"
           } ${className}`}
           {...inputProps}
         />
@@ -66,7 +66,7 @@ export default function AuthField({
         </p>
       ) : (
         hint && (
-          <div id={`${id}-hint`} className="mt-1.5 text-xs text-[#7d8882]">
+          <div id={`${id}-hint`} className="mt-1.5 text-xs text-hcm-muted">
             {hint}
           </div>
         )

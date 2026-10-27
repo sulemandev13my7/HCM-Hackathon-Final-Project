@@ -221,7 +221,7 @@ export default function Settings() {
   if (loading) {
     return (
       <div className="space-y-4">
-        <div className="h-40 animate-pulse rounded-3xl bg-slate-200" />
+        <div className="h-40 animate-pulse rounded-2xl bg-hcm-canvas-deep" />
         <div className="h-96 animate-pulse rounded-2xl bg-white" />
       </div>
     );
@@ -251,7 +251,7 @@ export default function Settings() {
         }
         actions={
           !canEdit && (
-            <span className="inline-flex h-10 items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 text-xs font-semibold text-[#d7e0da]">
+            <span className="inline-flex h-10 items-center gap-2 rounded-[10px] border border-hcm-line bg-hcm-surface px-4 text-xs font-semibold text-hcm-muted">
               <ShieldCheck className="h-4 w-4 text-hcm-lime" />
               HR read-only access
             </span>
@@ -259,7 +259,7 @@ export default function Settings() {
         }
       />
 
-      <nav className="flex gap-1 overflow-x-auto rounded-2xl border border-slate-200/80 bg-white p-1.5 shadow-sm">
+      <nav className="flex gap-1 overflow-x-auto rounded-2xl border border-hcm-line bg-white p-1.5 shadow-sm">
         {tabs.map((item) => (
           <button
             key={item.id}
@@ -267,8 +267,8 @@ export default function Settings() {
             onClick={() => setTab(item.id)}
             className={`flex shrink-0 items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition ${
               tab === item.id
-                ? "bg-slate-900 text-white shadow-sm"
-                : "text-slate-600 hover:bg-slate-100"
+                ? "bg-hcm-accent text-white shadow-sm"
+                : "text-hcm-muted hover:bg-hcm-canvas"
             }`}
           >
             <item.icon className="h-4 w-4" />
@@ -281,18 +281,18 @@ export default function Settings() {
         <form onSubmit={saveSettings} className="space-y-4">
           {tab === "general" && (
             <div className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
-              <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+              <section className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm sm:p-6">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-600">
                   Company profile
                 </p>
-                <h2 className="mt-1 text-lg font-semibold text-slate-900">
+                <h2 className="mt-1 text-lg font-semibold text-hcm-ink">
                   Basic information
                 </h2>
                 <div className="mt-5 space-y-4">
-                  <label className="block text-xs font-medium text-slate-500">
+                  <label className="block text-xs font-medium text-hcm-muted">
                     Company name
                     <div className="relative mt-1">
-                      <Building2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                      <Building2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-hcm-muted" />
                       <input
                         value={settings.companyName}
                         disabled={!canEdit}
@@ -302,15 +302,15 @@ export default function Settings() {
                             companyName: event.target.value,
                           })
                         }
-                        className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-9 pr-3 text-sm text-slate-900 outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-500/10 disabled:opacity-70"
+                        className="w-full rounded-xl border border-hcm-line bg-hcm-surface-soft py-2.5 pl-9 pr-3 text-sm text-hcm-ink outline-none focus:border-hcm-accent/50 focus:bg-white focus:ring-4 focus:ring-hcm-accent/10 disabled:opacity-70"
                         required
                       />
                     </div>
                   </label>
-                  <label className="block text-xs font-medium text-slate-500">
+                  <label className="block text-xs font-medium text-hcm-muted">
                     Office start time
                     <div className="relative mt-1">
-                      <Clock3 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                      <Clock3 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-hcm-muted" />
                       <input
                         type="time"
                         value={settings.officeStartTime}
@@ -321,24 +321,24 @@ export default function Settings() {
                             officeStartTime: event.target.value,
                           })
                         }
-                        className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-9 pr-3 text-sm text-slate-900 outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-500/10 disabled:opacity-70"
+                        className="w-full rounded-xl border border-hcm-line bg-hcm-surface-soft py-2.5 pl-9 pr-3 text-sm text-hcm-ink outline-none focus:border-hcm-accent/50 focus:bg-white focus:ring-4 focus:ring-hcm-accent/10 disabled:opacity-70"
                       />
                     </div>
                   </label>
                 </div>
               </section>
 
-              <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+              <section className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm sm:p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-hcm-muted">
                       Overview
                     </p>
-                    <h2 className="mt-1 text-lg font-semibold text-slate-900">
+                    <h2 className="mt-1 text-lg font-semibold text-hcm-ink">
                       Workspace summary
                     </h2>
                   </div>
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-hcm-canvas-deep text-hcm-muted">
                     <Settings2 className="h-5 w-5" />
                   </span>
                 </div>
@@ -351,10 +351,10 @@ export default function Settings() {
                   ].map((item) => (
                     <div
                       key={item.label}
-                      className="rounded-xl bg-slate-50 p-3"
+                      className="rounded-xl bg-hcm-surface-soft p-3"
                     >
-                      <p className="text-[11px] text-slate-400">{item.label}</p>
-                      <p className="mt-1 text-xl font-semibold text-slate-900">
+                      <p className="text-[11px] text-hcm-muted">{item.label}</p>
+                      <p className="mt-1 text-xl font-semibold text-hcm-ink">
                         {item.value}
                       </p>
                     </div>
@@ -366,18 +366,18 @@ export default function Settings() {
 
           {tab === "attendance" && (
             <div className="grid gap-4 lg:grid-cols-2">
-              <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-600">
+              <section className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm sm:p-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-hcm-accent">
                   Attendance rules
                 </p>
-                <h2 className="mt-1 text-lg font-semibold text-slate-900">
+                <h2 className="mt-1 text-lg font-semibold text-hcm-ink">
                   Hours & late policy
                 </h2>
                 <div className="mt-5 grid grid-cols-2 gap-3">
-                  <label className="block text-xs font-medium text-slate-500">
+                  <label className="block text-xs font-medium text-hcm-muted">
                     Grace minutes
                     <div className="relative mt-1">
-                      <Timer className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                      <Timer className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-hcm-muted" />
                       <input
                         type="number"
                         min="0"
@@ -389,11 +389,11 @@ export default function Settings() {
                             graceMinutes: event.target.value,
                           })
                         }
-                        className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-9 pr-3 text-sm text-slate-900 outline-none focus:border-blue-400 focus:bg-white disabled:opacity-70"
+                        className="w-full rounded-xl border border-hcm-line bg-hcm-surface-soft py-2.5 pl-9 pr-3 text-sm text-hcm-ink outline-none focus:border-hcm-accent/50 focus:bg-white disabled:opacity-70"
                       />
                     </div>
                   </label>
-                  <label className="block text-xs font-medium text-slate-500">
+                  <label className="block text-xs font-medium text-hcm-muted">
                     Half-day hours
                     <input
                       type="number"
@@ -407,12 +407,12 @@ export default function Settings() {
                           halfDayHours: event.target.value,
                         })
                       }
-                      className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-blue-400 focus:bg-white disabled:opacity-70"
+                      className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm text-hcm-ink outline-none focus:border-hcm-accent/50 focus:bg-white disabled:opacity-70"
                     />
                   </label>
                 </div>
 
-                <p className="mt-5 text-xs font-medium text-slate-500">
+                <p className="mt-5 text-xs font-medium text-hcm-muted">
                   Weekend days
                 </p>
                 <div className="mt-2 flex flex-wrap gap-1.5">
@@ -426,8 +426,8 @@ export default function Settings() {
                         onClick={() => toggleWeekend(index)}
                         className={`rounded-full px-3 py-1.5 text-xs font-medium ring-1 ring-inset transition disabled:cursor-not-allowed ${
                           selected
-                            ? "bg-slate-900 text-white ring-slate-900"
-                            : "bg-white text-slate-600 ring-slate-200 hover:bg-slate-50"
+                            ? "bg-hcm-accent text-white ring-hcm-accent"
+                            : "bg-white text-hcm-muted ring-hcm-line hover:bg-hcm-canvas"
                         }`}
                       >
                         {day.slice(0, 3)}
@@ -437,27 +437,27 @@ export default function Settings() {
                 </div>
               </section>
 
-              <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+              <section className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm sm:p-6">
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-600">
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-hcm-accent">
                       Camera attendance
                     </p>
-                    <h2 className="mt-1 text-lg font-semibold text-slate-900">
+                    <h2 className="mt-1 text-lg font-semibold text-hcm-ink">
                       Office geofence
                     </h2>
-                    <p className="mt-1 text-sm leading-6 text-slate-500">
+                    <p className="mt-1 text-sm leading-6 text-hcm-muted">
                       Set office coordinates so camera check-ins can verify
                       employees are on site.
                     </p>
                   </div>
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-hcm-accent-soft text-hcm-accent">
                     <MapPin className="h-5 w-5" />
                   </span>
                 </div>
 
                 <div className="mt-5 grid grid-cols-2 gap-3">
-                  <label className="block text-xs font-medium text-slate-500">
+                  <label className="block text-xs font-medium text-hcm-muted">
                     Latitude
                     <input
                       type="number"
@@ -471,10 +471,10 @@ export default function Settings() {
                         })
                       }
                       placeholder="24.8607"
-                      className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-blue-400 focus:bg-white disabled:opacity-70"
+                      className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm text-hcm-ink outline-none focus:border-hcm-accent/50 focus:bg-white disabled:opacity-70"
                     />
                   </label>
-                  <label className="block text-xs font-medium text-slate-500">
+                  <label className="block text-xs font-medium text-hcm-muted">
                     Longitude
                     <input
                       type="number"
@@ -488,13 +488,13 @@ export default function Settings() {
                         })
                       }
                       placeholder="67.0011"
-                      className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-blue-400 focus:bg-white disabled:opacity-70"
+                      className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm text-hcm-ink outline-none focus:border-hcm-accent/50 focus:bg-white disabled:opacity-70"
                     />
                   </label>
-                  <label className="col-span-2 block text-xs font-medium text-slate-500">
+                  <label className="col-span-2 block text-xs font-medium text-hcm-muted">
                     Allowed radius (meters)
                     <div className="relative mt-1">
-                      <Compass className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                      <Compass className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-hcm-muted" />
                       <input
                         type="number"
                         min="1"
@@ -506,7 +506,7 @@ export default function Settings() {
                             officeRadius: event.target.value,
                           })
                         }
-                        className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-9 pr-3 text-sm text-slate-900 outline-none focus:border-blue-400 focus:bg-white disabled:opacity-70"
+                        className="w-full rounded-xl border border-hcm-line bg-hcm-surface-soft py-2.5 pl-9 pr-3 text-sm text-hcm-ink outline-none focus:border-hcm-accent/50 focus:bg-white disabled:opacity-70"
                       />
                     </div>
                   </label>
@@ -515,7 +515,7 @@ export default function Settings() {
                 <div
                   className={`mt-4 rounded-xl border p-3 text-xs leading-5 ${
                     hasGeofence
-                      ? "border-emerald-100 bg-emerald-50 text-emerald-800"
+                      ? "border-hcm-accent/15 bg-hcm-accent-soft text-hcm-accent"
                       : "border-amber-100 bg-amber-50 text-amber-800"
                   }`}
                 >
@@ -535,7 +535,7 @@ export default function Settings() {
               <button
                 type="submit"
                 disabled={saving}
-                className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-60"
+                className="inline-flex items-center gap-2 rounded-xl bg-hcm-accent px-5 py-3 text-sm font-medium text-white transition hover:bg-hcm-accent-strong disabled:opacity-60"
               >
                 {saving ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -549,17 +549,17 @@ export default function Settings() {
         </form>
       ) : (
         <div className="grid gap-4 lg:grid-cols-2">
-          <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+          <section className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-slate-900">
+                <h2 className="text-lg font-semibold text-hcm-ink">
                   Departments
                 </h2>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-hcm-muted">
                   {departments.length} configured
                 </p>
               </div>
-              <Network className="h-5 w-5 text-slate-300" />
+              <Network className="h-5 w-5 text-hcm-muted/40" />
             </div>
             {canEdit && (
               <form onSubmit={addDepartment} className="mt-4 flex gap-2">
@@ -568,12 +568,12 @@ export default function Settings() {
                   onChange={(event) => setDeptForm({ name: event.target.value })}
                   placeholder="Department name"
                   required
-                  className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                  className="min-w-0 flex-1 rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                 />
                 <button
                   type="submit"
                   disabled={savingOrg === "department"}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2.5 text-sm font-medium text-white disabled:opacity-60"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-hcm-accent px-3.5 py-2.5 text-sm font-medium text-white disabled:opacity-60"
                 >
                   {savingOrg === "department" ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -588,31 +588,31 @@ export default function Settings() {
               {departments.map((department) => (
                 <li
                   key={department._id}
-                  className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2.5 text-sm text-slate-700"
+                  className="flex items-center gap-2 rounded-xl bg-hcm-surface-soft px-3 py-2.5 text-sm text-hcm-ink"
                 >
-                  <Building2 className="h-3.5 w-3.5 text-slate-400" />
+                  <Building2 className="h-3.5 w-3.5 text-hcm-muted" />
                   {department.name}
                 </li>
               ))}
               {!departments.length && (
-                <li className="py-4 text-center text-sm text-slate-400">
+                <li className="py-4 text-center text-sm text-hcm-muted">
                   No departments yet
                 </li>
               )}
             </ul>
           </section>
 
-          <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+          <section className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-slate-900">
+                <h2 className="text-lg font-semibold text-hcm-ink">
                   Designations
                 </h2>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-hcm-muted">
                   {designations.length} configured
                 </p>
               </div>
-              <Users className="h-5 w-5 text-slate-300" />
+              <Users className="h-5 w-5 text-hcm-muted/40" />
             </div>
             {canEdit && (
               <form onSubmit={addDesignation} className="mt-4 space-y-2">
@@ -626,7 +626,7 @@ export default function Settings() {
                   }
                   placeholder="Job title"
                   required
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                  className="w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                 />
                 <div className="flex gap-2">
                   <select
@@ -637,7 +637,7 @@ export default function Settings() {
                         department: event.target.value,
                       })
                     }
-                    className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                    className="min-w-0 flex-1 rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                   >
                     <option value="">No department</option>
                     {departments.map((department) => (
@@ -649,7 +649,7 @@ export default function Settings() {
                   <button
                     type="submit"
                     disabled={savingOrg === "designation"}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2.5 text-sm font-medium text-white disabled:opacity-60"
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-hcm-accent px-3.5 py-2.5 text-sm font-medium text-white disabled:opacity-60"
                   >
                     {savingOrg === "designation" ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -665,33 +665,33 @@ export default function Settings() {
               {designations.map((designation) => (
                 <li
                   key={designation._id}
-                  className="flex items-center justify-between gap-2 rounded-xl bg-slate-50 px-3 py-2.5 text-sm text-slate-700"
+                  className="flex items-center justify-between gap-2 rounded-xl bg-hcm-surface-soft px-3 py-2.5 text-sm text-hcm-ink"
                 >
                   <span>{designation.title}</span>
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-hcm-muted">
                     {designation.department?.name || "Unassigned"}
                   </span>
                 </li>
               ))}
               {!designations.length && (
-                <li className="py-4 text-center text-sm text-slate-400">
+                <li className="py-4 text-center text-sm text-hcm-muted">
                   No designations yet
                 </li>
               )}
             </ul>
           </section>
 
-          <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+          <section className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-slate-900">
+                <h2 className="text-lg font-semibold text-hcm-ink">
                   Leave types
                 </h2>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-hcm-muted">
                   {leaveTypes.length} configured
                 </p>
               </div>
-              <Palmtree className="h-5 w-5 text-slate-300" />
+              <Palmtree className="h-5 w-5 text-hcm-muted/40" />
             </div>
             {canEdit && (
               <form onSubmit={addLeaveType} className="mt-4 space-y-2">
@@ -703,7 +703,7 @@ export default function Settings() {
                     }
                     placeholder="e.g. Annual leave"
                     required
-                    className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                    className="min-w-0 flex-1 rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                   />
                   <input
                     type="number"
@@ -713,11 +713,11 @@ export default function Settings() {
                       setLeaveForm({ ...leaveForm, quota: event.target.value })
                     }
                     aria-label="Annual quota in days"
-                    className="w-24 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                    className="w-24 rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                   />
                 </div>
                 <div className="flex items-center justify-between gap-2">
-                  <label className="flex items-center gap-2 text-xs text-slate-600">
+                  <label className="flex items-center gap-2 text-xs text-hcm-muted">
                     <input
                       type="checkbox"
                       checked={leaveForm.isPaid}
@@ -727,14 +727,14 @@ export default function Settings() {
                           isPaid: event.target.checked,
                         })
                       }
-                      className="rounded border-slate-300"
+                      className="rounded border-hcm-line-strong"
                     />
                     Paid leave
                   </label>
                   <button
                     type="submit"
                     disabled={savingOrg === "leave"}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2.5 text-sm font-medium text-white disabled:opacity-60"
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-hcm-accent px-3.5 py-2.5 text-sm font-medium text-white disabled:opacity-60"
                   >
                     {savingOrg === "leave" ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -750,33 +750,33 @@ export default function Settings() {
               {leaveTypes.map((leaveType) => (
                 <li
                   key={leaveType._id}
-                  className="flex items-center justify-between gap-2 rounded-xl bg-slate-50 px-3 py-2.5 text-sm text-slate-700"
+                  className="flex items-center justify-between gap-2 rounded-xl bg-hcm-surface-soft px-3 py-2.5 text-sm text-hcm-ink"
                 >
                   <span>{leaveType.name}</span>
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-hcm-muted">
                     {leaveType.quota} days · {leaveType.isPaid ? "Paid" : "Unpaid"}
                   </span>
                 </li>
               ))}
               {!leaveTypes.length && (
-                <li className="py-4 text-center text-sm text-slate-400">
+                <li className="py-4 text-center text-sm text-hcm-muted">
                   No leave types yet
                 </li>
               )}
             </ul>
           </section>
 
-          <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+          <section className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-slate-900">
+                <h2 className="text-lg font-semibold text-hcm-ink">
                   Public holidays
                 </h2>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-hcm-muted">
                   {holidays.length} configured
                 </p>
               </div>
-              <CalendarDays className="h-5 w-5 text-slate-300" />
+              <CalendarDays className="h-5 w-5 text-hcm-muted/40" />
             </div>
             {canEdit && (
               <form onSubmit={addHoliday} className="mt-4 space-y-2">
@@ -787,7 +787,7 @@ export default function Settings() {
                   }
                   placeholder="Holiday name"
                   required
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                  className="w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                 />
                 <div className="flex gap-2">
                   <input
@@ -800,12 +800,12 @@ export default function Settings() {
                       })
                     }
                     required
-                    className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                    className="min-w-0 flex-1 rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm outline-none focus:border-hcm-accent/50 focus:bg-white"
                   />
                   <button
                     type="submit"
                     disabled={savingOrg === "holiday"}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2.5 text-sm font-medium text-white disabled:opacity-60"
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-hcm-accent px-3.5 py-2.5 text-sm font-medium text-white disabled:opacity-60"
                   >
                     {savingOrg === "holiday" ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -821,10 +821,10 @@ export default function Settings() {
               {holidays.map((holiday) => (
                 <li
                   key={holiday._id}
-                  className="flex items-center justify-between gap-2 rounded-xl bg-slate-50 px-3 py-2.5 text-sm text-slate-700"
+                  className="flex items-center justify-between gap-2 rounded-xl bg-hcm-surface-soft px-3 py-2.5 text-sm text-hcm-ink"
                 >
                   <span>{holiday.name}</span>
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-hcm-muted">
                     {new Date(holiday.date).toLocaleDateString([], {
                       day: "numeric",
                       month: "short",
@@ -834,7 +834,7 @@ export default function Settings() {
                 </li>
               ))}
               {!holidays.length && (
-                <li className="py-4 text-center text-sm text-slate-400">
+                <li className="py-4 text-center text-sm text-hcm-muted">
                   No holidays yet
                 </li>
               )}

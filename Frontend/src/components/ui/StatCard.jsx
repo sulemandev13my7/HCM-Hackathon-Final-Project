@@ -10,18 +10,12 @@ export default function StatCard({
 }) {
   return (
     <article
-      className={`group relative overflow-hidden rounded-2xl border p-5 shadow-hcm transition duration-300 hover:-translate-y-0.5 hover:shadow-hcm-lift ${
+      className={`relative overflow-hidden rounded-2xl border p-5 shadow-hcm transition duration-200 hover:border-hcm-line-strong ${
         emphasis
-          ? "border-hcm-ink bg-hcm-ink text-hcm-surface"
+          ? "border-hcm-ink bg-hcm-ink text-white"
           : "border-hcm-line bg-hcm-surface text-hcm-ink"
       } ${className}`}
     >
-      {emphasis && (
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -right-10 -top-12 h-32 w-32 rounded-full bg-hcm-lime/10 blur-2xl"
-        />
-      )}
       <div className="relative flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p
@@ -31,7 +25,7 @@ export default function StatCard({
           >
             {label}
           </p>
-          <p className="mt-2.5 text-[1.65rem] font-semibold tracking-[-0.03em]">
+          <p className="mt-2.5 font-display text-[1.65rem] font-bold tracking-[-0.03em]">
             {value}
           </p>
           {detail && (
@@ -46,7 +40,7 @@ export default function StatCard({
         </div>
         {Icon && (
           <span
-            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
+            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] ${
               emphasis ? "bg-white/10 text-hcm-lime" : tone
             }`}
           >

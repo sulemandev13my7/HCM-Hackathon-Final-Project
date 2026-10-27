@@ -136,7 +136,7 @@ export default function CommandPalette({
         role="dialog"
         aria-modal="true"
         aria-label="Command menu"
-        className="hcm-rise-in w-full max-w-xl overflow-hidden rounded-3xl border border-white/20 bg-hcm-surface shadow-[0_40px_120px_-30px_rgba(16,37,31,0.75)]"
+        className="hcm-rise-in w-full max-w-xl overflow-hidden rounded-2xl border border-hcm-line bg-hcm-surface shadow-hcm"
         onKeyDown={handleKeyDown}
       >
         <div className="flex items-center gap-3 border-b border-hcm-line px-4 py-3">
@@ -149,7 +149,7 @@ export default function CommandPalette({
               setActiveIndex(0);
             }}
             placeholder="Search pages and actions"
-            className="min-w-0 flex-1 bg-transparent py-1 text-sm text-hcm-ink outline-none placeholder:text-[#9aa39e]"
+            className="min-w-0 flex-1 bg-transparent py-1 text-sm text-hcm-ink outline-none placeholder:text-hcm-muted/70"
             aria-label="Search pages and actions"
           />
           <button
@@ -178,16 +178,16 @@ export default function CommandPalette({
                     type="button"
                     onMouseEnter={() => setActiveIndex(index)}
                     onClick={() => runCommand(command)}
-                    className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition ${
+                    className={`flex w-full items-center gap-3 rounded-[10px] px-3 py-2.5 text-left text-sm transition ${
                       index === safeIndex
-                        ? "bg-hcm-ink text-hcm-surface"
-                        : "text-hcm-ink hover:bg-[#f3efe5]"
+                        ? "bg-hcm-accent-soft text-hcm-accent"
+                        : "text-hcm-ink hover:bg-hcm-canvas"
                     }`}
                   >
                     <command.icon
                       className={`h-4 w-4 shrink-0 ${
                         index === safeIndex
-                          ? "text-hcm-lime"
+                          ? "text-hcm-accent"
                           : "text-hcm-muted"
                       }`}
                     />
@@ -196,7 +196,9 @@ export default function CommandPalette({
                     </span>
                     <ArrowRight
                       className={`h-3.5 w-3.5 shrink-0 ${
-                        index === safeIndex ? "text-hcm-lime" : "text-[#b5b0a4]"
+                        index === safeIndex
+                          ? "text-hcm-accent"
+                          : "text-hcm-muted/50"
                       }`}
                     />
                   </button>
@@ -210,9 +212,9 @@ export default function CommandPalette({
           )}
         </div>
 
-        <div className="flex items-center justify-between gap-3 border-t border-hcm-line bg-[#faf7f0] px-4 py-2.5 text-[10px] font-medium text-hcm-muted">
+        <div className="flex items-center justify-between gap-3 border-t border-hcm-line bg-hcm-surface-soft px-4 py-2.5 text-[10px] font-medium text-hcm-muted">
           <span className="inline-flex items-center gap-1.5">
-            <span className="rounded border border-hcm-line bg-white px-1.5 py-0.5 font-mono">
+            <span className="rounded border border-hcm-line bg-white px-1.5 py-0.5 font-mono text-hcm-ink">
               ↑ ↓
             </span>
             Navigate

@@ -9,36 +9,23 @@ export default function PageHeader({
 }) {
   return (
     <header
-      className={`relative overflow-hidden rounded-[30px] bg-hcm-ink px-5 py-6 text-hcm-surface shadow-[0_34px_90px_-58px_rgba(16,37,31,0.95)] sm:px-8 sm:py-8 ${className}`}
+      className={`rounded-2xl border border-hcm-line bg-hcm-surface px-5 py-5 shadow-hcm sm:px-6 sm:py-6 ${className}`}
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 hcm-grid-pattern-dark opacity-70"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-hcm-lime/15 blur-3xl"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -bottom-28 left-1/4 h-64 w-64 rounded-full bg-[#2f6b50]/35 blur-3xl"
-      />
-
-      <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-        <div className="flex min-w-0 items-start gap-4 sm:items-center">
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+        <div className="flex min-w-0 items-start gap-4">
           {leading}
           <div className="min-w-0">
             {eyebrow && (
-              <p className="hcm-eyebrow-light">
-                <span className="h-1.5 w-1.5 rounded-full bg-hcm-lime" />
+              <p className="hcm-eyebrow text-hcm-accent">
+                <span className="h-1.5 w-1.5 rounded-full bg-hcm-accent" />
                 {eyebrow}
               </p>
             )}
-            <h1 className="mt-2 font-display text-[2rem] leading-[1.08] tracking-[-0.025em] text-[#fffdf8] text-balance sm:text-[2.65rem]">
+            <h1 className="mt-2 font-display text-[26px] font-bold leading-[1.15] tracking-[-0.03em] text-hcm-ink text-balance sm:text-[32px]">
               {title}
             </h1>
             {description && (
-              <p className="mt-2.5 max-w-2xl text-sm leading-6 text-[#bdcbc3]">
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-hcm-muted">
                 {description}
               </p>
             )}

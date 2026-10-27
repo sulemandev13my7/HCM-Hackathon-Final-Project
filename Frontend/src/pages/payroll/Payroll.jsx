@@ -257,16 +257,16 @@ export default function Payroll() {
       />
 
       {canCreatePayroll && showForm && (
-        <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+        <section className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm sm:p-6">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-600">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-hcm-accent">
                 New run
               </p>
-              <h2 className="mt-1 text-lg font-semibold text-slate-900">
+              <h2 className="mt-1 text-lg font-semibold text-hcm-ink">
                 Choose a payroll period
               </h2>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-hcm-muted">
                 Attendance, leave and salary structures are calculated by the
                 server.
               </p>
@@ -274,7 +274,7 @@ export default function Payroll() {
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="rounded-lg p-2 text-slate-400 hover:bg-slate-100"
+              className="rounded-lg p-2 text-hcm-muted hover:bg-hcm-canvas"
               aria-label="Close payroll form"
             >
               <X className="h-5 w-5" />
@@ -284,10 +284,10 @@ export default function Payroll() {
             onSubmit={createRun}
             className="mt-5 grid gap-3 sm:grid-cols-[1.4fr_1fr_auto]"
           >
-            <label className="text-xs font-medium text-slate-500">
+            <label className="text-xs font-medium text-hcm-muted">
               Month
               <select
-                className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+                className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm text-hcm-ink outline-none focus:border-hcm-accent/50 focus:bg-white focus:ring-4 focus:ring-hcm-accent/10"
                 value={formData.month}
                 onChange={(event) =>
                   setFormData({ ...formData, month: event.target.value })
@@ -301,13 +301,13 @@ export default function Payroll() {
                 ))}
               </select>
             </label>
-            <label className="text-xs font-medium text-slate-500">
+            <label className="text-xs font-medium text-hcm-muted">
               Year
               <input
                 type="number"
                 min="2000"
                 max="9999"
-                className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+                className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm text-hcm-ink outline-none focus:border-hcm-accent/50 focus:bg-white focus:ring-4 focus:ring-hcm-accent/10"
                 value={formData.year}
                 onChange={(event) =>
                   setFormData({ ...formData, year: event.target.value })
@@ -318,7 +318,7 @@ export default function Payroll() {
             <button
               type="submit"
               disabled={busy === "create"}
-              className="self-end inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-60"
+              className="self-end inline-flex items-center justify-center gap-2 rounded-xl bg-hcm-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-hcm-accent-strong disabled:opacity-60"
             >
               {busy === "create" ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -332,53 +332,53 @@ export default function Payroll() {
       )}
 
       {loading ? (
-        <div className="flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white p-16 text-sm text-slate-500">
+        <div className="flex items-center justify-center gap-2 rounded-2xl border border-hcm-line bg-white p-16 text-sm text-hcm-muted">
           <Loader2 className="h-4 w-4 animate-spin" /> Loading payroll...
         </div>
       ) : isEmployee ? (
         <>
           <section className="grid gap-4 sm:grid-cols-3">
-            <div className="rounded-2xl border border-slate-900 bg-slate-950 p-5 text-white shadow-sm">
-              <p className="text-sm text-slate-300">Total net earned</p>
+            <div className="rounded-2xl border border-hcm-ink/10 bg-hcm-ink p-5 text-white">
+              <p className="text-sm text-white/55">Total net earned</p>
               <p className="mt-2 text-2xl font-semibold">
                 {currency(metrics.totalEarned)}
               </p>
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-white/55">
                 Across {metrics.primary} finalized payslip
                 {metrics.primary === 1 ? "" : "s"}
               </p>
             </div>
-            <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
-              <p className="text-sm text-slate-500">Latest payslip</p>
-              <p className="mt-2 text-lg font-semibold text-slate-900">
+            <div className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm">
+              <p className="text-sm text-hcm-muted">Latest payslip</p>
+              <p className="mt-2 text-lg font-semibold text-hcm-ink">
                 {metrics.latest
                   ? periodLabel(metrics.latest.month, metrics.latest.year)
                   : "No payslip yet"}
               </p>
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-hcm-muted">
                 {metrics.latest
                   ? currency(metrics.latest.netPay)
                   : "HR has not finalized a run for you."}
               </p>
             </div>
-            <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
-              <p className="text-sm text-slate-500">Downloads</p>
-              <p className="mt-2 flex items-center gap-2 text-lg font-semibold text-slate-900">
-                <FileText className="h-5 w-5 text-emerald-500" />
+            <div className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm">
+              <p className="text-sm text-hcm-muted">Downloads</p>
+              <p className="mt-2 flex items-center gap-2 text-lg font-semibold text-hcm-ink">
+                <FileText className="h-5 w-5 text-hcm-accent" />
                 PDF payslip
               </p>
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-hcm-muted">
                 Generated from finalized payroll data.
               </p>
             </div>
           </section>
 
-          <section className="rounded-2xl border border-slate-200/80 bg-white shadow-sm">
-            <div className="border-b border-slate-100 p-5 sm:p-6">
-              <h2 className="text-lg font-semibold text-slate-900">
+          <section className="rounded-2xl border border-hcm-line bg-white shadow-sm">
+            <div className="border-b border-hcm-line/80 p-5 sm:p-6">
+              <h2 className="text-lg font-semibold text-hcm-ink">
                 Payslip history
               </h2>
-              <p className="mt-0.5 text-sm text-slate-500">
+              <p className="mt-0.5 text-sm text-hcm-muted">
                 Only finalized runs can be downloaded.
               </p>
             </div>
@@ -386,7 +386,7 @@ export default function Payroll() {
               <>
                 <div className="hidden overflow-x-auto md:block">
                   <table className="w-full text-sm">
-                    <thead className="bg-slate-50/80 text-left text-[11px] uppercase tracking-wide text-slate-400">
+                    <thead className="bg-hcm-surface-soft text-left text-[11px] uppercase tracking-wide text-hcm-muted">
                       <tr>
                         <th className="px-6 py-3">Period</th>
                         <th className="px-6 py-3">Gross</th>
@@ -394,21 +394,21 @@ export default function Payroll() {
                         <th className="px-6 py-3 text-right">Payslip</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody className="divide-y divide-hcm-line">
                       {payslips.map((payslip) => {
                         const key = `${payslip.runId}-self`;
                         return (
                           <tr
                             key={payslip.runId}
-                            className="transition hover:bg-slate-50/60"
+                            className="transition hover:bg-hcm-surface-soft"
                           >
-                            <td className="px-6 py-4 font-medium text-slate-800">
+                            <td className="px-6 py-4 font-medium text-hcm-ink">
                               {periodLabel(payslip.month, payslip.year)}
                             </td>
-                            <td className="px-6 py-4 text-slate-600">
+                            <td className="px-6 py-4 text-hcm-muted">
                               {currency(payslip.gross)}
                             </td>
-                            <td className="px-6 py-4 font-semibold text-slate-900">
+                            <td className="px-6 py-4 font-semibold text-hcm-ink">
                               {currency(payslip.netPay)}
                             </td>
                             <td className="px-6 py-4 text-right">
@@ -422,7 +422,7 @@ export default function Payroll() {
                                   })
                                 }
                                 disabled={downloading === key}
-                                className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800 disabled:opacity-60"
+                                className="inline-flex items-center gap-1.5 rounded-lg bg-hcm-accent px-3 py-2 text-xs font-semibold text-white hover:bg-hcm-accent-strong disabled:opacity-60"
                               >
                                 {downloading === key ? (
                                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -438,21 +438,21 @@ export default function Payroll() {
                     </tbody>
                   </table>
                 </div>
-                <div className="divide-y divide-slate-100 md:hidden">
+                <div className="divide-y divide-hcm-line md:hidden">
                   {payslips.map((payslip) => {
                     const key = `${payslip.runId}-self`;
                     return (
                       <div key={payslip.runId} className="p-4">
                         <div className="flex items-start justify-between">
                           <div>
-                            <p className="font-medium text-slate-900">
+                            <p className="font-medium text-hcm-ink">
                               {periodLabel(payslip.month, payslip.year)}
                             </p>
-                            <p className="mt-1 text-xs text-slate-500">
+                            <p className="mt-1 text-xs text-hcm-muted">
                               Gross {currency(payslip.gross)}
                             </p>
                           </div>
-                          <p className="font-semibold text-slate-900">
+                          <p className="font-semibold text-hcm-ink">
                             {currency(payslip.netPay)}
                           </p>
                         </div>
@@ -466,7 +466,7 @@ export default function Payroll() {
                             })
                           }
                           disabled={downloading === key}
-                          className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white disabled:opacity-60"
+                          className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-hcm-accent px-3 py-2 text-xs font-semibold text-white disabled:opacity-60"
                         >
                           {downloading === key ? (
                             <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -482,11 +482,11 @@ export default function Payroll() {
               </>
             ) : (
               <div className="p-12 text-center">
-                <FileText className="mx-auto h-8 w-8 text-slate-300" />
-                <p className="mt-2 text-sm font-medium text-slate-700">
+                <FileText className="mx-auto h-8 w-8 text-hcm-muted/40" />
+                <p className="mt-2 text-sm font-medium text-hcm-ink">
                   No payslips yet
                 </p>
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1 text-xs text-hcm-muted">
                   Your first payslip appears after HR finalizes a payroll run.
                 </p>
               </div>
@@ -496,54 +496,54 @@ export default function Payroll() {
       ) : (
         <>
           <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <div className="rounded-2xl border border-slate-900 bg-slate-950 p-5 text-white shadow-sm">
+            <div className="rounded-2xl border border-hcm-ink/10 bg-hcm-ink p-5 text-white">
               <div className="flex items-center justify-between">
-                <p className="text-sm text-slate-300">Total net paid</p>
-                <Wallet className="h-5 w-5 text-emerald-300" />
+                <p className="text-sm text-white/55">Total net paid</p>
+                <Wallet className="h-5 w-5 text-hcm-lime" />
               </div>
               <p className="mt-2 text-2xl font-semibold">
                 {currency(metrics.totalPaid)}
               </p>
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-white/55">
                 From {metrics.finalized} finalized run
                 {metrics.finalized === 1 ? "" : "s"}
               </p>
             </div>
-            <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
+            <div className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm">
               <div className="flex items-center justify-between">
-                <p className="text-sm text-slate-500">Draft runs</p>
+                <p className="text-sm text-hcm-muted">Draft runs</p>
                 <Clock3 className="h-5 w-5 text-amber-500" />
               </div>
-              <p className="mt-2 text-2xl font-semibold text-slate-900">
+              <p className="mt-2 text-2xl font-semibold text-hcm-ink">
                 {metrics.drafts}
               </p>
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-hcm-muted">
                 Awaiting admin finalization
               </p>
             </div>
-            <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
+            <div className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm">
               <div className="flex items-center justify-between">
-                <p className="text-sm text-slate-500">Total runs</p>
-                <CalendarDays className="h-5 w-5 text-blue-500" />
+                <p className="text-sm text-hcm-muted">Total runs</p>
+                <CalendarDays className="h-5 w-5 text-hcm-accent" />
               </div>
-              <p className="mt-2 text-2xl font-semibold text-slate-900">
+              <p className="mt-2 text-2xl font-semibold text-hcm-ink">
                 {runs.length}
               </p>
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-hcm-muted">
                 Across all payroll periods
               </p>
             </div>
-            <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
+            <div className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm">
               <div className="flex items-center justify-between">
-                <p className="text-sm text-slate-500">Latest release</p>
-                <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                <p className="text-sm text-hcm-muted">Latest release</p>
+                <CheckCircle2 className="h-5 w-5 text-hcm-accent" />
               </div>
-              <p className="mt-2 text-lg font-semibold text-slate-900">
+              <p className="mt-2 text-lg font-semibold text-hcm-ink">
                 {metrics.latest
                   ? periodLabel(metrics.latest.month, metrics.latest.year)
                   : "No release"}
               </p>
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-hcm-muted">
                 {metrics.latest
                   ? currency(metrics.latest.totalNet)
                   : "Finalize a run to release payslips."}
@@ -551,17 +551,17 @@ export default function Payroll() {
             </div>
           </section>
 
-          <section className="rounded-2xl border border-slate-200/80 bg-white shadow-sm">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 p-5 sm:p-6">
+          <section className="rounded-2xl border border-hcm-line bg-white shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-hcm-line/80 p-5 sm:p-6">
               <div>
-                <h2 className="text-lg font-semibold text-slate-900">
+                <h2 className="text-lg font-semibold text-hcm-ink">
                   Payroll runs
                 </h2>
-                <p className="mt-0.5 text-sm text-slate-500">
+                <p className="mt-0.5 text-sm text-hcm-muted">
                   Latest periods first. Open a run to review every employee.
                 </p>
               </div>
-              <span className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600">
+              <span className="rounded-full bg-hcm-canvas-deep px-3 py-1.5 text-xs font-semibold text-hcm-muted">
                 {runs.length} periods
               </span>
             </div>
@@ -570,7 +570,7 @@ export default function Payroll() {
               <>
                 <div className="hidden overflow-x-auto md:block">
                   <table className="w-full text-sm">
-                    <thead className="bg-slate-50/80 text-left text-[11px] uppercase tracking-wide text-slate-400">
+                    <thead className="bg-hcm-surface-soft text-left text-[11px] uppercase tracking-wide text-hcm-muted">
                       <tr>
                         <th className="px-6 py-3">Period</th>
                         <th className="px-6 py-3">Status</th>
@@ -580,17 +580,17 @@ export default function Payroll() {
                         <th className="px-6 py-3 text-right">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody className="divide-y divide-hcm-line">
                       {runs.map((run) => (
                         <tr
                           key={run._id}
-                          className="transition hover:bg-slate-50/60"
+                          className="transition hover:bg-hcm-surface-soft"
                         >
                           <td className="px-6 py-4">
-                            <p className="font-medium text-slate-800">
+                            <p className="font-medium text-hcm-ink">
                               {periodLabel(run.month, run.year)}
                             </p>
-                            <p className="text-xs text-slate-400">
+                            <p className="text-xs text-hcm-muted">
                               {run.items?.length || 0} employees
                             </p>
                           </td>
@@ -598,20 +598,20 @@ export default function Payroll() {
                             <span
                               className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold capitalize ring-1 ring-inset ${
                                 run.status === "finalized"
-                                  ? "bg-emerald-50 text-emerald-700 ring-emerald-600/20"
+                                  ? "bg-hcm-accent-soft text-hcm-accent ring-hcm-accent/20"
                                   : "bg-amber-50 text-amber-700 ring-amber-600/20"
                               }`}
                             >
                               {run.status}
                             </span>
                           </td>
-                          <td className="px-6 py-4 text-slate-600">
+                          <td className="px-6 py-4 text-hcm-muted">
                             {run.workingDays}
                           </td>
-                          <td className="px-6 py-4 text-slate-600">
+                          <td className="px-6 py-4 text-hcm-muted">
                             {currency(run.totalGross)}
                           </td>
-                          <td className="px-6 py-4 font-semibold text-slate-900">
+                          <td className="px-6 py-4 font-semibold text-hcm-ink">
                             {currency(run.totalNet)}
                           </td>
                           <td className="px-6 py-4">
@@ -620,7 +620,7 @@ export default function Payroll() {
                                 type="button"
                                 onClick={() => openRun(run)}
                                 disabled={runLoading === run._id}
-                                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+                                className="inline-flex items-center gap-1.5 rounded-lg border border-hcm-line px-3 py-2 text-xs font-medium text-hcm-ink hover:bg-hcm-canvas disabled:opacity-60"
                               >
                                 {runLoading === run._id ? (
                                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -635,7 +635,7 @@ export default function Payroll() {
                                     type="button"
                                     onClick={() => finalize(run._id)}
                                     disabled={busy === run._id}
-                                    className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
+                                    className="inline-flex items-center gap-1.5 rounded-lg bg-hcm-accent px-3 py-2 text-xs font-semibold text-white hover:bg-hcm-accent-strong disabled:opacity-60"
                                   >
                                     {busy === run._id ? (
                                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -652,15 +652,15 @@ export default function Payroll() {
                     </tbody>
                   </table>
                 </div>
-                <div className="divide-y divide-slate-100 md:hidden">
+                <div className="divide-y divide-hcm-line md:hidden">
                   {runs.map((run) => (
                     <div key={run._id} className="p-4">
                       <div className="flex items-start justify-between gap-3">
                         <div>
-                          <p className="font-medium text-slate-900">
+                          <p className="font-medium text-hcm-ink">
                             {periodLabel(run.month, run.year)}
                           </p>
-                          <p className="mt-0.5 text-xs text-slate-500">
+                          <p className="mt-0.5 text-xs text-hcm-muted">
                             {run.items?.length || 0} employees ·{" "}
                             {run.workingDays} working days
                           </p>
@@ -668,23 +668,23 @@ export default function Payroll() {
                         <span
                           className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-[11px] font-semibold capitalize ring-1 ring-inset ${
                             run.status === "finalized"
-                              ? "bg-emerald-50 text-emerald-700 ring-emerald-600/20"
+                              ? "bg-hcm-accent-soft text-hcm-accent ring-hcm-accent/20"
                               : "bg-amber-50 text-amber-700 ring-amber-600/20"
                           }`}
                         >
                           {run.status}
                         </span>
                       </div>
-                      <div className="mt-3 grid grid-cols-2 gap-2 rounded-xl bg-slate-50 p-3 text-xs">
+                      <div className="mt-3 grid grid-cols-2 gap-2 rounded-xl bg-hcm-surface-soft p-3 text-xs">
                         <div>
-                          <p className="text-slate-400">Gross</p>
-                          <p className="font-semibold text-slate-700">
+                          <p className="text-hcm-muted">Gross</p>
+                          <p className="font-semibold text-hcm-ink">
                             {currency(run.totalGross)}
                           </p>
                         </div>
                         <div>
-                          <p className="text-slate-400">Net</p>
-                          <p className="font-semibold text-slate-900">
+                          <p className="text-hcm-muted">Net</p>
+                          <p className="font-semibold text-hcm-ink">
                             {currency(run.totalNet)}
                           </p>
                         </div>
@@ -694,7 +694,7 @@ export default function Payroll() {
                           type="button"
                           onClick={() => openRun(run)}
                           disabled={runLoading === run._id}
-                          className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 disabled:opacity-60"
+                          className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-hcm-line px-3 py-2 text-xs font-medium text-hcm-ink disabled:opacity-60"
                         >
                           {runLoading === run._id ? (
                             <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -708,7 +708,7 @@ export default function Payroll() {
                             type="button"
                             onClick={() => finalize(run._id)}
                             disabled={busy === run._id}
-                            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white disabled:opacity-60"
+                            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-hcm-accent px-3 py-2 text-xs font-semibold text-white disabled:opacity-60"
                           >
                             {busy === run._id ? (
                               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -725,11 +725,11 @@ export default function Payroll() {
               </>
             ) : (
               <div className="p-12 text-center">
-                <Users className="mx-auto h-8 w-8 text-slate-300" />
-                <p className="mt-2 text-sm font-medium text-slate-700">
+                <Users className="mx-auto h-8 w-8 text-hcm-muted/40" />
+                <p className="mt-2 text-sm font-medium text-hcm-ink">
                   No payroll runs
                 </p>
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1 text-xs text-hcm-muted">
                   HR can generate the first payroll period from the button above.
                 </p>
               </div>
@@ -740,24 +740,24 @@ export default function Payroll() {
 
       {selectedRun && (
         <div
-          className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/60 p-0 backdrop-blur-sm sm:items-center sm:p-4"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-hcm-ink/60 p-0 backdrop-blur-sm sm:items-center sm:p-4"
           role="dialog"
           aria-modal="true"
           aria-labelledby="payroll-run-title"
         >
-          <div className="flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-t-2xl bg-white shadow-2xl sm:rounded-2xl">
-            <div className="flex items-start justify-between border-b border-slate-100 p-5 sm:p-6">
+          <div className="flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-t-2xl bg-hcm-surface shadow-hcm sm:rounded-2xl">
+            <div className="flex items-start justify-between border-b border-hcm-line/80 p-5 sm:p-6">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-hcm-muted">
                   Payroll detail
                 </p>
                 <h2
                   id="payroll-run-title"
-                  className="mt-1 text-xl font-semibold text-slate-900"
+                  className="mt-1 text-xl font-semibold text-hcm-ink"
                 >
                   {periodLabel(selectedRun.month, selectedRun.year)}
                 </h2>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-hcm-muted">
                   {selectedRun.items?.length || 0} employees ·{" "}
                   {selectedRun.workingDays} working days ·{" "}
                   <span className="capitalize">{selectedRun.status}</span>
@@ -766,7 +766,7 @@ export default function Payroll() {
               <button
                 type="button"
                 onClick={() => setSelectedRun(null)}
-                className="rounded-lg p-2 text-slate-400 hover:bg-slate-100"
+                className="rounded-lg p-2 text-hcm-muted hover:bg-hcm-canvas"
                 aria-label="Close payroll details"
               >
                 <X className="h-5 w-5" />
@@ -783,7 +783,7 @@ export default function Payroll() {
                     type="button"
                     onClick={() => finalize(selectedRun._id)}
                     disabled={busy === selectedRun._id}
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-hcm-accent px-3 py-1.5 text-xs font-semibold text-white hover:bg-hcm-accent-strong disabled:opacity-60"
                   >
                     {busy === selectedRun._id ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -796,48 +796,48 @@ export default function Payroll() {
               </div>
             )}
 
-            <div className="grid grid-cols-2 gap-3 border-b border-slate-100 p-5 sm:grid-cols-4 sm:p-6">
-              <div className="rounded-xl bg-slate-50 p-3">
-                <p className="text-[11px] uppercase tracking-wide text-slate-400">
+            <div className="grid grid-cols-2 gap-3 border-b border-hcm-line/80 p-5 sm:grid-cols-4 sm:p-6">
+              <div className="rounded-xl bg-hcm-surface-soft p-3">
+                <p className="text-[11px] uppercase tracking-wide text-hcm-muted">
                   Gross
                 </p>
-                <p className="mt-1 text-sm font-semibold text-slate-800">
+                <p className="mt-1 text-sm font-semibold text-hcm-ink">
                   {currency(selectedRun.totalGross)}
                 </p>
               </div>
-              <div className="rounded-xl bg-slate-50 p-3">
-                <p className="text-[11px] uppercase tracking-wide text-slate-400">
+              <div className="rounded-xl bg-hcm-surface-soft p-3">
+                <p className="text-[11px] uppercase tracking-wide text-hcm-muted">
                   Net
                 </p>
-                <p className="mt-1 text-sm font-semibold text-slate-900">
+                <p className="mt-1 text-sm font-semibold text-hcm-ink">
                   {currency(selectedRun.totalNet)}
                 </p>
               </div>
-              <div className="rounded-xl bg-slate-50 p-3">
-                <p className="text-[11px] uppercase tracking-wide text-slate-400">
+              <div className="rounded-xl bg-hcm-surface-soft p-3">
+                <p className="text-[11px] uppercase tracking-wide text-hcm-muted">
                   Employees
                 </p>
-                <p className="mt-1 text-sm font-semibold text-slate-800">
+                <p className="mt-1 text-sm font-semibold text-hcm-ink">
                   {selectedRun.items?.length || 0}
                 </p>
               </div>
-              <div className="rounded-xl bg-slate-50 p-3">
-                <p className="text-[11px] uppercase tracking-wide text-slate-400">
+              <div className="rounded-xl bg-hcm-surface-soft p-3">
+                <p className="text-[11px] uppercase tracking-wide text-hcm-muted">
                   Working days
                 </p>
-                <p className="mt-1 text-sm font-semibold text-slate-800">
+                <p className="mt-1 text-sm font-semibold text-hcm-ink">
                   {selectedRun.workingDays}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 border-b border-slate-100 px-5 py-3 sm:px-6">
-              <Search className="h-4 w-4 text-slate-400" />
+            <div className="flex items-center gap-2 border-b border-hcm-line/80 px-5 py-3 sm:px-6">
+              <Search className="h-4 w-4 text-hcm-muted" />
               <input
                 value={runSearch}
                 onChange={(event) => setRunSearch(event.target.value)}
                 placeholder="Search employee or ID"
-                className="w-full bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-400"
+                className="w-full bg-transparent text-sm text-hcm-ink outline-none placeholder:text-hcm-muted"
               />
             </div>
 
@@ -846,7 +846,7 @@ export default function Payroll() {
                 <>
                   <div className="hidden overflow-x-auto md:block">
                     <table className="w-full min-w-[46rem] text-sm">
-                      <thead className="sticky top-0 bg-slate-50 text-left text-[11px] uppercase tracking-wide text-slate-400">
+                      <thead className="sticky top-0 bg-hcm-surface-soft text-left text-[11px] uppercase tracking-wide text-hcm-muted">
                         <tr>
                           <th className="px-5 py-3">Employee</th>
                           <th className="px-5 py-3">Gross</th>
@@ -855,30 +855,30 @@ export default function Payroll() {
                           <th className="px-5 py-3 text-right">Payslip</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-100">
+                      <tbody className="divide-y divide-hcm-line">
                         {filteredItems.map((item) => {
                           const employee = item.employee;
                           const employeeId = employee?._id || item.employee;
                           const key = `${selectedRun._id}-${employeeId}`;
                           return (
-                            <tr key={employeeId} className="hover:bg-slate-50/60">
+                            <tr key={employeeId} className="hover:bg-hcm-surface-soft">
                               <td className="px-5 py-3.5">
-                                <p className="font-medium text-slate-800">
+                                <p className="font-medium text-hcm-ink">
                                   {employee?.firstName
                                     ? `${employee.firstName} ${employee.lastName || ""}`
                                     : "Unknown employee"}
                                 </p>
-                                <p className="text-xs text-slate-400">
+                                <p className="text-xs text-hcm-muted">
                                   {employee?.employeeId || "—"}
                                 </p>
                               </td>
-                              <td className="px-5 py-3.5 text-slate-600">
+                              <td className="px-5 py-3.5 text-hcm-muted">
                                 {currency(item.gross)}
                               </td>
-                              <td className="px-5 py-3.5 text-slate-600">
+                              <td className="px-5 py-3.5 text-hcm-muted">
                                 {currency(item.deductions)}
                               </td>
-                              <td className="px-5 py-3.5 font-semibold text-slate-900">
+                              <td className="px-5 py-3.5 font-semibold text-hcm-ink">
                                 {currency(item.netPay)}
                               </td>
                               <td className="px-5 py-3.5 text-right">
@@ -894,7 +894,7 @@ export default function Payroll() {
                                       })
                                     }
                                     disabled={downloading === key}
-                                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+                                    className="inline-flex items-center gap-1.5 rounded-lg border border-hcm-line px-3 py-1.5 text-xs font-medium text-hcm-ink hover:bg-hcm-canvas disabled:opacity-60"
                                   >
                                     {downloading === key ? (
                                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -904,7 +904,7 @@ export default function Payroll() {
                                     PDF
                                   </button>
                                 ) : (
-                                  <span className="text-xs text-slate-400">
+                                  <span className="text-xs text-hcm-muted">
                                     Locked
                                   </span>
                                 )}
@@ -915,7 +915,7 @@ export default function Payroll() {
                       </tbody>
                     </table>
                   </div>
-                  <div className="divide-y divide-slate-100 md:hidden">
+                  <div className="divide-y divide-hcm-line md:hidden">
                     {filteredItems.map((item) => {
                       const employee = item.employee;
                       const employeeId = employee?._id || item.employee;
@@ -924,20 +924,20 @@ export default function Payroll() {
                         <div key={employeeId} className="p-4">
                           <div className="flex items-start justify-between gap-3">
                             <div>
-                              <p className="font-medium text-slate-900">
+                              <p className="font-medium text-hcm-ink">
                                 {employee?.firstName
                                   ? `${employee.firstName} ${employee.lastName || ""}`
                                   : "Unknown employee"}
                               </p>
-                              <p className="text-xs text-slate-400">
+                              <p className="text-xs text-hcm-muted">
                                 {employee?.employeeId || "—"}
                               </p>
                             </div>
-                            <p className="font-semibold text-slate-900">
+                            <p className="font-semibold text-hcm-ink">
                               {currency(item.netPay)}
                             </p>
                           </div>
-                          <p className="mt-1 text-xs text-slate-500">
+                          <p className="mt-1 text-xs text-hcm-muted">
                             Gross {currency(item.gross)} · Deductions{" "}
                             {currency(item.deductions)}
                           </p>
@@ -953,7 +953,7 @@ export default function Payroll() {
                                 })
                               }
                               disabled={downloading === key}
-                              className="mt-2 inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 disabled:opacity-60"
+                              className="mt-2 inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-hcm-line px-3 py-2 text-xs font-medium text-hcm-ink disabled:opacity-60"
                             >
                               {downloading === key ? (
                                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -969,7 +969,7 @@ export default function Payroll() {
                   </div>
                 </>
               ) : (
-                <p className="p-10 text-center text-sm text-slate-500">
+                <p className="p-10 text-center text-sm text-hcm-muted">
                   No employees match this search.
                 </p>
               )}

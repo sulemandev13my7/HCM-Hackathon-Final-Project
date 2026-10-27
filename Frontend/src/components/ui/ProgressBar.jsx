@@ -15,7 +15,7 @@ export default function ProgressBar({
       aria-valuemax={100}
       aria-valuenow={Math.round(safeValue)}
     >
-      <div className="h-2 overflow-hidden rounded-full bg-[#e7e2d7]">
+      <div className="h-2 overflow-hidden rounded-full bg-hcm-canvas-deep">
         <div
           className={`h-full rounded-full transition-all duration-500 ${tone}`}
           style={{ width: `${safeValue}%` }}

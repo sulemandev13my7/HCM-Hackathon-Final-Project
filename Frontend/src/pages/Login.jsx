@@ -94,7 +94,7 @@ export default function Login() {
 
   if (loading || user) {
     return (
-      <div className="flex min-h-screen items-center justify-center gap-2 bg-[#f4f1e9] text-sm text-[#5d6c65]">
+      <div className="flex min-h-screen items-center justify-center gap-2 bg-hcm-canvas text-sm text-hcm-muted">
         <Loader2 className="h-4 w-4 animate-spin" />
         {user ? "Opening your workspace..." : "Restoring your session..."}
       </div>
@@ -104,15 +104,15 @@ export default function Login() {
   return (
     <AuthShell variant="login">
       <div>
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-[#dfe8de] bg-[#f3f8f0] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#32624f]">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-hcm-accent/15 bg-hcm-accent-soft px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-hcm-accent">
           <LockKeyhole className="h-3 w-3" />
           Workspace access
         </span>
-        <h2 className="mt-4 text-[30px] font-semibold leading-tight tracking-[-0.04em] text-[#14241e]">
+        <h2 className="mt-4 font-display text-[28px] font-bold leading-tight tracking-[-0.03em] text-hcm-ink">
           Welcome back.
         </h2>
-        <p className="mt-2 text-sm leading-6 text-[#6f7b75]">
-          Sign in with the account your workspace admin created for you.
+        <p className="mt-2 text-sm leading-6 text-hcm-muted">
+          Sign in to your workspace.
         </p>
       </div>
 
@@ -121,7 +121,7 @@ export default function Login() {
           id="login-error"
           role="alert"
           aria-live="polite"
-          className="mt-5 flex items-start gap-2.5 rounded-xl border border-[#f0c8c4] bg-[#fef4f2] px-3.5 py-3 text-[13px] leading-5 text-[#9d2d24]"
+          className="mt-5 flex items-start gap-2.5 rounded-[10px] border border-rose-200 bg-rose-50 px-3.5 py-3 text-[13px] leading-5 text-rose-800"
         >
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
           {error}
@@ -179,7 +179,7 @@ export default function Login() {
             <button
               type="button"
               onClick={() => setShowPassword((current) => !current)}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-[#7d8882] transition hover:bg-[#f1eee6] hover:text-[#14241e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f5d4d]/30"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-hcm-muted transition hover:bg-hcm-canvas hover:text-hcm-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-accent/25"
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? (
@@ -194,7 +194,7 @@ export default function Login() {
         <div className="-mt-1 flex justify-end">
           <Link
             to="/forgot-password"
-            className="text-[11px] font-semibold text-[#5d6c65] underline-offset-2 transition hover:text-[#14241e] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f5d4d]/25"
+            className="text-[11px] font-semibold text-hcm-muted underline-offset-2 transition hover:text-hcm-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-accent/20"
           >
             Forgot password?
           </Link>
@@ -203,7 +203,7 @@ export default function Login() {
         <button
           type="submit"
           disabled={submitting}
-          className="group flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#10251f] px-4 text-sm font-semibold text-[#f8f5eb] transition hover:bg-[#1a3a30] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2f5d4d]/20 disabled:cursor-wait disabled:opacity-70"
+          className="group flex h-11 w-full items-center justify-center gap-2 rounded-[10px] bg-hcm-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-hcm-accent-strong focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/15 disabled:cursor-wait disabled:opacity-70"
         >
           {submitting ? (
             <>
@@ -219,32 +219,32 @@ export default function Login() {
         </button>
       </form>
 
-      <p className="mt-3.5 flex items-center justify-center gap-1.5 text-[11px] text-[#87918c]">
-        <ShieldCheck className="h-3.5 w-3.5 text-[#3d7a5d]" />
-        Your role controls exactly what you can see and do.
+      <p className="mt-3.5 flex items-center justify-center gap-1.5 text-[11px] text-hcm-muted">
+        <ShieldCheck className="h-3.5 w-3.5 text-hcm-accent" />
+        Your role controls what you can access.
       </p>
 
       {setupPending && (
         <>
-          <div className="mt-7 flex items-center gap-3 text-[11px] font-medium text-[#98a19c]">
-            <span className="h-px flex-1 bg-[#e7e2d7]" />
+          <div className="mt-7 flex items-center gap-3 text-[11px] font-medium text-hcm-muted">
+            <span className="h-px flex-1 bg-hcm-line" />
             New to HCM Lite?
-            <span className="h-px flex-1 bg-[#e7e2d7]" />
+            <span className="h-px flex-1 bg-hcm-line" />
           </div>
 
           <button
             type="button"
             onClick={() => navigate("/setup")}
-            className="group mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-[#ddd7cb] bg-white px-4 text-[13px] font-semibold text-[#32433c] transition hover:border-[#c9c1b2] hover:bg-[#fbfaf6] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2f5d4d]/10"
+            className="group mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-[10px] border border-hcm-line bg-white px-4 text-[13px] font-semibold text-hcm-ink transition hover:border-hcm-line-strong hover:bg-hcm-surface-soft focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/10"
           >
-            <Building2 className="h-4 w-4 text-[#6f7b75]" />
+            <Building2 className="h-4 w-4 text-hcm-muted" />
             Set up a company workspace
-            <ArrowRight className="h-3.5 w-3.5 text-[#98a19c] transition-transform group-hover:translate-x-0.5" />
+            <ArrowRight className="h-3.5 w-3.5 text-hcm-muted transition-transform group-hover:translate-x-0.5" />
           </button>
         </>
       )}
 
-      <p className="mt-5 text-center text-[11px] leading-5 text-[#8a948f]">
+      <p className="mt-5 text-center text-[11px] leading-5 text-hcm-muted">
         Need an account? Ask your workspace administrator.
       </p>
     </AuthShell>

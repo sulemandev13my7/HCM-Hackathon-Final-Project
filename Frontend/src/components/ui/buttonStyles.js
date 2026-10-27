@@ -1,21 +1,21 @@
 const variants = {
   primary:
-    "bg-hcm-ink text-hcm-surface shadow-[0_12px_28px_-18px_rgba(16,37,31,0.8)] hover:bg-hcm-ink-soft",
-  lime: "bg-hcm-lime text-hcm-ink shadow-[0_12px_28px_-18px_rgba(16,37,31,0.8)] hover:bg-[#c9ee86]",
+    "bg-hcm-accent text-white shadow-sm hover:bg-hcm-accent-strong",
+  lime: "bg-hcm-lime text-hcm-ink hover:bg-[#c2e863]",
   secondary:
-    "border border-hcm-line bg-white/80 text-hcm-ink hover:border-hcm-line-strong hover:bg-white",
-  ghost: "text-hcm-muted hover:bg-hcm-ink/5 hover:text-hcm-ink",
-  danger: "bg-hcm-danger text-white hover:bg-[#913a25]",
-  inverse: "bg-hcm-lime text-hcm-ink hover:bg-[#c9ee86]",
+    "border border-hcm-line bg-white text-hcm-ink hover:border-hcm-line-strong hover:bg-hcm-surface-soft",
+  ghost: "text-hcm-muted hover:bg-hcm-canvas hover:text-hcm-ink",
+  danger: "bg-hcm-danger text-white hover:bg-[#9a3827]",
+  inverse: "bg-white text-hcm-ink hover:bg-hcm-canvas",
   "inverse-ghost":
-    "border border-white/15 bg-white/5 text-hcm-surface hover:bg-white/10",
+    "border border-white/15 bg-white/5 text-white hover:bg-white/10",
 };
 
 const sizes = {
-  sm: "h-9 gap-1.5 rounded-xl px-3 text-xs",
-  md: "h-10 gap-2 rounded-xl px-4 text-sm",
-  lg: "h-11 gap-2 rounded-xl px-5 text-sm",
-  icon: "h-10 w-10 rounded-xl",
+  sm: "h-9 gap-1.5 rounded-[10px] px-3 text-xs",
+  md: "h-10 gap-2 rounded-[10px] px-4 text-sm",
+  lg: "h-11 gap-2 rounded-[10px] px-5 text-sm",
+  icon: "h-10 w-10 rounded-[10px]",
 };
 
 export function buttonStyles({

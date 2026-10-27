@@ -22,8 +22,8 @@ const strengthColors = [
   "bg-rose-500",
   "bg-orange-500",
   "bg-amber-500",
-  "bg-emerald-500",
-  "bg-emerald-600",
+  "bg-hcm-accent",
+  "bg-hcm-accent",
 ];
 
 export default function ChangePassword() {
@@ -54,7 +54,7 @@ export default function ChangePassword() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center gap-2 bg-[#f4f1e9] text-sm text-[#5d6c65]">
+      <div className="flex min-h-screen items-center justify-center gap-2 bg-hcm-canvas text-sm text-hcm-muted">
         <Loader2 className="h-4 w-4 animate-spin" />
         Loading...
       </div>
@@ -113,7 +113,7 @@ export default function ChangePassword() {
         <button
           type="button"
           onClick={() => setVisible({ ...visible, [key]: !visible[key] })}
-          className="flex h-9 w-9 items-center justify-center rounded-lg text-[#7d8882] transition hover:bg-[#f1eee6] hover:text-[#14241e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f5d4d]/30"
+          className="flex h-9 w-9 items-center justify-center rounded-lg text-hcm-muted transition hover:bg-hcm-canvas hover:text-hcm-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-accent/25"
           aria-label={visible[key] ? "Hide password" : "Show password"}
         >
           {visible[key] ? (
@@ -133,29 +133,29 @@ export default function ChangePassword() {
           <button
             type="button"
             onClick={() => navigate(getRoleHome(user.role))}
-            className="mb-5 inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#7d8882] transition hover:text-[#14241e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f5d4d]/25"
+            className="mb-5 inline-flex items-center gap-1.5 text-[11px] font-semibold text-hcm-muted transition hover:text-hcm-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-accent/20"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Back to dashboard
           </button>
         )}
 
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-[#dfe8de] bg-[#f3f8f0] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#32624f]">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-hcm-accent/15 bg-hcm-accent-soft px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-hcm-accent">
           <KeyRound className="h-3 w-3" />
           {user.mustChangePassword ? "First sign-in" : "Account security"}
         </span>
-        <h2 className="mt-4 text-[30px] font-semibold leading-tight tracking-[-0.04em] text-[#14241e]">
+        <h2 className="mt-4 font-display text-[28px] font-bold leading-tight tracking-[-0.03em] text-hcm-ink">
           {user.mustChangePassword ? "Choose your password." : "Change password."}
         </h2>
-        <p className="mt-2 text-sm leading-6 text-[#6f7b75]">
+        <p className="mt-2 text-sm leading-6 text-hcm-muted">
           {user.mustChangePassword
-            ? "Your temporary password must be replaced before you can continue."
+            ? "Replace your temporary password to continue."
             : "Enter your current password, then choose a new one."}
         </p>
       </div>
 
       {user.mustChangePassword && (
-        <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-[#dfe8de] bg-[#f3f8f0] p-3.5 text-[12px] leading-5 text-[#32624f]">
+        <div className="mt-4 flex items-start gap-2.5 rounded-[10px] border border-hcm-accent/15 bg-hcm-accent-soft p-3.5 text-[12px] leading-5 text-hcm-accent">
           <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
           You are signed in with a temporary password. Current password is not
           required for this first change.
@@ -194,12 +194,12 @@ export default function ChangePassword() {
                 className={`h-1.5 flex-1 rounded-full ${
                   index < strength
                     ? strengthColors[strength - 1]
-                    : "bg-[#e7e2d7]"
+                    : "bg-hcm-canvas-deep"
                 }`}
               />
             ))}
           </div>
-          <p className="mt-2 flex items-center justify-between text-[11px] text-[#8a948f]">
+          <p className="mt-2 flex items-center justify-between text-[11px] text-hcm-muted">
             <span>{strengthLabels[strength]}</span>
             <span>{formData.newPassword.length}/8+ characters</span>
           </p>
@@ -213,7 +213,7 @@ export default function ChangePassword() {
               <span
                 key={label}
                 className={`inline-flex items-center gap-1 ${
-                  met ? "text-[#2f6b50]" : "text-[#9aa39d]"
+                  met ? "text-hcm-accent" : "text-hcm-muted"
                 }`}
               >
                 <Check
@@ -234,7 +234,7 @@ export default function ChangePassword() {
         {formData.confirmPassword.length > 0 && (
           <p
             className={`flex items-center gap-1.5 text-xs ${
-              passwordsMatch ? "text-[#2f6b50]" : "text-[#b42318]"
+              passwordsMatch ? "text-hcm-accent" : "text-rose-700"
             }`}
           >
             <Check className="h-3.5 w-3.5" />
@@ -247,7 +247,7 @@ export default function ChangePassword() {
         <button
           type="submit"
           disabled={submitting}
-          className="group flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#10251f] px-4 text-sm font-semibold text-[#f8f5eb] transition hover:bg-[#1a3a30] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2f5d4d]/20 disabled:cursor-wait disabled:opacity-70"
+          className="group flex h-11 w-full items-center justify-center gap-2 rounded-[10px] bg-hcm-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-hcm-accent-strong focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/15 disabled:cursor-wait disabled:opacity-70"
         >
           {submitting ? (
             <Loader2 className="h-4 w-4 animate-spin" />
