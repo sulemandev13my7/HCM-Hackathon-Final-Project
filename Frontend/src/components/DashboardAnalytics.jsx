@@ -133,7 +133,8 @@ function PriorityPanel({ kpis, role }) {
   );
   const pending = Number(kpis.pendingLeaves || 0);
   const late = Number(kpis.lateToday || 0);
-  const allClear = pending === 0 && late === 0;
+  const openItems = pending + late + absentToday;
+  const allClear = openItems === 0;
 
   return (
     <SectionCard
@@ -146,7 +147,7 @@ function PriorityPanel({ kpis, role }) {
           </Badge>
         ) : (
           <Badge tone="warning" dot>
-            {pending + late} open
+            {openItems} open
           </Badge>
         )
       }
@@ -347,7 +348,8 @@ export default function DashboardAnalytics({ role }) {
             </span>
             <span className="hcm-chip-dark">
               <Users className="h-3.5 w-3.5" />
-              {formatNumber(kpis.totalEmployees)} people
+              {formatNumber(kpis.totalEmployees)}{" "}
+              {Number(kpis.totalEmployees) === 1 ? "person" : "people"}
             </span>
             <span className="hcm-chip-dark">
               <span className="h-1.5 w-1.5 rounded-full bg-hcm-lime" />

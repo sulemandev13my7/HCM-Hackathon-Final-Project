@@ -8,6 +8,15 @@ const { buildErrorResponse } = require("./utils/errorResponse");
 
 const app = express();
 
+if (
+  process.env.TRUST_PROXY === "1" ||
+  process.env.TRUST_PROXY === "true" ||
+  process.env.RENDER ||
+  process.env.NODE_ENV === "production"
+) {
+  app.set("trust proxy", 1);
+}
+
 // Connect DB
 connectDB();
 

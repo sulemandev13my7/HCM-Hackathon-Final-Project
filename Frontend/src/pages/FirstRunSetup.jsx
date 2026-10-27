@@ -111,7 +111,7 @@ export default function FirstRunSetup() {
     API.get("/auth/check-setup")
       .then((response) => {
         if (active && !response.data.needsSetup) {
-          navigate("/login", { replace: true });
+          navigate("/", { replace: true });
         }
       })
       .catch(() => {

@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import AuthShell from "../components/auth/AuthShell";
 import AuthField from "../components/auth/AuthField";
+import { getRoleHome } from "../utils/roleHome";
 
 const strengthLabels = ["Too weak", "Weak", "Fair", "Strong", "Excellent"];
 const strengthColors = [
@@ -24,12 +25,6 @@ const strengthColors = [
   "bg-emerald-500",
   "bg-emerald-600",
 ];
-
-const homeForRole = (role) => {
-  if (role === "admin") return "/admin";
-  if (role === "hr") return "/hr";
-  return "/employee";
-};
 
 export default function ChangePassword() {
   const { user, updateUser, loading } = useAuth();
@@ -89,7 +84,7 @@ export default function ChangePassword() {
       });
       updateUser({ mustChangePassword: false });
       toast.success("Password changed successfully");
-      navigate(homeForRole(user.role), { replace: true });
+      navigate(getRoleHome(user.role), { replace: true });
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Failed to change password",
@@ -137,7 +132,7 @@ export default function ChangePassword() {
         {!user.mustChangePassword && (
           <button
             type="button"
-            onClick={() => navigate(homeForRole(user.role))}
+            onClick={() => navigate(getRoleHome(user.role))}
             className="mb-5 inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#7d8882] transition hover:text-[#14241e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f5d4d]/25"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
@@ -168,6 +163,15 @@ export default function ChangePassword() {
       )}
 
       <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+        <input
+          type="email"
+          name="username"
+          autoComplete="username"
+          value={user.email || ""}
+          readOnly
+          tabIndex={-1}
+          className="sr-only"
+        />
         {!user.mustChangePassword &&
           renderPasswordInput(
             "currentPassword",

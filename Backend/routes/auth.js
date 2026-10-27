@@ -9,10 +9,11 @@ const {
 } = require("../controllers/authController");
 const { protect } = require("../middleware/auth");
 const { logAudit } = require("../middleware/audit");
+const loginLimiter = require("../middleware/authRateLimit");
 
 router.get("/check-setup", checkFirstRun);
 router.post("/setup", firstRunSetup);
-router.post("/login", login);
+router.post("/login", loginLimiter, login);
 router.put(
   "/change-password",
   protect,

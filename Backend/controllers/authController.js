@@ -2,6 +2,9 @@ const User = require('../models/User');
 const CompanySettings = require('../models/CompanySettings');
 const jwt = require('jsonwebtoken');
 
+const MIN_PASSWORD_LENGTH = 8;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE || '7d'
@@ -31,27 +34,39 @@ exports.firstRunSetup = async (req, res) => {
     }
 
     const { companyName, adminEmail, adminPassword, firstName, lastName } = req.body;
+    const normalizedCompanyName = String(companyName || '').trim();
+    const normalizedEmail = String(adminEmail || '').trim();
 
-    if (!companyName || !adminEmail || !adminPassword) {
+    if (!normalizedCompanyName || !normalizedEmail || !adminPassword) {
       return res.status(400).json({ message: 'Please provide all required fields' });
+    }
+
+    if (!EMAIL_PATTERN.test(normalizedEmail)) {
+      return res.status(400).json({ message: 'Please provide a valid admin email' });
+    }
+
+    if (typeof adminPassword !== 'string' || adminPassword.length < MIN_PASSWORD_LENGTH) {
+      return res.status(400).json({
+        message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`
+      });
     }
 
     // Create company settings
     let settings = await CompanySettings.findOne();
     if (!settings) {
       settings = await CompanySettings.create({
-        companyName,
+        companyName: normalizedCompanyName,
         setupComplete: true
       });
     } else {
-      settings.companyName = companyName;
+      settings.companyName = normalizedCompanyName;
       settings.setupComplete = true;
       await settings.save();
     }
 
     // Create admin user
     const admin = await User.create({
-      email: adminEmail,
+      email: normalizedEmail,
       password: adminPassword,
       role: 'admin',
       firstName,
@@ -79,12 +94,13 @@ exports.firstRunSetup = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    const normalizedEmail = String(email || '').trim();
 
-    if (!email || !password) {
+    if (!normalizedEmail || !password) {
       return res.status(400).json({ message: 'Please provide email and password' });
     }
 
-    const user = await User.findOne({ email }).populate('employeeId');
+    const user = await User.findOne({ email: normalizedEmail }).populate('employeeId');
     if (!user || !user.isActive) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
@@ -118,6 +134,13 @@ exports.login = async (req, res) => {
 exports.changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
+
+    if (typeof newPassword !== 'string' || newPassword.length < MIN_PASSWORD_LENGTH) {
+      return res.status(400).json({
+        message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`
+      });
+    }
+
     const user = await User.findById(req.user.id);
 
     if (!user) {

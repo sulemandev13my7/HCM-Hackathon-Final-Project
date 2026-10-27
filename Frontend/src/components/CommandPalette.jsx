@@ -16,6 +16,7 @@ export default function CommandPalette({
   onLogout,
 }) {
   const navigate = useNavigate();
+  const dialogRef = useRef(null);
   const inputRef = useRef(null);
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
@@ -56,8 +57,16 @@ export default function CommandPalette({
   }, [commands, query]);
 
   useEffect(() => {
+    const previousFocus = document.activeElement;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     const timer = window.setTimeout(() => inputRef.current?.focus(), 40);
-    return () => window.clearTimeout(timer);
+
+    return () => {
+      window.clearTimeout(timer);
+      document.body.style.overflow = previousOverflow;
+      if (previousFocus instanceof HTMLElement) previousFocus.focus();
+    };
   }, []);
 
   const safeIndex = Math.min(
@@ -74,6 +83,23 @@ export default function CommandPalette({
     if (event.key === "Escape") {
       event.preventDefault();
       onClose();
+      return;
+    }
+    if (event.key === "Tab") {
+      const focusable = dialogRef.current?.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      if (!focusable?.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+      return;
     }
     if (event.key === "ArrowDown") {
       event.preventDefault();
@@ -106,6 +132,7 @@ export default function CommandPalette({
       }}
     >
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label="Command menu"
@@ -117,7 +144,10 @@ export default function CommandPalette({
           <input
             ref={inputRef}
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setActiveIndex(0);
+            }}
             placeholder="Search pages and actions"
             className="min-w-0 flex-1 bg-transparent py-1 text-sm text-hcm-ink outline-none placeholder:text-[#9aa39e]"
             aria-label="Search pages and actions"

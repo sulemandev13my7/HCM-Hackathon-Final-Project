@@ -8,6 +8,7 @@ import {
   Building2,
   Eye,
   EyeOff,
+  Loader2,
   LockKeyhole,
   Mail,
   ShieldCheck,
@@ -15,6 +16,7 @@ import {
 import AuthShell from "../components/auth/AuthShell";
 import AuthField from "../components/auth/AuthField";
 import API from "../services/api";
+import { getRoleHome } from "../utils/roleHome";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -25,7 +27,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
   const [setupPending, setSetupPending] = useState(false);
-  const { login } = useAuth();
+  const { login, user, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,6 +43,14 @@ export default function Login() {
       active = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (loading || !user) return;
+    navigate(
+      user.mustChangePassword ? "/change-password" : getRoleHome(user.role),
+      { replace: true },
+    );
+  }, [loading, user, navigate]);
 
   const validate = () => {
     const nextErrors = {};
@@ -70,15 +80,6 @@ export default function Login() {
     try {
       const data = await login(email.trim(), password);
       toast.success(`Welcome back, ${data.user.firstName || "there"}`);
-      if (data.user.mustChangePassword) {
-        navigate("/change-password");
-      } else if (data.user.role === "admin") {
-        navigate("/admin");
-      } else if (data.user.role === "hr") {
-        navigate("/hr");
-      } else {
-        navigate("/employee");
-      }
     } catch (err) {
       setError(
         err.response?.data?.message ||
@@ -90,6 +91,15 @@ export default function Login() {
       setSubmitting(false);
     }
   };
+
+  if (loading || user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center gap-2 bg-[#f4f1e9] text-sm text-[#5d6c65]">
+        <Loader2 className="h-4 w-4 animate-spin" />
+        {user ? "Opening your workspace..." : "Restoring your session..."}
+      </div>
+    );
+  }
 
   return (
     <AuthShell variant="login">
@@ -226,7 +236,7 @@ export default function Login() {
       )}
 
       <p className="mt-5 text-center text-[11px] leading-5 text-[#8a948f]">
-        Need an account? Ask your workspace administrator to invite you.
+        Need an account or a password reset? Ask your workspace administrator.
       </p>
     </AuthShell>
   );

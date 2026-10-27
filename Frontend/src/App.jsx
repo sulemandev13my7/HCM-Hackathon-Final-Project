@@ -15,6 +15,7 @@ import ChangePassword from "./pages/ChangePassword";
 import AdminLayout from "./layouts/AdminLayout";
 import HRLayout from "./layouts/HRLayout";
 import EmployeeLayout from "./layouts/EmployeeLayout";
+import { getRoleHome } from "./utils/roleHome";
 
 const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
 const HRDashboard = lazy(() => import("./pages/hr/Dashboard"));
@@ -31,8 +32,8 @@ const Announcements = lazy(() => import("./pages/announcements/Announcements"));
 const Profile = lazy(() => import("./pages/profile/Profile"));
 
 const PageLoading = () => (
-  <div className="flex min-h-screen items-center justify-center gap-2 bg-slate-50 text-sm text-slate-500">
-    <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-200 border-t-slate-700" />
+  <div className="flex min-h-screen items-center justify-center gap-2 bg-hcm-canvas text-sm text-hcm-muted">
+    <span className="h-4 w-4 animate-spin rounded-full border-2 border-hcm-line border-t-hcm-accent" />
     Loading workspace...
   </div>
 );
@@ -40,9 +41,11 @@ const PageLoading = () => (
 const ProtectedRoute = ({ children, roles }) => {
   const { user, loading } = useAuth();
   if (loading) return <PageLoading />;
-  if (!user) return <Navigate to="/login" />;
-  if (roles && !roles.includes(user.role)) return <Navigate to="/" />;
-  if (user.mustChangePassword) return <Navigate to="/change-password" />;
+  if (!user) return <Navigate to="/login" replace />;
+  if (roles && !roles.includes(user.role))
+    return <Navigate to="/" replace />;
+  if (user.mustChangePassword)
+    return <Navigate to="/change-password" replace />;
   return children;
 };
 
@@ -59,11 +62,9 @@ const RootRedirect = () => {
   }, []);
 
   if (needsSetup === null) return <PageLoading />;
-  if (needsSetup) return <Navigate to="/setup" />;
-  if (user?.role === "admin") return <Navigate to="/admin" />;
-  if (user?.role === "hr") return <Navigate to="/hr" />;
-  if (user?.role === "employee") return <Navigate to="/employee" />;
-  return <Navigate to="/login" />;
+  if (needsSetup) return <Navigate to="/setup" replace />;
+  if (user) return <Navigate to={getRoleHome(user.role)} replace />;
+  return <Navigate to="/login" replace />;
 };
 
 function App() {
@@ -142,6 +143,8 @@ function App() {
             <Route path="profile" element={<Profile />} />
             <Route path="ai" element={<AIChat />} />
           </Route>
+
+          <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
       </Router>
