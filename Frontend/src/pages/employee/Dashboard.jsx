@@ -82,13 +82,10 @@ export default function EmployeeDashboard() {
   if (loading) {
     return (
       <div className="space-y-4">
-        <div className="h-40 animate-pulse rounded-2xl bg-hcm-canvas-deep" />
+        <div className="h-40 hcm-skeleton rounded-2xl" />
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {Array.from({ length: 4 }).map((_, index) => (
-            <div
-              key={index}
-              className="h-32 animate-pulse rounded-2xl bg-hcm-canvas-deep"
-            />
+            <div key={index} className="h-32 hcm-skeleton rounded-2xl" />
           ))}
         </div>
       </div>
@@ -259,7 +256,7 @@ export default function EmployeeDashboard() {
               </p>
               <Link
                 to="/employee/payroll"
-                className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-hcm-accent hover:underline"
+                className="mt-4 inline-flex min-h-9 items-center gap-1.5 text-xs font-semibold text-hcm-accent hover:underline"
               >
                 View payslips <ArrowRight className="h-3.5 w-3.5" />
               </Link>

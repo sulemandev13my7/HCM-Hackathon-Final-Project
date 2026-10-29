@@ -124,7 +124,7 @@ export default function AdminQuickStart() {
 
   if (loading) {
     return (
-      <div className="h-24 animate-pulse rounded-2xl border border-hcm-line bg-hcm-surface" />
+      <div className="h-24 hcm-skeleton rounded-2xl border border-hcm-line" />
     );
   }
 
@@ -198,7 +198,7 @@ export default function AdminQuickStart() {
             type="button"
             onClick={toggleCollapsed}
             aria-expanded="true"
-            className="inline-flex items-center gap-1 text-xs font-semibold text-hcm-muted transition hover:text-hcm-ink"
+            className="inline-flex min-h-9 items-center gap-1 text-xs font-semibold text-hcm-muted transition hover:text-hcm-ink"
           >
             Hide <ChevronUp className="h-3.5 w-3.5" />
           </button>

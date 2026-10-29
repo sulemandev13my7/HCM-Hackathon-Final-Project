@@ -281,7 +281,7 @@ export default function Leave() {
               Working days computed automatically
             </span>
             <span className="hcm-chip-dark">
-              <span className="h-1.5 w-1.5 rounded-full bg-hcm-lime" />
+              <span className="h-1.5 w-1.5 rounded-full bg-hcm-accent" />
               {leaves.length} requests
             </span>
           </>

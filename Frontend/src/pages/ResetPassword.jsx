@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
@@ -43,8 +43,8 @@ export default function ResetPassword() {
   const [submitting, setSubmitting] = useState(false);
 
   const checks = [
-    newPassword.length >= 8,
-    /[A-Z]/.test(newPassword),
+    newPassword.length >= 12,
+    /[a-z]/.test(newPassword) && /[A-Z]/.test(newPassword),
     /[0-9]/.test(newPassword),
     /[^A-Za-z0-9]/.test(newPassword),
   ];
@@ -54,8 +54,8 @@ export default function ResetPassword() {
 
   const validate = () => {
     const nextErrors = {};
-    if (newPassword.length < 8) {
-      nextErrors.newPassword = "Use at least 8 characters.";
+    if (newPassword.length < 12) {
+      nextErrors.newPassword = "Use at least 12 characters.";
     }
     if (!confirmPassword) {
       nextErrors.confirmPassword = "Confirm your new password.";
@@ -102,7 +102,7 @@ export default function ResetPassword() {
         <div>
           <Link
             to="/login"
-            className="mb-5 inline-flex items-center gap-1.5 text-[11px] font-semibold text-hcm-muted transition hover:text-hcm-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-accent/20"
+            className="-ml-2 mb-5 inline-flex h-8 items-center gap-1.5 rounded-lg px-2 text-[11px] font-semibold text-hcm-muted transition hover:text-hcm-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-accent/20"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Back to sign in
@@ -113,7 +113,7 @@ export default function ResetPassword() {
             Invalid link
           </span>
           <h2 className="mt-4 font-display text-[28px] font-bold leading-tight tracking-[-0.03em] text-hcm-ink">
-            This link can’t be used.
+            This link canâ€™t be used.
           </h2>
           <p className="mt-2 text-sm leading-6 text-hcm-muted">
             The link is missing, incomplete, or no longer valid. Ask your admin
@@ -123,7 +123,7 @@ export default function ResetPassword() {
 
         <Link
           to="/forgot-password"
-          className="mt-6 flex h-11 w-full items-center justify-center gap-2 rounded-[10px] bg-hcm-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-hcm-accent-strong focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/15"
+          className="hcm-btn-primary mt-6 flex h-11 w-full items-center justify-center gap-2 rounded-[10px] px-4 text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/20"
         >
           <KeyRound className="h-4 w-4" />
           Password recovery help
@@ -137,7 +137,7 @@ export default function ResetPassword() {
       <div>
         <Link
           to="/login"
-          className="mb-5 inline-flex items-center gap-1.5 text-[11px] font-semibold text-hcm-muted transition hover:text-hcm-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-accent/20"
+          className="-ml-2 mb-5 inline-flex h-8 items-center gap-1.5 rounded-lg px-2 text-[11px] font-semibold text-hcm-muted transition hover:text-hcm-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-accent/20"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           Back to sign in
@@ -190,7 +190,7 @@ export default function ResetPassword() {
           icon={LockKeyhole}
           type={showPassword ? "text" : "password"}
           autoComplete="new-password"
-          placeholder="At least 8 characters"
+          placeholder="At least 12 characters"
           value={newPassword}
           onChange={(event) => {
             setNewPassword(event.target.value);
@@ -233,12 +233,12 @@ export default function ResetPassword() {
           </div>
           <p className="mt-2 flex items-center justify-between text-[11px] text-hcm-muted">
             <span>{strengthLabels[strength]}</span>
-            <span>{newPassword.length}/8+ characters</span>
+            <span>{newPassword.length}/12+ characters</span>
           </p>
           <div className="mt-2 grid grid-cols-2 gap-1.5 text-[11px]">
             {[
-              ["8+ characters", checks[0]],
-              ["Uppercase letter", checks[1]],
+              ["12+ characters", checks[0]],
+              ["Upper & lowercase", checks[1]],
               ["Number", checks[2]],
               ["Symbol", checks[3]],
             ].map(([label, met]) => (
@@ -311,7 +311,7 @@ export default function ResetPassword() {
         <button
           type="submit"
           disabled={submitting}
-          className="group flex h-11 w-full items-center justify-center gap-2 rounded-[10px] bg-hcm-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-hcm-accent-strong focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/15 disabled:cursor-wait disabled:opacity-70"
+          className="hcm-btn-primary group flex h-11 w-full items-center justify-center gap-2 rounded-[10px] px-4 text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/20 disabled:cursor-wait disabled:opacity-70"
         >
           {submitting ? (
             <>

@@ -63,11 +63,11 @@ const formatPeriodDate = (value) =>
 
 const tooltipStyle = {
   borderRadius: 10,
-  border: "1px solid #dce5e0",
+  border: "1px solid #e2ecea",
   background: "#ffffff",
-  boxShadow: "0 18px 45px -30px rgba(16,42,34,.45)",
+  boxShadow: "0 18px 45px -30px rgba(7,35,51,.4)",
   fontSize: 12,
-  color: "#102a22",
+  color: "#072333",
 };
 
 function ChartEmpty({ message = "No data for this period." }) {
@@ -199,7 +199,7 @@ function ChartTooltip({ unit = "" }) {
   return (
     <Tooltip
       contentStyle={tooltipStyle}
-      cursor={{ fill: "rgba(15,107,79,.06)" }}
+      cursor={{ fill: "rgba(79,70,229,.06)" }}
       formatter={(value) =>
         unit === "currency"
           ? [formatCurrency(value), ""]
@@ -459,7 +459,7 @@ export default function DashboardAnalytics({ role }) {
               action={
                 <Link
                   to="/admin/leave"
-                  className="inline-flex items-center gap-1 text-[11px] font-semibold text-hcm-accent hover:underline"
+                  className="inline-flex min-h-9 items-center gap-1 text-[11px] font-semibold text-hcm-accent hover:underline"
                 >
                   Review queue <ArrowUpRight className="h-3 w-3" />
                 </Link>
@@ -498,7 +498,7 @@ export default function DashboardAnalytics({ role }) {
               action={
                 <Link
                   to="/hr/leave"
-                  className="inline-flex items-center gap-1 text-[11px] font-semibold text-hcm-accent hover:underline"
+                  className="inline-flex min-h-9 items-center gap-1 text-[11px] font-semibold text-hcm-accent hover:underline"
                 >
                   Review queue <ArrowUpRight className="h-3 w-3" />
                 </Link>
@@ -519,19 +519,19 @@ export default function DashboardAnalytics({ role }) {
               <LineChart data={attendanceTrend}>
                 <CartesianGrid
                   strokeDasharray="4 4"
-                  stroke="#dce5e0"
+                  stroke="#e2ecea"
                   vertical={false}
                 />
                 <XAxis
                   dataKey="date"
                   minTickGap={24}
-                  tick={{ fontSize: 10, fill: "#5f7068" }}
+                  tick={{ fontSize: 10, fill: "#5a6f72" }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <YAxis
                   allowDecimals={false}
-                  tick={{ fontSize: 10, fill: "#5f7068" }}
+                  tick={{ fontSize: 10, fill: "#5a6f72" }}
                   axisLine={false}
                   tickLine={false}
                   width={26}
@@ -541,7 +541,7 @@ export default function DashboardAnalytics({ role }) {
                   type="monotone"
                   dataKey="present"
                   name="Present"
-                  stroke="#0f6b4f"
+                  stroke="#007a68"
                   strokeWidth={2.5}
                   dot={false}
                   activeDot={{ r: 4 }}
@@ -559,7 +559,7 @@ export default function DashboardAnalytics({ role }) {
                   type="monotone"
                   dataKey="absent"
                   name="Absent"
-                  stroke="#b4432f"
+                  stroke="#b42318"
                   strokeWidth={2.2}
                   dot={false}
                   activeDot={{ r: 4 }}
@@ -577,7 +577,7 @@ export default function DashboardAnalytics({ role }) {
               <span className="h-2 w-2 rounded-full bg-[#b7791f]" /> Late
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-[#b4432f]" /> Absent
+              <span className="h-2 w-2 rounded-full bg-[#b42318]" /> Absent
             </span>
           </div>
         </ChartSection>
@@ -599,19 +599,19 @@ export default function DashboardAnalytics({ role }) {
               <BarChart data={departmentData}>
                 <CartesianGrid
                   strokeDasharray="4 4"
-                  stroke="#dce5e0"
+                  stroke="#e2ecea"
                   vertical={false}
                 />
                 <XAxis
                   dataKey="departmentName"
-                  tick={{ fontSize: 10, fill: "#5f7068" }}
+                  tick={{ fontSize: 10, fill: "#5a6f72" }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <YAxis
                   allowDecimals={false}
                   unit={isAdmin ? "" : "%"}
-                  tick={{ fontSize: 10, fill: "#5f7068" }}
+                  tick={{ fontSize: 10, fill: "#5a6f72" }}
                   axisLine={false}
                   tickLine={false}
                   width={32}
@@ -620,7 +620,7 @@ export default function DashboardAnalytics({ role }) {
                 <Bar
                   dataKey={isAdmin ? "employeeCount" : "absenteeismRate"}
                   name={isAdmin ? "Employees" : "Absenteeism"}
-                  fill={isAdmin ? "#0f6b4f" : "#b4432f"}
+                  fill={isAdmin ? "#007a68" : "#b42318"}
                   radius={[7, 7, 0, 0]}
                   maxBarSize={42}
                 />

@@ -262,8 +262,8 @@ function CameraCheckIn({ settings, onClose, onSuccess }) {
                 <div
                   className={`h-48 w-40 rounded-[45%] border-2 transition ${
                     faces === 1
-                      ? "border-hcm-lime shadow-[0_0_0_9999px_rgba(16,42,34,0.35)]"
-                      : "border-white/70 shadow-[0_0_0_9999px_rgba(16,42,34,0.55)]"
+                      ? "border-hcm-lime shadow-[0_0_0_9999px_rgba(7,35,51,0.35)]"
+                      : "border-white/70 shadow-[0_0_0_9999px_rgba(7,35,51,0.55)]"
                   }`}
                 />
               ) : null}

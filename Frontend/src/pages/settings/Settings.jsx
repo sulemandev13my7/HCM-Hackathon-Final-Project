@@ -221,8 +221,8 @@ export default function Settings() {
   if (loading) {
     return (
       <div className="space-y-4">
-        <div className="h-40 animate-pulse rounded-2xl bg-hcm-canvas-deep" />
-        <div className="h-96 animate-pulse rounded-2xl bg-white" />
+        <div className="h-40 hcm-skeleton rounded-2xl" />
+        <div className="h-96 hcm-skeleton rounded-2xl" />
       </div>
     );
   }
@@ -251,8 +251,8 @@ export default function Settings() {
         }
         actions={
           !canEdit && (
-            <span className="inline-flex h-10 items-center gap-2 rounded-[10px] border border-hcm-line bg-hcm-surface px-4 text-xs font-semibold text-hcm-muted">
-              <ShieldCheck className="h-4 w-4 text-hcm-lime" />
+            <span className="hcm-chip-dark h-10 gap-2 px-4 text-xs font-semibold">
+              <ShieldCheck className="h-4 w-4 text-hcm-accent-strong" />
               HR read-only access
             </span>
           )

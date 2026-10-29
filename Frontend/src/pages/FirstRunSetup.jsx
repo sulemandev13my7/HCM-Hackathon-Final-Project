@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "../services/api";
 import { useAuth } from "../contexts/useAuth";
@@ -46,7 +46,7 @@ const fieldIds = {
 };
 
 const passwordChecks = [
-  { label: "8+ characters", test: (value) => value.length >= 8 },
+  { label: "12+ characters", test: (value) => value.length >= 12 },
   { label: "A number", test: (value) => /\d/.test(value) },
   {
     label: "Upper & lowercase",
@@ -59,7 +59,7 @@ function PasswordStrength({ password }) {
   const passed = passwordChecks.filter((item) => item.test(password)).length;
   const label =
     !password
-      ? "Use 8 or more characters"
+      ? "Use 12 or more characters"
       : passed <= 1
         ? "Needs a little more"
         : passed === 2
@@ -147,8 +147,8 @@ export default function FirstRunSetup() {
       if (!/^\S+@\S+\.\S+$/.test(formData.adminEmail.trim())) {
         nextErrors.adminEmail = "Enter a valid email address.";
       }
-      if (formData.adminPassword.length < 8) {
-        nextErrors.adminPassword = "Use at least 8 characters.";
+      if (formData.adminPassword.length < 12) {
+        nextErrors.adminPassword = "Use at least 12 characters.";
       }
       if (formData.adminPassword !== formData.confirmPassword) {
         nextErrors.confirmPassword = "Passwords do not match.";
@@ -506,7 +506,7 @@ export default function FirstRunSetup() {
           <button
             type="submit"
             disabled={submitting}
-            className="group flex h-11 flex-1 items-center justify-center gap-2 rounded-[10px] bg-hcm-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-hcm-accent-strong focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/15 disabled:cursor-wait disabled:opacity-70"
+            className="hcm-btn-primary group flex h-11 flex-1 items-center justify-center gap-2 rounded-[10px] px-4 text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/20 disabled:cursor-wait disabled:opacity-70"
           >
             {submitting ? (
               <>

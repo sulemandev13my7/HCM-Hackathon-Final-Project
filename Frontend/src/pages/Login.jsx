@@ -191,10 +191,10 @@ export default function Login() {
           }
         />
 
-        <div className="-mt-1 flex justify-end">
+        <div className="-my-1 flex justify-end">
           <Link
             to="/forgot-password"
-            className="text-[11px] font-semibold text-hcm-muted underline-offset-2 transition hover:text-hcm-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-accent/20"
+            className="inline-flex h-8 items-center rounded-lg px-2 text-[11px] font-semibold text-hcm-muted underline-offset-2 transition hover:text-hcm-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-accent/20"
           >
             Forgot password?
           </Link>
@@ -203,7 +203,7 @@ export default function Login() {
         <button
           type="submit"
           disabled={submitting}
-          className="group flex h-11 w-full items-center justify-center gap-2 rounded-[10px] bg-hcm-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-hcm-accent-strong focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/15 disabled:cursor-wait disabled:opacity-70"
+          className="hcm-btn-primary group flex h-11 w-full items-center justify-center gap-2 rounded-[10px] px-4 text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/20 disabled:cursor-wait disabled:opacity-70"
         >
           {submitting ? (
             <>

@@ -111,18 +111,18 @@ export default function AIChat() {
 
   return (
     <div className="flex h-[calc(100vh-9.5rem)] min-h-[32rem] flex-col overflow-hidden rounded-2xl border border-hcm-line bg-white shadow-sm">
-      <header className="shrink-0 border-b border-hcm-line bg-hcm-surface px-5 py-4 sm:px-6">
-        <div className="flex items-center justify-between gap-4">
+      <header className="hcm-chat-header shrink-0 px-5 py-4 sm:px-6">
+        <div className="relative flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-hcm-accent-soft text-hcm-accent">
+            <span className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-white/10 text-hcm-lime ring-1 ring-white/15">
               <Sparkles className="h-5 w-5" />
             </span>
             <div>
-              <h1 className="font-display text-lg font-bold tracking-tight text-hcm-ink">
+              <h1 className="font-display text-lg font-bold tracking-tight text-white">
                 AI Assistant
               </h1>
-              <p className="flex items-center gap-1.5 text-xs text-hcm-muted">
-                <ShieldCheck className="h-3.5 w-3.5 text-hcm-accent" />
+              <p className="flex items-center gap-1.5 text-xs text-white/60">
+                <ShieldCheck className="h-3.5 w-3.5 text-hcm-lime" />
                 Live data · {role} scope
               </p>
             </div>
@@ -134,7 +134,7 @@ export default function AIChat() {
                 setMessages([]);
                 setCopiedIndex(null);
               }}
-              className="inline-flex items-center gap-1.5 rounded-[10px] bg-hcm-surface-soft px-3 py-2 text-xs font-semibold text-hcm-muted transition hover:bg-hcm-canvas hover:text-hcm-ink"
+              className="inline-flex items-center gap-1.5 rounded-[10px] bg-white/10 px-3 py-2 text-xs font-semibold text-white/75 transition hover:bg-white/15 hover:text-white"
             >
               <Trash2 className="h-3.5 w-3.5" />
               Clear

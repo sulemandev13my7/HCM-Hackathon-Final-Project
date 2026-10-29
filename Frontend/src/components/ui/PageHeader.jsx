@@ -9,19 +9,19 @@ export default function PageHeader({
 }) {
   return (
     <header
-      className={`rounded-2xl border border-hcm-line bg-hcm-surface px-5 py-5 shadow-hcm sm:px-6 sm:py-6 ${className}`}
+      className={`hcm-page-header relative isolate overflow-hidden rounded-[24px] border border-hcm-line/80 px-5 py-6 text-hcm-ink shadow-hcm-lift sm:px-7 sm:py-7 ${className}`}
     >
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+      <div className="relative z-10 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div className="flex min-w-0 items-start gap-4">
           {leading}
           <div className="min-w-0">
             {eyebrow && (
-              <p className="hcm-eyebrow text-hcm-accent">
+              <p className="hcm-eyebrow text-hcm-accent-strong">
                 <span className="h-1.5 w-1.5 rounded-full bg-hcm-accent" />
                 {eyebrow}
               </p>
             )}
-            <h1 className="mt-2 font-display text-[26px] font-bold leading-[1.15] tracking-[-0.03em] text-hcm-ink text-balance sm:text-[32px]">
+            <h1 className="mt-2 font-display text-[27px] font-bold leading-[1.15] tracking-[-0.03em] text-hcm-ink text-balance sm:text-[34px]">
               {title}
             </h1>
             {description && (

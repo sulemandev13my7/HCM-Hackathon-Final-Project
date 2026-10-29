@@ -1,14 +1,14 @@
 const variants = {
-  primary:
-    "bg-hcm-accent text-white shadow-sm hover:bg-hcm-accent-strong",
-  lime: "bg-hcm-lime text-hcm-ink hover:bg-[#c2e863]",
+  primary: "hcm-btn-primary text-white",
+  lime: "bg-hcm-lime text-hcm-ink hover:bg-[#a7f7e7]",
   secondary:
     "border border-hcm-line bg-white text-hcm-ink hover:border-hcm-line-strong hover:bg-hcm-surface-soft",
   ghost: "text-hcm-muted hover:bg-hcm-canvas hover:text-hcm-ink",
-  danger: "bg-hcm-danger text-white hover:bg-[#9a3827]",
-  inverse: "bg-white text-hcm-ink hover:bg-hcm-canvas",
+  danger: "bg-hcm-danger text-white hover:bg-[#921f15]",
+  inverse:
+    "border border-hcm-line bg-white text-hcm-ink shadow-sm hover:border-hcm-line-strong hover:bg-hcm-surface-soft",
   "inverse-ghost":
-    "border border-white/15 bg-white/5 text-white hover:bg-white/10",
+    "border border-hcm-accent/20 bg-white/55 text-hcm-accent-strong hover:bg-white",
 };
 
 const sizes = {

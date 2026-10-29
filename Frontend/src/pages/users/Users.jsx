@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+﻿import { useCallback, useEffect, useMemo, useState } from "react";
 import API from "../../services/api";
 import toast from "react-hot-toast";
 import { useAuth } from "../../contexts/useAuth";
@@ -179,7 +179,7 @@ export default function Users() {
       await navigator.clipboard.writeText(tempPassword);
       toast.success("Temporary password copied");
     } catch {
-      toast.error("Copy failed — select the password manually");
+      toast.error("Copy failed â€” select the password manually");
     }
   };
 
@@ -188,7 +188,7 @@ export default function Users() {
       await navigator.clipboard.writeText(resetLink.url);
       toast.success("Reset link copied");
     } catch {
-      toast.error("Copy failed — select the link manually");
+      toast.error("Copy failed â€” select the link manually");
     }
   };
 
@@ -392,13 +392,13 @@ export default function Users() {
               Temporary password
               <input
                 type="text"
-                minLength={8}
+                minLength={12}
                 className="mt-1 w-full rounded-xl border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-sm text-hcm-ink outline-none focus:border-hcm-accent/50 focus:bg-white focus:ring-4 focus:ring-hcm-accent/10"
                 value={formData.password}
                 onChange={(event) =>
                   setFormData({ ...formData, password: event.target.value })
                 }
-                placeholder="At least 8 characters"
+                placeholder="At least 12 characters"
                 required
               />
             </label>

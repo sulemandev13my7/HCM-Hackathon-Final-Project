@@ -1,15 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/useAuth";
 import NotificationBell from "../components/NotificationBell";
 import CommandPalette from "../components/CommandPalette";
 import {
   Building2,
-  KeyRound,
+  LayoutGrid,
   LogOut,
   Menu,
-  MoreHorizontal,
   Search,
+  ShieldCheck,
   X,
 } from "lucide-react";
 
@@ -31,6 +31,7 @@ export default function AppLayout({
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
+  const scrollRef = useRef(null);
 
   const isActive = (path) =>
     path === homePath
@@ -54,6 +55,7 @@ export default function AppLayout({
 
   const compactNav = mobileNav || navItems.slice(0, 4);
   const initials = `${user?.firstName?.[0] || ""}${user?.lastName?.[0] || ""}`;
+  const ActiveIcon = activeItem?.icon;
 
   useEffect(() => {
     const handleShortcut = (event) => {
@@ -66,6 +68,19 @@ export default function AppLayout({
     return () => window.removeEventListener("keydown", handleShortcut);
   }, []);
 
+  useLayoutEffect(() => {
+    scrollRef.current?.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!sidebarOpen) return undefined;
+    const handleEscape = (event) => {
+      if (event.key === "Escape") setSidebarOpen(false);
+    };
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [sidebarOpen]);
+
   return (
     <div className="flex h-dvh overflow-hidden bg-hcm-canvas">
       {sidebarOpen && (
@@ -73,12 +88,12 @@ export default function AppLayout({
           type="button"
           aria-label="Close navigation"
           onClick={() => setSidebarOpen(false)}
-          className="fixed inset-0 z-40 bg-hcm-ink/45 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-40 bg-hcm-ink/35 backdrop-blur-sm lg:hidden"
         />
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-[16.5rem] flex-col bg-hcm-ink text-white shadow-hcm transition-transform duration-300 ease-out lg:static lg:translate-x-0 ${
+        className={`hcm-sidebar fixed inset-y-0 left-0 z-50 flex w-[16.5rem] flex-col border-r border-hcm-line text-hcm-ink shadow-hcm transition-transform duration-300 ease-out lg:static lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         aria-label={`${roleLabel} navigation`}
@@ -87,16 +102,16 @@ export default function AppLayout({
           <Link
             to={homePath}
             onClick={() => setSidebarOpen(false)}
-            className="group flex items-center gap-3 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-lime/40"
+            className="group flex items-center gap-3 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-accent/25"
           >
-            <span className="flex h-10 w-10 items-center justify-center rounded-[11px] bg-white text-hcm-ink transition-transform duration-200 group-hover:-translate-y-0.5">
+            <span className="flex h-10 w-10 items-center justify-center rounded-[11px] bg-hcm-lime text-hcm-ink shadow-[0_8px_24px_-14px_rgba(0,133,115,0.55)] transition-transform duration-200 group-hover:-translate-y-0.5">
               <Building2 className="h-5 w-5" />
             </span>
             <span>
               <span className="block text-[16px] font-semibold tracking-[-0.02em]">
                 HCM Lite
               </span>
-              <span className="mt-0.5 block text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8fa79b]">
+              <span className="mt-0.5 block text-[10px] font-semibold uppercase tracking-[0.14em] text-hcm-muted">
                 {roleLabel}
               </span>
             </span>
@@ -104,7 +119,7 @@ export default function AppLayout({
           <button
             type="button"
             onClick={() => setSidebarOpen(false)}
-            className="rounded-lg p-2 text-[#9cb0a5] transition hover:bg-white/10 hover:text-white lg:hidden"
+            className="rounded-lg p-2 text-hcm-muted transition hover:bg-hcm-canvas hover:text-hcm-ink lg:hidden"
             aria-label="Close navigation"
           >
             <X className="h-5 w-5" />
@@ -115,11 +130,11 @@ export default function AppLayout({
           <button
             type="button"
             onClick={() => setCommandOpen(true)}
-            className="flex w-full items-center gap-2.5 rounded-[10px] border border-white/10 bg-white/[0.04] px-3 py-2.5 text-left text-xs text-[#a8bbb1] transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
+            className="flex w-full items-center gap-2.5 rounded-[10px] border border-hcm-line bg-hcm-surface-soft px-3 py-2.5 text-left text-xs text-hcm-muted transition hover:border-hcm-line-strong hover:bg-white hover:text-hcm-ink"
           >
             <Search className="h-4 w-4" />
             <span className="flex-1">Search or jump to</span>
-            <kbd className="rounded border border-white/10 bg-black/10 px-1.5 py-0.5 font-mono text-[9px] text-[#8fa79b]">
+            <kbd className="rounded border border-hcm-line bg-white px-1.5 py-0.5 font-mono text-[9px] text-hcm-muted">
               Ctrl K
             </kbd>
           </button>
@@ -128,7 +143,7 @@ export default function AppLayout({
         <nav className="min-h-0 flex-1 overflow-y-auto px-3 pb-4">
           {groups.map((group) => (
             <div key={group.name} className="mb-5 last:mb-0">
-              <p className="px-3 pb-1.5 text-[9px] font-semibold uppercase tracking-[0.18em] text-[#6f8a7d]">
+              <p className="px-3 pb-1.5 text-[9px] font-semibold uppercase tracking-[0.18em] text-hcm-muted">
                 {group.name}
               </p>
               <div className="space-y-0.5">
@@ -140,32 +155,34 @@ export default function AppLayout({
                       to={item.path}
                       onClick={() => setSidebarOpen(false)}
                       aria-current={active ? "page" : undefined}
-                      className={`group relative flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-[13px] transition ${
+                      className={`group relative flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-[13px] font-medium transition-colors duration-200 ${
                         active
-                          ? "bg-white/[0.09] font-semibold text-white"
-                          : "text-[#a9bbb1] hover:bg-white/[0.05] hover:text-white"
+                          ? "hcm-nav-active font-semibold text-hcm-accent-strong"
+                          : "text-hcm-muted hover:bg-hcm-surface-soft hover:text-hcm-ink"
                       }`}
                     >
                       {active && (
                         <span
                           aria-hidden="true"
-                          className="absolute inset-y-2 left-0 w-0.5 rounded-full bg-hcm-lime"
+                          className="absolute inset-y-2 left-0 w-0.5 rounded-full bg-hcm-accent"
                         />
                       )}
-                      <item.icon
-                        className={`h-4 w-4 shrink-0 ${
+                      <span
+                        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] transition-colors duration-200 ${
                           active
-                            ? "text-hcm-lime"
-                            : "text-[#7f978a] group-hover:text-[#c8d8cf]"
+                            ? "bg-hcm-accent-soft text-hcm-accent-strong"
+                            : "text-hcm-muted group-hover:bg-hcm-surface-soft group-hover:text-hcm-ink"
                         }`}
-                      />
+                      >
+                        <item.icon className="h-4 w-4" />
+                      </span>
                       <span className="truncate">{item.label}</span>
                       {item.badge ? (
                         <span
                           className={`ml-auto rounded-full px-1.5 py-0.5 text-[9px] font-bold ${
                             active
-                              ? "bg-hcm-lime/15 text-hcm-lime"
-                              : "bg-white/10 text-[#d7e0da]"
+                              ? "bg-hcm-accent text-white"
+                              : "bg-hcm-line text-hcm-ink-soft"
                           }`}
                         >
                           {item.badge}
@@ -179,16 +196,16 @@ export default function AppLayout({
           ))}
         </nav>
 
-        <div className="border-t border-white/10 p-3">
-          <div className="flex items-center gap-3 rounded-xl bg-white/5 p-2.5">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-white/10 text-[11px] font-bold text-white">
+        <div className="border-t border-hcm-line p-3">
+          <div className="flex items-center gap-3 rounded-xl border border-hcm-line bg-hcm-surface-soft p-2.5">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-hcm-lime text-[11px] font-bold text-hcm-ink">
               {initials}
             </span>
             <div className="min-w-0 flex-1">
               <p className="truncate text-[13px] font-semibold">
                 {user?.firstName} {user?.lastName}
               </p>
-              <p className="truncate text-[10px] text-[#8fa79b]">
+              <p className="truncate text-[10px] text-hcm-muted">
                 {roleWord[accent] || roleLabel}
               </p>
             </div>
@@ -196,14 +213,14 @@ export default function AppLayout({
           <div className="mt-1 grid grid-cols-2 gap-1">
             <Link
               to="/change-password"
-              className="flex items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-[11px] text-[#9cb0a5] transition hover:bg-white/5 hover:text-white"
+              className="flex items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-[11px] text-hcm-muted transition hover:bg-hcm-surface-soft hover:text-hcm-ink"
             >
-              <KeyRound className="h-3.5 w-3.5" /> Password
+              <ShieldCheck className="h-3.5 w-3.5" /> Security
             </Link>
             <button
               type="button"
               onClick={logout}
-              className="flex items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-[11px] text-[#9cb0a5] transition hover:bg-rose-500/10 hover:text-rose-300"
+              className="flex items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-[11px] text-hcm-muted transition hover:bg-rose-50 hover:text-rose-700"
             >
               <LogOut className="h-3.5 w-3.5" /> Sign out
             </button>
@@ -212,8 +229,8 @@ export default function AppLayout({
       </aside>
 
       <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        <header className="z-30 flex shrink-0 items-center justify-between gap-3 border-b border-hcm-line bg-hcm-surface/90 px-3 py-2.5 backdrop-blur-xl sm:px-5 lg:px-7">
-          <div className="flex min-w-0 items-center gap-2">
+        <header className="z-30 flex shrink-0 items-center justify-between gap-3 border-b border-hcm-line/80 bg-hcm-surface/85 px-3 py-2.5 shadow-[0_8px_30px_-28px_rgba(7,35,51,0.45)] backdrop-blur-xl sm:px-5 lg:px-7">
+          <div className="flex min-w-0 items-center gap-2.5">
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}
@@ -223,9 +240,19 @@ export default function AppLayout({
             >
               <Menu className="h-5 w-5" />
             </button>
-            <p className="truncate text-[13px] font-semibold text-hcm-ink">
-              {activeItem?.label || fallbackTitle}
-            </p>
+            {ActiveIcon && (
+              <span className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-[9px] bg-hcm-accent-soft text-hcm-accent sm:flex">
+                <ActiveIcon className="h-4 w-4" />
+              </span>
+            )}
+            <div className="min-w-0">
+              <p className="truncate text-[9px] font-semibold uppercase tracking-[0.16em] text-hcm-muted">
+                {roleLabel}
+              </p>
+              <p className="truncate font-display text-[14px] font-semibold tracking-[-0.01em] text-hcm-ink">
+                {activeItem?.label || fallbackTitle}
+              </p>
+            </div>
           </div>
 
           <div className="flex shrink-0 items-center gap-1 sm:gap-1.5">
@@ -253,13 +280,13 @@ export default function AppLayout({
             <Link
               to="/change-password"
               className="hidden rounded-[10px] p-2 text-hcm-muted transition hover:bg-hcm-canvas hover:text-hcm-ink sm:block"
-              title="Change password"
-              aria-label="Change password"
+              title="Account security"
+              aria-label="Account security"
             >
-              <KeyRound className="h-4 w-4" />
+              <ShieldCheck className="h-4 w-4" />
             </Link>
-            <span
-              className="ml-1 flex h-8 w-8 items-center justify-center rounded-[10px] bg-hcm-accent-soft text-[10px] font-bold text-hcm-accent"
+              <span
+                className="ml-1 flex h-8 w-8 items-center justify-center rounded-[10px] bg-hcm-accent-soft text-[10px] font-bold text-hcm-accent-strong"
               title={`${user?.firstName || ""} ${user?.lastName || ""}`}
             >
               {initials}
@@ -267,8 +294,11 @@ export default function AppLayout({
           </div>
         </header>
 
-        <div className="hcm-safe-bottom flex-1 overflow-y-auto px-3 py-4 sm:px-5 sm:py-6 lg:px-7 lg:py-7 lg:pb-7">
-          <div className="hcm-page hcm-fade-in">
+        <div
+          ref={scrollRef}
+          className="hcm-workspace-scroll hcm-safe-bottom flex-1 overflow-y-auto px-3 py-4 sm:px-5 sm:py-6 lg:px-7 lg:py-7 lg:pb-7"
+        >
+          <div key={location.pathname} className="hcm-page hcm-route-in">
             <Outlet />
           </div>
         </div>
@@ -286,7 +316,7 @@ export default function AppLayout({
                   to={item.path}
                   aria-current={active ? "page" : undefined}
                   className={`flex min-w-0 flex-1 flex-col items-center gap-1 px-1 py-2.5 text-[9px] font-semibold transition ${
-                    active ? "text-hcm-accent" : "text-hcm-muted"
+                    active ? "text-hcm-accent-strong" : "text-hcm-muted"
                   }`}
                 >
                   <span
@@ -305,10 +335,10 @@ export default function AppLayout({
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}
-              className="flex min-w-0 flex-1 flex-col items-center gap-1 px-1 py-2.5 text-[9px] font-semibold text-hcm-muted"
+              className="flex min-w-0 flex-1 flex-col items-center gap-1 px-1 py-2.5 text-[9px] font-semibold text-hcm-muted transition hover:text-hcm-ink"
             >
               <span className="flex h-8 w-11 items-center justify-center rounded-xl">
-                <MoreHorizontal className="h-4 w-4" />
+                <LayoutGrid className="h-4 w-4" />
               </span>
               More
             </button>

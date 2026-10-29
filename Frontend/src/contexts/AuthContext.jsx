@@ -3,56 +3,51 @@ import API from "../services/api";
 import { AuthContext } from "./AuthContextValue";
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("user")) || null,
-  );
-  const [loading, setLoading] = useState(() =>
-    Boolean(localStorage.getItem("token") && !localStorage.getItem("user")),
-  );
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token && !user) {
-      API.get("/auth/me")
-        .then((res) => {
-          setUser(res.data);
-          localStorage.setItem("user", JSON.stringify(res.data));
-        })
-        .catch(() => {
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [user]);
+    let active = true;
+
+    API.get("/auth/me")
+      .then((res) => {
+        if (active) setUser(res.data);
+      })
+      .catch(() => {
+        if (active) setUser(null);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const login = async (email, password) => {
     const res = await API.post("/auth/login", { email, password });
-    localStorage.setItem("token", res.data.token);
-    localStorage.setItem("user", JSON.stringify(res.data.user));
     setUser(res.data.user);
     return res.data;
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setUser(null);
+  const logout = async () => {
+    try {
+      await API.post("/auth/logout");
+    } finally {
+      setUser(null);
+    }
   };
 
   const updateUser = (changes) => {
     setUser((currentUser) => {
       if (!currentUser) return currentUser;
-      const updatedUser = { ...currentUser, ...changes };
-      localStorage.setItem("user", JSON.stringify(updatedUser));
-      return updatedUser;
+      return { ...currentUser, ...changes };
     });
   };
 
   const setup = async (data) => {
     const res = await API.post("/auth/setup", data);
-    localStorage.setItem("token", res.data.token);
-    localStorage.setItem("user", JSON.stringify(res.data.user));
     setUser(res.data.user);
     return res.data;
   };

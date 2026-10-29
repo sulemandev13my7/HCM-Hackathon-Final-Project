@@ -20,7 +20,7 @@ export default function AuthField({
       <div className="mb-2 flex items-center justify-between gap-3">
         <label
           htmlFor={id}
-          className="text-[13px] font-semibold text-[#3b4f46]"
+          className="text-[13px] font-semibold text-hcm-ink-soft"
         >
           {label}
         </label>
@@ -39,7 +39,7 @@ export default function AuthField({
           id={id}
           aria-invalid={Boolean(error)}
           aria-describedby={describedBy || undefined}
-          className={`h-12 w-full rounded-[10px] border bg-hcm-surface pl-11 text-[15px] text-hcm-ink outline-none transition placeholder:text-[#8b9a93] disabled:cursor-not-allowed disabled:opacity-60 ${
+          className={`h-12 w-full rounded-[10px] border bg-hcm-surface pl-11 text-[15px] text-hcm-ink outline-none transition placeholder:text-[#708a8a] disabled:cursor-not-allowed disabled:opacity-60 ${
             action ? "pr-12" : "pr-4"
           } ${
             error

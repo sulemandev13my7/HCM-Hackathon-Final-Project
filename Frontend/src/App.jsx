@@ -9,6 +9,7 @@ import { useAuth } from "./contexts/useAuth";
 import { Toaster } from "react-hot-toast";
 import { lazy, Suspense, useEffect, useState } from "react";
 import API from "./services/api";
+import ErrorBoundary from "./components/ErrorBoundary";
 import FirstRunSetup from "./pages/FirstRunSetup";
 import Login from "./pages/Login";
 import ChangePassword from "./pages/ChangePassword";
@@ -72,13 +73,14 @@ const RootRedirect = () => {
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Toaster
+      <ErrorBoundary>
+        <Router>
+          <Toaster
           position="top-right"
           toastOptions={{
             style: {
               borderRadius: "12px",
-              background: "#0f172a",
+              background: "#072333",
               color: "#f8fafc",
               fontSize: "13px",
             },
@@ -151,7 +153,8 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
-      </Router>
+        </Router>
+      </ErrorBoundary>
     </AuthProvider>
   );
 }

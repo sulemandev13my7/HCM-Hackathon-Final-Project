@@ -2,7 +2,7 @@ export function Skeleton({ className = "" }) {
   return (
     <div
       aria-hidden="true"
-      className={`animate-pulse rounded-2xl bg-hcm-canvas-deep ${className}`}
+      className={`hcm-skeleton rounded-2xl ${className}`}
     />
   );
 }

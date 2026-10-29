@@ -1,20 +1,12 @@
 import axios from "axios";
 
-const baseURL = (
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api"
-).replace(/\/+$/, "");
+const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, "");
+const baseURL = configuredBaseUrl || "/api";
 
 const API = axios.create({
   baseURL,
+  withCredentials: true,
   timeout: 30000,
-});
-
-API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
 });
 
 const AUTH_ENDPOINTS = [
@@ -22,6 +14,8 @@ const AUTH_ENDPOINTS = [
   "/auth/setup",
   "/auth/change-password",
   "/auth/reset-password",
+  "/auth/logout",
+  "/auth/me",
 ];
 
 API.interceptors.response.use(
@@ -31,11 +25,8 @@ API.interceptors.response.use(
     const isAuthRequest = AUTH_ENDPOINTS.some((endpoint) =>
       requestUrl.includes(endpoint),
     );
-    const hasToken = Boolean(localStorage.getItem("token"));
 
-    if (error.response?.status === 401 && hasToken && !isAuthRequest) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+    if (error.response?.status === 401 && !isAuthRequest) {
       if (window.location.pathname !== "/login") {
         window.location.assign("/login");
       }

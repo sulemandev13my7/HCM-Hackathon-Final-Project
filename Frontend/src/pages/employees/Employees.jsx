@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import API from "../../services/api";
 import toast from "react-hot-toast";
 import { useAuth } from "../../contexts/useAuth";
@@ -76,7 +76,7 @@ const formatDate = (value) =>
         month: "short",
         year: "numeric",
       })
-    : "—";
+    : "â€”";
 
 const toDateInput = (value) =>
   value ? new Date(value).toISOString().slice(0, 10) : "";
@@ -118,7 +118,7 @@ export default function Employees() {
   useEffect(() => {
     let active = true;
     Promise.all([
-      API.get("/employees"),
+      API.get("/employees", { params: { limit: 500 } }),
       API.get("/departments"),
       API.get("/designations"),
     ])
@@ -144,7 +144,7 @@ export default function Employees() {
   }, []);
 
   const refreshEmployees = async () => {
-    const response = await API.get("/employees");
+    const response = await API.get("/employees", { params: { limit: 500 } });
     setEmployees(response.data.employees || []);
   };
 
@@ -573,7 +573,7 @@ export default function Employees() {
                         key={`${error.row}-${error.field}-${index}`}
                         className="text-xs text-rose-700"
                       >
-                        Row {error.row} · {error.field}: {error.reason}
+                        Row {error.row} Â· {error.field}: {error.reason}
                       </li>
                     ))}
                   </ul>
@@ -678,7 +678,7 @@ export default function Employees() {
                       </td>
                       <td className="px-5 py-4">
                         <p className="text-hcm-ink">
-                          {employee.designation?.title || "—"}
+                          {employee.designation?.title || "â€”"}
                         </p>
                         <p className="text-xs text-hcm-muted">
                           {employee.department?.name || "Unassigned"}
@@ -742,7 +742,7 @@ export default function Employees() {
                             {employee.firstName} {employee.lastName}
                           </p>
                           <p className="truncate text-xs text-hcm-muted">
-                            {employee.employeeId} ·{" "}
+                            {employee.employeeId} Â·{" "}
                             {employee.designation?.title || "No designation"}
                           </p>
                         </div>
@@ -753,7 +753,7 @@ export default function Employees() {
                         </span>
                       </div>
                       <p className="mt-1 truncate text-xs text-hcm-muted">
-                        {employee.department?.name || "Unassigned"} ·{" "}
+                        {employee.department?.name || "Unassigned"} Â·{" "}
                         {employee.email}
                       </p>
                       <div className="mt-3 flex gap-2">
@@ -1125,8 +1125,8 @@ export default function Employees() {
                         {employee360.employee.employeeId}
                       </p>
                       <p className="text-xs text-hcm-muted">
-                        {employee360.employee.designation?.title || "—"} ·{" "}
-                        {employee360.employee.department?.name || "—"}
+                        {employee360.employee.designation?.title || "â€”"} Â·{" "}
+                        {employee360.employee.department?.name || "â€”"}
                       </p>
                       <span
                         className={`mt-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold capitalize ring-1 ring-inset ${statusTone[employee360.employee.status] || statusTone.resigned}`}
@@ -1156,7 +1156,7 @@ export default function Employees() {
                       },
                       {
                         label: "Employment",
-                        value: employee360.employee.employmentType || "—",
+                        value: employee360.employee.employmentType || "â€”",
                         icon: Briefcase,
                       },
                       {
@@ -1168,7 +1168,7 @@ export default function Employees() {
                       },
                       {
                         label: "Phone",
-                        value: employee360.employee.phone || "—",
+                        value: employee360.employee.phone || "â€”",
                         icon: Phone,
                       },
                     ].map((item) => (
@@ -1307,7 +1307,7 @@ export default function Employees() {
                             </span>
                             <span className="font-medium text-hcm-ink">
                               {formatCurrency(salary.gross)}
-                              {salary.isActive ? " · Current" : ""}
+                              {salary.isActive ? " Â· Current" : ""}
                             </span>
                           </li>
                         ))}
@@ -1406,7 +1406,7 @@ export default function Employees() {
                             className="flex items-center justify-between gap-2 rounded-lg bg-hcm-surface-soft px-2.5 py-2 text-xs"
                           >
                             <span className="text-hcm-muted">
-                              {leave.leaveType?.name || "Leave"} ·{" "}
+                              {leave.leaveType?.name || "Leave"} Â·{" "}
                               {formatDate(leave.startDate)}
                             </span>
                             <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-medium capitalize text-hcm-muted ring-1 ring-inset ring-hcm-line">

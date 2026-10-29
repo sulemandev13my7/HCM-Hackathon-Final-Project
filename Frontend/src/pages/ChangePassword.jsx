@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import API from "../services/api";
 import { useAuth } from "../contexts/useAuth";
@@ -42,8 +42,8 @@ export default function ChangePassword() {
   const [submitting, setSubmitting] = useState(false);
 
   const checks = [
-    formData.newPassword.length >= 8,
-    /[A-Z]/.test(formData.newPassword),
+    formData.newPassword.length >= 12,
+    /[a-z]/.test(formData.newPassword) && /[A-Z]/.test(formData.newPassword),
     /[0-9]/.test(formData.newPassword),
     /[^A-Za-z0-9]/.test(formData.newPassword),
   ];
@@ -64,8 +64,8 @@ export default function ChangePassword() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (formData.newPassword.length < 8) {
-      toast.error("Use at least 8 characters for your new password");
+    if (formData.newPassword.length < 12) {
+      toast.error("Use at least 12 characters for your new password");
       return;
     }
     if (!passwordsMatch) {
@@ -129,22 +129,24 @@ export default function ChangePassword() {
   return (
     <AuthShell variant="security">
       <div>
-        {!user.mustChangePassword && (
-          <button
-            type="button"
-            onClick={() => navigate(getRoleHome(user.role))}
-            className="mb-5 inline-flex items-center gap-1.5 text-[11px] font-semibold text-hcm-muted transition hover:text-hcm-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-accent/20"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            Back to dashboard
-          </button>
-        )}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-hcm-accent/15 bg-hcm-accent-soft px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-hcm-accent">
+            <ShieldCheck className="h-3 w-3" />
+            {user.mustChangePassword ? "First sign-in" : "Account security"}
+          </span>
+          {!user.mustChangePassword && (
+            <button
+              type="button"
+              onClick={() => navigate(getRoleHome(user.role))}
+              className="-mr-2 inline-flex h-8 items-center gap-1.5 rounded-lg px-2 text-[11px] font-semibold text-hcm-muted transition hover:text-hcm-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-accent/20"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              Back to workspace
+            </button>
+          )}
+        </div>
 
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-hcm-accent/15 bg-hcm-accent-soft px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-hcm-accent">
-          <KeyRound className="h-3 w-3" />
-          {user.mustChangePassword ? "First sign-in" : "Account security"}
-        </span>
-        <h2 className="mt-4 font-display text-[28px] font-bold leading-tight tracking-[-0.03em] text-hcm-ink">
+        <h2 className="mt-5 font-display text-[28px] font-bold leading-tight tracking-[-0.03em] text-hcm-ink">
           {user.mustChangePassword ? "Choose your password." : "Change password."}
         </h2>
         <p className="mt-2 text-sm leading-6 text-hcm-muted">
@@ -191,7 +193,7 @@ export default function ChangePassword() {
             {[0, 1, 2, 3].map((index) => (
               <span
                 key={index}
-                className={`h-1.5 flex-1 rounded-full ${
+                className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
                   index < strength
                     ? strengthColors[strength - 1]
                     : "bg-hcm-canvas-deep"
@@ -201,12 +203,12 @@ export default function ChangePassword() {
           </div>
           <p className="mt-2 flex items-center justify-between text-[11px] text-hcm-muted">
             <span>{strengthLabels[strength]}</span>
-            <span>{formData.newPassword.length}/8+ characters</span>
+            <span>{formData.newPassword.length}/12+ characters</span>
           </p>
           <div className="mt-2 grid grid-cols-2 gap-1.5 text-[11px]">
             {[
-              ["8+ characters", checks[0]],
-              ["Uppercase letter", checks[1]],
+              ["12+ characters", checks[0]],
+              ["Upper & lowercase", checks[1]],
               ["Number", checks[2]],
               ["Symbol", checks[3]],
             ].map(([label, met]) => (
@@ -247,7 +249,7 @@ export default function ChangePassword() {
         <button
           type="submit"
           disabled={submitting}
-          className="group flex h-11 w-full items-center justify-center gap-2 rounded-[10px] bg-hcm-accent px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-hcm-accent-strong focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/15 disabled:cursor-wait disabled:opacity-70"
+          className="hcm-btn-primary group flex h-11 w-full items-center justify-center gap-2 rounded-[10px] px-4 text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/20 disabled:cursor-wait disabled:opacity-70"
         >
           {submitting ? (
             <Loader2 className="h-4 w-4 animate-spin" />
