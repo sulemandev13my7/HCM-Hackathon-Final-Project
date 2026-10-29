@@ -93,13 +93,51 @@ exports.createPayrollRun = async (req, res) => {
         { terminationDate: { $gte: monthStart, $lt: nextMonthStart } },
       ],
     });
+    const employeeIds = employees.map((employee) => employee._id);
+
+    const [salaries, attendanceRecords, leaveRequests] = await Promise.all([
+      SalaryStructure.find({
+        employee: { $in: employeeIds },
+        isActive: true,
+      }).lean(),
+      Attendance.find({
+        employee: { $in: employeeIds },
+        date: { $gte: monthStart, $lt: nextMonthStart },
+      }).lean(),
+      LeaveRequest.find({
+        employee: { $in: employeeIds },
+        status: "approved",
+        startDate: { $lt: nextMonthStart },
+        endDate: { $gte: monthStart },
+      })
+        .populate("leaveType")
+        .lean(),
+    ]);
+
+    const salaryByEmployee = new Map();
+    salaries.forEach((salary) => {
+      if (!salaryByEmployee.has(String(salary.employee))) {
+        salaryByEmployee.set(String(salary.employee), salary);
+      }
+    });
+    const attendanceByEmployee = new Map();
+    attendanceRecords.forEach((record) => {
+      const key = String(record.employee);
+      if (!attendanceByEmployee.has(key)) attendanceByEmployee.set(key, []);
+      attendanceByEmployee.get(key).push(record);
+    });
+    const leavesByEmployee = new Map();
+    leaveRequests.forEach((leave) => {
+      const key = String(leave.employee);
+      if (!leavesByEmployee.has(key)) leavesByEmployee.set(key, []);
+      leavesByEmployee.get(key).push(leave);
+    });
+
     const items = [];
 
     for (let emp of employees) {
-      const salary = await SalaryStructure.findOne({
-        employee: emp._id,
-        isActive: true,
-      });
+      const employeeKey = String(emp._id);
+      const salary = salaryByEmployee.get(employeeKey);
       if (!salary) continue;
 
       const employmentWorkingDays = calculateEmploymentWorkingDays(
@@ -112,17 +150,8 @@ exports.createPayrollRun = async (req, res) => {
       );
       if (employmentWorkingDays === 0) continue;
 
-      const attendance = await Attendance.find({
-        employee: emp._id,
-        date: { $gte: monthStart, $lt: nextMonthStart },
-      });
-
-      const approvedLeaves = await LeaveRequest.find({
-        employee: emp._id,
-        status: "approved",
-        startDate: { $lt: nextMonthStart },
-        endDate: { $gte: monthStart },
-      }).populate("leaveType");
+      const attendance = attendanceByEmployee.get(employeeKey) || [];
+      const approvedLeaves = leavesByEmployee.get(employeeKey) || [];
       const { absentDays, unpaidLeaveDays, halfDays, lateCount } =
         calculatePayrollAttendance({
           year,

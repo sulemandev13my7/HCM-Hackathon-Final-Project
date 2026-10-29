@@ -5,6 +5,7 @@ const CompanySettings = require('../models/CompanySettings');
 const User = require('../models/User');
 const { ensureEmployeeProfile } = require('../utils/employeeProfile');
 const { validateCameraLocation } = require('../utils/attendanceLocation');
+const { parsePagination } = require('../utils/pagination');
 
 const isWeekend = (date, weekendDays = [0, 6]) => {
   return weekendDays.includes(date.getDay());
@@ -130,7 +131,11 @@ exports.checkOut = async (req, res) => {
 
 exports.getAttendance = async (req, res) => {
   try {
-    const { employeeId, startDate, endDate, page = 1, limit = 30 } = req.query;
+    const { employeeId, startDate, endDate } = req.query;
+    const { page, limit } = parsePagination(req.query.page, req.query.limit, {
+      defaultLimit: 30,
+      maxLimit: 100,
+    });
     const query = {};
     
     if (req.user.role === 'employee' || req.query.mine === 'true') {
@@ -153,11 +158,11 @@ exports.getAttendance = async (req, res) => {
     const attendance = await Attendance.find(query)
       .populate('employee')
       .sort({ date: -1 })
-      .limit(limit * 1)
+      .limit(limit)
       .skip((page - 1) * limit);
 
     const total = await Attendance.countDocuments(query);
-    res.json({ attendance, total, page: parseInt(page), pages: Math.ceil(total / limit) });
+    res.json({ attendance, total, page, pages: Math.ceil(total / limit) });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

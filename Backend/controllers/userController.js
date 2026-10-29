@@ -5,10 +5,13 @@ const LeaveBalance = require("../models/LeaveBalance");
 const LeaveType = require("../models/LeaveType");
 const { generateTemporaryPassword } = require("../utils/temporaryPassword");
 const { createPasswordResetToken } = require("../utils/passwordReset");
+const {
+  PASSWORD_REQUIREMENT,
+  isValidNewPassword,
+} = require("../utils/passwordPolicy");
 const { canDeactivateUser } = require("../utils/userAccess");
 const { ensureEmployeeProfile } = require("../utils/employeeProfile");
 
-const MIN_PASSWORD_LENGTH = 8;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 exports.createHR = async (req, res) => {
@@ -20,13 +23,8 @@ exports.createHR = async (req, res) => {
       return res.status(400).json({ message: "Please provide a valid email" });
     }
 
-    if (
-      typeof password !== "string" ||
-      password.length < MIN_PASSWORD_LENGTH
-    ) {
-      return res.status(400).json({
-        message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
-      });
+    if (!isValidNewPassword(password)) {
+      return res.status(400).json({ message: PASSWORD_REQUIREMENT });
     }
 
     const existingUser = await User.findOne({ email: normalizedEmail });
@@ -80,6 +78,7 @@ exports.resetPassword = async (req, res) => {
     const tempPassword = generateTemporaryPassword();
     user.password = tempPassword;
     user.mustChangePassword = true;
+    user.tokenVersion = (user.tokenVersion || 0) + 1;
     await user.save();
 
     res
@@ -134,6 +133,7 @@ exports.toggleUserStatus = async (req, res) => {
     if (!user.isActive) {
       user.passwordResetTokenHash = null;
       user.passwordResetExpiresAt = null;
+      user.tokenVersion = (user.tokenVersion || 0) + 1;
     }
     await user.save();
     res.json({

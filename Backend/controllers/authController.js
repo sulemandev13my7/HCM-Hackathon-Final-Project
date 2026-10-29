@@ -1,4 +1,4 @@
-const User = require('../models/User');
+﻿const User = require('../models/User');
 const CompanySettings = require('../models/CompanySettings');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -6,18 +6,26 @@ const {
   hashPasswordResetToken,
   isValidPasswordResetToken,
 } = require('../utils/passwordReset');
+const {
+  PASSWORD_REQUIREMENT,
+  isValidNewPassword,
+} = require('../utils/passwordPolicy');
+const {
+  clearSessionCookie,
+  setSessionCookie,
+} = require('../utils/sessionCookie');
 
-const MIN_PASSWORD_LENGTH = 8;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE || '7d'
-  });
+const generateToken = (user) => {
+  return jwt.sign(
+    { id: user._id, tv: user.tokenVersion || 0 },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_EXPIRE || '7d'
+    }
+  );
 };
-
-const isValidNewPassword = (password) =>
-  typeof password === 'string' && password.length >= MIN_PASSWORD_LENGTH;
 
 // Check if first run setup needed
 exports.checkFirstRun = async (req, res) => {
@@ -55,7 +63,7 @@ exports.firstRunSetup = async (req, res) => {
 
     if (!isValidNewPassword(adminPassword)) {
       return res.status(400).json({
-        message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`
+        message: PASSWORD_REQUIREMENT
       });
     }
 
@@ -82,9 +90,10 @@ exports.firstRunSetup = async (req, res) => {
       mustChangePassword: false
     });
 
+    setSessionCookie(res, generateToken(admin));
+
     res.status(201).json({
       message: 'Setup completed successfully',
-      token: generateToken(admin._id),
       user: {
         id: admin._id,
         email: admin.email,
@@ -121,8 +130,9 @@ exports.login = async (req, res) => {
     user.lastLogin = new Date();
     await user.save();
 
+    setSessionCookie(res, generateToken(user));
+
     res.json({
-      token: generateToken(user._id),
       user: {
         id: user._id,
         email: user.email,
@@ -145,7 +155,7 @@ exports.changePassword = async (req, res) => {
 
     if (!isValidNewPassword(newPassword)) {
       return res.status(400).json({
-        message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`
+        message: PASSWORD_REQUIREMENT
       });
     }
 
@@ -167,7 +177,10 @@ exports.changePassword = async (req, res) => {
 
     user.password = newPassword;
     user.mustChangePassword = false;
+    user.tokenVersion = (user.tokenVersion || 0) + 1;
     await user.save();
+
+    setSessionCookie(res, generateToken(user));
 
     res.json({ message: 'Password changed successfully' });
   } catch (error) {
@@ -188,7 +201,7 @@ exports.resetPasswordWithToken = async (req, res) => {
 
     if (!isValidNewPassword(newPassword)) {
       return res.status(400).json({
-        message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`
+        message: PASSWORD_REQUIREMENT
       });
     }
 
@@ -205,8 +218,9 @@ exports.resetPasswordWithToken = async (req, res) => {
           mustChangePassword: false,
           passwordResetTokenHash: null,
           passwordResetExpiresAt: null
-        }
         },
+        $inc: { tokenVersion: 1 }
+      },
       { returnDocument: 'after', runValidators: true }
     );
 
@@ -216,12 +230,19 @@ exports.resetPasswordWithToken = async (req, res) => {
       });
     }
 
+    clearSessionCookie(res);
+
     res.json({
       message: 'Password reset successfully. Sign in with your new password.'
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+exports.logout = (req, res) => {
+  clearSessionCookie(res);
+  res.json({ message: 'Signed out' });
 };
 
 // Get current user

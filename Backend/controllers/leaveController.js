@@ -8,6 +8,7 @@ const User = require("../models/User");
 const Notification = require("../models/Notification");
 const { isValidDateRange, toUTCDateOnly } = require("../utils/dateTime");
 const { ensureEmployeeProfile } = require("../utils/employeeProfile");
+const { runInTransaction } = require("../utils/transactions");
 
 const resolveEmployeeId = async (user) => {
   if (user.employeeId) return user.employeeId;
@@ -153,50 +154,91 @@ exports.cancelLeave = async (req, res) => {
 
 exports.approveLeave = async (req, res) => {
   try {
-    const leaveRequest = await LeaveRequest.findById(req.params.id).populate(
-      "employee leaveType",
-    );
-    if (!leaveRequest)
-      return res.status(404).json({ message: "Leave request not found" });
-    if (leaveRequest.status !== "pending")
-      return res.status(400).json({ message: "Leave already processed" });
+    const result = await runInTransaction(async (session) => {
+      const query = LeaveRequest.findById(req.params.id).populate(
+        "employee leaveType",
+      );
+      if (session) query.session(session);
+      const leaveRequest = await query;
 
-    leaveRequest.status = "approved";
-    leaveRequest.approvedBy = req.user.id;
-    leaveRequest.approvedAt = new Date();
-    leaveRequest.approvalComment = req.body.comment || "";
-    await leaveRequest.save();
-
-    // Update balance
-    const leaveType = leaveRequest.leaveType;
-    if (leaveType.name !== "Unpaid") {
-      const year = leaveRequest.startDate.getFullYear();
-      const balance = await LeaveBalance.findOne({
-        employee: leaveRequest.employee._id,
-        year,
-        leaveType: leaveType._id,
-      });
-      if (balance) {
-        balance.used += leaveRequest.workingDays;
-        balance.remaining = balance.quota - balance.used;
-        await balance.save();
+      if (!leaveRequest) {
+        return { statusCode: 404, body: { message: "Leave request not found" } };
       }
+      if (leaveRequest.status !== "pending") {
+        return { statusCode: 400, body: { message: "Leave already processed" } };
+      }
+
+      const update = {
+        $set: {
+          status: "approved",
+          approvedBy: req.user.id,
+          approvedAt: new Date(),
+          approvalComment: req.body.comment || "",
+        },
+      };
+      const updated = await LeaveRequest.findOneAndUpdate(
+        { _id: leaveRequest._id, status: "pending" },
+        update,
+        { new: true, session },
+      );
+      if (!updated) {
+        return { statusCode: 400, body: { message: "Leave already processed" } };
+      }
+
+      const leaveType = leaveRequest.leaveType;
+      if (leaveType.name !== "Unpaid") {
+        const year = leaveRequest.startDate.getFullYear();
+        const balance = await LeaveBalance.updateOne(
+          {
+            employee: leaveRequest.employee._id,
+            year,
+            leaveType: leaveType._id,
+            remaining: { $gte: leaveRequest.workingDays },
+          },
+          {
+            $inc: {
+              used: leaveRequest.workingDays,
+              remaining: -leaveRequest.workingDays,
+            },
+          },
+          { session },
+        );
+        if (!balance.matchedCount) {
+          const error = new Error("Insufficient leave balance");
+          error.statusCode = 422;
+          throw error;
+        }
+      }
+
+      const user = await User.findOne({
+        employeeId: leaveRequest.employee._id,
+      }).session(session || null);
+      if (user) {
+        await Notification.create(
+          [
+            {
+              user: user._id,
+              title: "Leave Approved",
+              message: `Your leave request for ${leaveRequest.workingDays} day(s) has been approved.`,
+              type: "success",
+            },
+          ],
+          session ? { session } : undefined,
+        );
+      }
+
+      return { leaveRequest };
+    });
+
+    if (result.statusCode) {
+      return res.status(result.statusCode).json(result.body);
     }
 
-    // Create notification
-    const user = await User.findOne({ employeeId: leaveRequest.employee._id });
-    if (user) {
-      await Notification.create({
-        user: user._id,
-        title: "Leave Approved",
-        message: `Your leave request for ${leaveRequest.workingDays} day(s) has been approved.`,
-        type: "success",
-      });
-    }
-
-    res.json({ message: "Leave approved", leaveRequest });
+    res.json({ message: "Leave approved", leaveRequest: result.leaveRequest });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res
+      .status(error.statusCode || 500)
+      .json({ message: error.message });
   }
 };
 

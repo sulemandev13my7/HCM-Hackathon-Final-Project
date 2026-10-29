@@ -7,16 +7,22 @@ const Attendance = require("../models/Attendance");
 const LeaveRequest = require("../models/LeaveRequest");
 const { generateTemporaryPassword } = require("../utils/temporaryPassword");
 const { calculateSalaryComponents } = require("../utils/salaryCalculations");
-const csv = require("csv-parser");
-const fs = require("fs");
-const multer = require("multer");
 const { generateEmployeeId } = require("../utils/employeeId");
-
-const upload = multer({ dest: "uploads/" });
+const { parsePagination } = require("../utils/pagination");
+const { runInTransaction } = require("../utils/transactions");
+const { escapeCsvValue } = require("../utils/csv");
+const {
+  PASSWORD_REQUIREMENT,
+  isValidNewPassword,
+} = require("../utils/passwordPolicy");
 
 exports.getAllEmployees = async (req, res) => {
   try {
-    const { search, department, status, page = 1, limit = 10 } = req.query;
+    const { search, department, status } = req.query;
+    const { page, limit } = parsePagination(req.query.page, req.query.limit, {
+      defaultLimit: 200,
+      maxLimit: 500,
+    });
     const query = {};
 
     if (search) {
@@ -30,26 +36,20 @@ exports.getAllEmployees = async (req, res) => {
     if (department) query.department = department;
     if (status) query.status = status;
 
-    const employees = await Employee.find(query)
-      .populate("department")
-      .populate("designation");
-
-    const userIds = await User.find({
-      employeeId: { $in: employees.map(e => e._id) }
-    }).select("employeeId");
-
-    const employeesWithUserIds = employees.map(emp => ({
-      ...emp.toObject(),
-      userId: userIds.find(u => u.employeeId.equals(emp._id))?._id
-    }));
-
-    const total = await Employee.countDocuments(query);
-
+    const [employees, total] = await Promise.all([
+      Employee.find(query)
+        .populate("department")
+        .populate("designation")
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit),
+      Employee.countDocuments(query),
+    ]);
 
     res.json({
       employees,
       total,
-      page: parseInt(page),
+      page,
       pages: Math.ceil(total / limit),
     });
   } catch (error) {
@@ -159,6 +159,10 @@ exports.createEmployee = async (req, res) => {
   try {
     const { email, password, basicSalary, ...empData } = req.body;
 
+    if (password && !isValidNewPassword(password)) {
+      return res.status(400).json({ message: PASSWORD_REQUIREMENT });
+    }
+
     const existingEmp = await Employee.findOne({ email });
     if (existingEmp) {
       return res
@@ -166,50 +170,69 @@ exports.createEmployee = async (req, res) => {
         .json({ message: "Employee with this email already exists" });
     }
 
-    const employeeId = await generateEmployeeId();
-    const employeeData = { ...empData, email, employeeId };
-    if (!employeeData.department) delete employeeData.department;
-    if (!employeeData.designation) delete employeeData.designation;
-    const employee = await Employee.create(employeeData);
-
     const tempPassword = password || generateTemporaryPassword();
-    await User.create({
-      email,
-      password: tempPassword,
-      role: "employee",
-      employeeId: employee._id,
-      firstName: empData.firstName,
-      lastName: empData.lastName,
-      mustChangePassword: true,
+    const employee = await runInTransaction(async (session) => {
+      const employeeId = await generateEmployeeId(session);
+      const employeeData = { ...empData, email, employeeId };
+      if (!employeeData.department) delete employeeData.department;
+      if (!employeeData.designation) delete employeeData.designation;
+
+      const created = await Employee.create(employeeData, { session });
+      await User.create(
+        [
+          {
+            email,
+            password: tempPassword,
+            role: "employee",
+            employeeId: created._id,
+            firstName: empData.firstName,
+            lastName: empData.lastName,
+            mustChangePassword: true,
+          },
+        ],
+        { session },
+      );
+
+      if (basicSalary) {
+        const basic = Number(basicSalary);
+        const hra = basic * 0.4;
+        const medicalAllowance = basic * 0.1;
+        const gross = basic * 1.5;
+        await SalaryStructure.create(
+          [
+            {
+              employee: created._id,
+              basic,
+              hra,
+              medicalAllowance,
+              gross,
+              isActive: true,
+            },
+          ],
+          { session },
+        );
+      }
+
+      const leaveTypes = await LeaveType.find({ isActive: true }).session(
+        session,
+      );
+      const year = new Date().getFullYear();
+      if (leaveTypes.length) {
+        await LeaveBalance.insertMany(
+          leaveTypes.map((leaveType) => ({
+            employee: created._id,
+            year,
+            leaveType: leaveType._id,
+            quota: leaveType.quota,
+            used: 0,
+            remaining: leaveType.quota,
+          })),
+          { session },
+        );
+      }
+
+      return created;
     });
-
-    if (basicSalary) {
-      const basic = Number(basicSalary);
-      const hra = basic * 0.4;
-      const medicalAllowance = basic * 0.1;
-      const gross = basic * 1.5;
-      await SalaryStructure.create({
-        employee: employee._id,
-        basic,
-        hra,
-        medicalAllowance,
-        gross,
-        isActive: true,
-      });
-    }
-
-    const leaveTypes = await LeaveType.find({ isActive: true });
-    const year = new Date().getFullYear();
-    for (let lt of leaveTypes) {
-      await LeaveBalance.create({
-        employee: employee._id,
-        year,
-        leaveType: lt._id,
-        quota: lt.quota,
-        used: 0,
-        remaining: lt.quota,
-      });
-    }
 
     await employee.populate("department designation");
     res.status(201).json({
@@ -243,14 +266,26 @@ exports.exportCSV = async (req, res) => {
     const employees = await Employee.find()
       .populate("department")
       .populate("designation");
-    let csv =
-      "EmployeeID,FirstName,LastName,Email,Phone,Department,Designation,JoinDate,Status\n";
-    employees.forEach((emp) => {
-      csv += `${emp.employeeId},${emp.firstName},${emp.lastName},${emp.email},${emp.phone || ""},${emp.department?.name || ""},${emp.designation?.title || ""},${emp.joinDate ? emp.joinDate.toISOString().split("T")[0] : ""},${emp.status}\n`;
-    });
+    const header =
+      "EmployeeID,FirstName,LastName,Email,Phone,Department,Designation,JoinDate,Status";
+    const rows = employees.map((emp) =>
+      [
+        emp.employeeId,
+        emp.firstName,
+        emp.lastName,
+        emp.email,
+        emp.phone || "",
+        emp.department?.name || "",
+        emp.designation?.title || "",
+        emp.joinDate ? emp.joinDate.toISOString().split("T")[0] : "",
+        emp.status,
+      ]
+        .map(escapeCsvValue)
+        .join(","),
+    );
     res.header("Content-Type", "text/csv");
     res.attachment("employees.csv");
-    res.send(csv);
+    res.send([header, ...rows].join("\n") + "\n");
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

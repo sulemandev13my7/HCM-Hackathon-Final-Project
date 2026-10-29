@@ -7,6 +7,7 @@ const {
   changePassword,
   resetPasswordWithToken,
   getMe,
+  logout,
 } = require("../controllers/authController");
 const { protect } = require("../middleware/auth");
 const { logAudit } = require("../middleware/audit");
@@ -15,6 +16,7 @@ const passwordResetLimiter = require("../middleware/passwordResetRateLimit");
 
 router.get("/check-setup", checkFirstRun);
 router.post("/setup", firstRunSetup);
+router.post("/logout", logout);
 router.post("/login", loginLimiter, login);
 router.post("/reset-password", passwordResetLimiter, resetPasswordWithToken);
 router.put(

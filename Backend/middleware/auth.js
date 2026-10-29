@@ -1,9 +1,12 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { SESSION_COOKIE_NAME } = require('../utils/sessionCookie');
 
 exports.protect = async (req, res, next) => {
   let token;
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+  if (req.cookies?.[SESSION_COOKIE_NAME]) {
+    token = req.cookies[SESSION_COOKIE_NAME];
+  } else if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];
   }
 
@@ -16,6 +19,9 @@ exports.protect = async (req, res, next) => {
     req.user = await User.findById(decoded.id).select('-password');
     if (!req.user || !req.user.isActive) {
       return res.status(401).json({ message: 'User not found or inactive' });
+    }
+    if ((decoded.tv || 0) !== (req.user.tokenVersion || 0)) {
+      return res.status(401).json({ message: 'Session has expired' });
     }
     next();
   } catch (error) {

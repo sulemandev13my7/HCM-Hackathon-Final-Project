@@ -237,6 +237,7 @@ test("a valid reset token atomically sets a new password and is consumed", async
       this.body = body;
       return this;
     },
+    clearCookie() {},
   };
 
   await authController.resetPasswordWithToken(
@@ -254,6 +255,7 @@ test("a valid reset token atomically sets a new password and is consumed", async
   assert.equal(update.$set.mustChangePassword, false);
   assert.equal(update.$set.passwordResetTokenHash, null);
   assert.equal(update.$set.passwordResetExpiresAt, null);
+  assert.equal(update.$inc.tokenVersion, 1);
 });
 
 test("malformed reset tokens are rejected without a database lookup", async (t) => {
@@ -305,7 +307,7 @@ test("HR account creation rejects weak passwords before database access", async 
   );
 
   assert.equal(response.statusCode, 400);
-  assert.match(response.body.message, /at least 8/);
+  assert.match(response.body.message, /at least 12/);
   assert.equal(findOne.mock.callCount(), 0);
 });
 

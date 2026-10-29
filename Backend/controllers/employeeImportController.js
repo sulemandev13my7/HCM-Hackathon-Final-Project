@@ -5,239 +5,228 @@ const Designation = require("../models/Designation");
 const SalaryStructure = require("../models/SalaryStructure");
 const LeaveBalance = require("../models/LeaveBalance");
 const LeaveType = require("../models/LeaveType");
-const csv = require("csv-parser");
-const fs = require("fs");
-const multer = require("multer");
+const { csvUpload } = require("../middleware/csvUpload");
+const { parseCsvBuffer } = require("../utils/csv");
+const { runInTransaction } = require("../utils/transactions");
 const { generateTemporaryPassword } = require("../utils/temporaryPassword");
 const {
   validateEmployeeImportRow,
 } = require("../utils/employeeImportValidation");
 
-const upload = multer({ dest: "uploads/" });
+const loadLookups = async () => {
+  const [departments, designations, existingEmployees] = await Promise.all([
+    Department.find().lean(),
+    Designation.find().lean(),
+    Employee.find({}, "email employeeId").lean(),
+  ]);
 
-// Dry run CSV import
+  return {
+    departments,
+    designations,
+    existingEmployees,
+    deptMap: Object.fromEntries(
+      departments.map((item) => [item.name.toLowerCase(), item._id]),
+    ),
+    desigMap: Object.fromEntries(
+      designations.map((item) => [item.title.toLowerCase(), item._id]),
+    ),
+    departmentNames: new Set(departments.map((item) => item.name.toLowerCase())),
+    designationTitles: new Set(
+      designations.map((item) => item.title.toLowerCase()),
+    ),
+    existingEmails: new Set(
+      existingEmployees.map((item) => item.email.toLowerCase()),
+    ),
+    existingEmployeeIds: new Set(
+      existingEmployees.map((item) => item.employeeId.toLowerCase()),
+    ),
+  };
+};
+
+const validateRows = (rows, lookups) => {
+  const errors = [];
+  const invalidRows = new Set();
+  const seenEmails = new Set();
+  const seenEmployeeIds = new Set();
+
+  rows.forEach((row, index) => {
+    const rowNum = index + 2;
+    const rowErrors = validateEmployeeImportRow(row, rowNum, {
+      departmentNames: lookups.departmentNames,
+      designationTitles: lookups.designationTitles,
+      existingEmails: lookups.existingEmails,
+      existingEmployeeIds: lookups.existingEmployeeIds,
+      seenEmails,
+      seenEmployeeIds,
+    });
+
+    if (rowErrors.length) {
+      errors.push(...rowErrors);
+      invalidRows.add(rowNum);
+      return;
+    }
+
+    seenEmails.add(row.email.trim().toLowerCase());
+    if (row.employeeId) {
+      seenEmployeeIds.add(row.employeeId.trim().toLowerCase());
+    }
+  });
+
+  return { errors, invalidRows, seenEmails, seenEmployeeIds };
+};
+
 exports.importDryRun = [
-  upload.single("file"),
+  csvUpload.single("file"),
   async (req, res) => {
     try {
       if (!req.file)
         return res.status(400).json({ message: "No file uploaded" });
 
-      const results = [];
-      const errors = [];
-      const [departments, designations, existingEmployees] = await Promise.all([
-        Department.find(),
-        Designation.find(),
-        Employee.find({}, "email employeeId"),
-      ]);
-      const departmentNames = new Set(
-        departments.map((d) => d.name.toLowerCase()),
-      );
-      const designationTitles = new Set(
-        designations.map((d) => d.title.toLowerCase()),
-      );
-      const existingEmails = new Set(
-        existingEmployees.map((e) => e.email.toLowerCase()),
-      );
-      const existingEmployeeIds = new Set(
-        existingEmployees.map((e) => e.employeeId.toLowerCase()),
-      );
-      const seenEmails = new Set();
-      const seenEmployeeIds = new Set();
+      const rows = await parseCsvBuffer(req.file.buffer);
+      const lookups = await loadLookups();
+      const { errors, invalidRows } = validateRows(rows, lookups);
 
-      fs.createReadStream(req.file.path)
-        .pipe(csv())
-        .on("data", (data) => results.push(data))
-        .on("error", (error) => {
-          fs.rmSync(req.file.path, { force: true });
-          res.status(400).json({ message: error.message });
-        })
-        .on("end", async () => {
-          const invalidRows = new Set();
-          for (let i = 0; i < results.length; i++) {
-            const row = results[i];
-            const rowNum = i + 2;
-            const rowErrors = validateEmployeeImportRow(row, rowNum, {
-              departmentNames,
-              designationTitles,
-              existingEmails,
-              existingEmployeeIds,
-              seenEmails,
-              seenEmployeeIds,
-            });
-            if (rowErrors.length) {
-              errors.push(...rowErrors);
-              invalidRows.add(rowNum);
-              continue;
-            }
-            seenEmails.add(row.email.trim().toLowerCase());
-            if (row.employeeId)
-              seenEmployeeIds.add(row.employeeId.trim().toLowerCase());
-          }
-
-          fs.rmSync(req.file.path, { force: true });
-          res.json({
-            totalRows: results.length,
-            validRows: results.length - invalidRows.size,
-            errors,
-            preview: results.slice(0, 5),
-          });
-        });
+      res.json({
+        totalRows: rows.length,
+        validRows: rows.length - invalidRows.size,
+        errors,
+        preview: rows.slice(0, 5),
+      });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(error.statusCode || 400).json({ message: error.message });
     }
   },
 ];
 
-// Commit CSV import
 exports.importCommit = [
-  upload.single("file"),
+  csvUpload.single("file"),
   async (req, res) => {
     try {
       if (!req.file)
         return res.status(400).json({ message: "No file uploaded" });
 
-      const results = [];
-      const [departments, designations, existingEmployees] = await Promise.all([
-        Department.find(),
-        Designation.find(),
-        Employee.find({}, "email employeeId"),
-      ]);
-      const deptMap = {};
-      const desigMap = {};
-      departments.forEach((d) => {
-        deptMap[d.name.toLowerCase()] = d._id;
-      });
-      designations.forEach((d) => {
-        desigMap[d.title.toLowerCase()] = d._id;
-      });
-      const departmentNames = new Set(
-        departments.map((d) => d.name.toLowerCase()),
+      const rows = await parseCsvBuffer(req.file.buffer);
+      const lookups = await loadLookups();
+      const { errors, invalidRows, seenEmails, seenEmployeeIds } = validateRows(
+        rows,
+        lookups,
       );
-      const designationTitles = new Set(
-        designations.map((d) => d.title.toLowerCase()),
-      );
-      const existingEmails = new Set(
-        existingEmployees.map((e) => e.email.toLowerCase()),
-      );
-      const existingEmployeeIds = new Set(
-        existingEmployees.map((e) => e.employeeId.toLowerCase()),
-      );
-      const seenEmails = new Set();
-      const seenEmployeeIds = new Set();
-      let nextEmployeeNumber = existingEmployees.length + 1;
+      const leaveTypes = await LeaveType.find({ isActive: true }).lean();
+      const year = new Date().getFullYear();
+      let nextEmployeeNumber = lookups.existingEmployees.length + 1;
+      let created = 0;
+      const credentials = [];
 
-      fs.createReadStream(req.file.path)
-        .pipe(csv())
-        .on("data", (data) => results.push(data))
-        .on("error", (error) => {
-          fs.rmSync(req.file.path, { force: true });
-          res.status(400).json({ message: error.message });
-        })
-        .on("end", async () => {
-          let created = 0;
-          const credentials = [];
-          const errors = [];
+      for (let index = 0; index < rows.length; index++) {
+        const row = rows[index];
+        const rowNum = index + 2;
+        if (invalidRows.has(rowNum)) continue;
 
-          for (let index = 0; index < results.length; index++) {
-            const row = results[index];
-            const rowNum = index + 2;
-            const rowErrors = validateEmployeeImportRow(row, rowNum, {
-              departmentNames,
-              designationTitles,
-              existingEmails,
-              existingEmployeeIds,
-              seenEmails,
-              seenEmployeeIds,
-            });
-            if (rowErrors.length) {
-              errors.push(...rowErrors);
-              continue;
+        let employeeId = row.employeeId?.trim();
+        if (!employeeId) {
+          do {
+            employeeId = `EMP${String(nextEmployeeNumber++).padStart(5, "0")}`;
+          } while (lookups.existingEmployeeIds.has(employeeId.toLowerCase()));
+        }
+        lookups.existingEmployeeIds.add(employeeId.toLowerCase());
+        if (row.employeeId) seenEmployeeIds.add(employeeId.toLowerCase());
+
+        const tempPassword = generateTemporaryPassword();
+
+        try {
+          await runInTransaction(async (session) => {
+            const employee = await Employee.create(
+              [
+                {
+                  employeeId,
+                  firstName: row.firstName,
+                  lastName: row.lastName,
+                  email: row.email,
+                  phone: row.phone || "",
+                  department: row.department
+                    ? lookups.deptMap[row.department.toLowerCase()]
+                    : null,
+                  designation: row.designation
+                    ? lookups.desigMap[row.designation.toLowerCase()]
+                    : null,
+                  joinDate: new Date(`${row.joinDate}T00:00:00.000Z`),
+                  status: "active",
+                },
+              ],
+              { session },
+            );
+
+            await User.create(
+              [
+                {
+                  email: row.email,
+                  password: tempPassword,
+                  role: "employee",
+                  employeeId: employee[0]._id,
+                  firstName: row.firstName,
+                  lastName: row.lastName,
+                  mustChangePassword: true,
+                },
+              ],
+              { session },
+            );
+
+            if (row.basicSalary && Number(row.basicSalary) > 0) {
+              const basic = Number(row.basicSalary);
+              await SalaryStructure.create(
+                [
+                  {
+                    employee: employee[0]._id,
+                    basic,
+                    hra: basic * 0.4,
+                    medicalAllowance: basic * 0.1,
+                    gross: basic * 1.5,
+                    isActive: true,
+                  },
+                ],
+                { session },
+              );
             }
-            seenEmails.add(row.email.trim().toLowerCase());
-            try {
-              let employeeId = row.employeeId?.trim();
-              if (!employeeId) {
-                do {
-                  employeeId = `EMP${String(nextEmployeeNumber++).padStart(5, "0")}`;
-                } while (existingEmployeeIds.has(employeeId.toLowerCase()));
-              }
-              existingEmployeeIds.add(employeeId.toLowerCase());
-              if (row.employeeId) seenEmployeeIds.add(employeeId.toLowerCase());
 
-              const employee = await Employee.create({
-                employeeId,
-                firstName: row.firstName,
-                lastName: row.lastName,
-                email: row.email,
-                phone: row.phone || "",
-                department: row.department
-                  ? deptMap[row.department.toLowerCase()]
-                  : null,
-                designation: row.designation
-                  ? desigMap[row.designation.toLowerCase()]
-                  : null,
-                joinDate: new Date(`${row.joinDate}T00:00:00.000Z`),
-                status: "active",
-              });
-
-              const tempPassword = generateTemporaryPassword();
-              await User.create({
-                email: row.email,
-                password: tempPassword,
-                role: "employee",
-                employeeId: employee._id,
-                firstName: row.firstName,
-                lastName: row.lastName,
-                mustChangePassword: true,
-              });
-
-              if (row.basicSalary && Number(row.basicSalary) > 0) {
-                const basic = Number(row.basicSalary);
-                const gross = basic * 1.5;
-                await SalaryStructure.create({
-                  employee: employee._id,
-                  basic,
-                  hra: basic * 0.4,
-                  medicalAllowance: basic * 0.1,
-                  gross,
-                  isActive: true,
-                });
-              }
-
-              const leaveTypes = await LeaveType.find({ isActive: true });
-              const year = new Date().getFullYear();
-              for (let lt of leaveTypes) {
-                await LeaveBalance.create({
-                  employee: employee._id,
+            if (leaveTypes.length) {
+              await LeaveBalance.insertMany(
+                leaveTypes.map((leaveType) => ({
+                  employee: employee[0]._id,
                   year,
-                  leaveType: lt._id,
-                  quota: lt.quota,
+                  leaveType: leaveType._id,
+                  quota: leaveType.quota,
                   used: 0,
-                  remaining: lt.quota,
-                });
-              }
-
-              created++;
-              credentials.push({
-                email: row.email,
-                password: tempPassword,
-                employeeId,
-              });
-            } catch (e) {
-              console.error(e);
+                  remaining: leaveType.quota,
+                })),
+                { session },
+              );
             }
-          }
-
-          fs.rmSync(req.file.path, { force: true });
-          res.json({
-            message: `${created} employees created`,
-            credentials,
-            errors,
           });
-        });
+
+          created++;
+          credentials.push({
+            email: row.email,
+            password: tempPassword,
+            employeeId,
+          });
+        } catch (error) {
+          seenEmails.delete(row.email.trim().toLowerCase());
+          errors.push({
+            row: rowNum,
+            field: "row",
+            message: error.message,
+          });
+        }
+      }
+
+      res.json({
+        message: `${created} employees created`,
+        credentials,
+        errors,
+        skipped: rows.length - created,
+      });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(error.statusCode || 400).json({ message: error.message });
     }
   },
 ];
