@@ -1,4 +1,4 @@
-# HCM Lite - AI-Assisted Human Capital Management
+﻿# HCM Lite - AI-Assisted Human Capital Management
 
 A full-stack HR management system built for the Saylani Hackathon. It covers the complete employee lifecycle with role-based workflows for Admin, HR and Employees, plus an AI assistant that uses the same permission rules as the application.
 
@@ -10,7 +10,7 @@ The app starts empty. There is no seed or demo data: the first admin creates the
 
 - **First-run setup** - Create the company and first Admin account on an empty database.
 - **Admin launch checklist** - Live, data-backed onboarding progress for leave types, HR, employees and the first payroll run.
-- **Authentication and RBAC** - JWT authentication, temporary-password onboarding, forced first-login password change, admin-issued one-time reset links, and role-specific routes.
+- **Authentication and RBAC** - httpOnly cookie sessions, temporary-password onboarding, forced first-login password change, admin-issued one-time reset links, and role-specific routes.
 - **Organization settings** - Company profile, office hours, grace period, half-day threshold, weekends, departments, designations, leave types and public holidays.
 - **Employee management** - Directory, search and filters, Employee 360, CSV import with dry-run validation, CSV export, salary structures and salary history.
 - **Attendance** - Web check-in/out, optional camera check-in with geofence validation, HR self-service attendance, company attendance board and correction requests.
@@ -33,7 +33,7 @@ Camera/microphone/geolocation access requires HTTPS in production, or `localhost
 
 ## Tech stack
 
-- **Backend:** Node.js, Express 5, MongoDB, Mongoose, JWT, bcryptjs, PDFKit
+- **Backend:** Node.js, Express 5, MongoDB, Mongoose, signed JWT sessions in httpOnly cookies, bcryptjs, PDFKit
 - **Frontend:** React 19, Vite, Tailwind CSS 4, React Router, Lucide icons, React Hot Toast
 - **AI:** OpenRouter API with `google/gemini-2.5-flash`
 
@@ -67,7 +67,8 @@ Edit `Backend\.env`:
 | `PORT` | API port, default `5000` |
 | `MONGO_URI` | Dedicated MongoDB connection string |
 | `JWT_SECRET` | Strong random signing secret |
-| `JWT_EXPIRE` | Token lifetime, for example `7d` |
+| `JWT_EXPIRE` | Session lifetime, for example `7d` |
+| `ALLOW_PRODUCTION_DB_IN_DEVELOPMENT` | Only set to `true` if you intentionally point a non-production server at the production database |
 | `AI_API_KEY` | Backend-only OpenRouter key; optional |
 | `AI_BASE_URL` | Default `https://openrouter.ai/api/v1` |
 | `AI_MODEL` | Default `google/gemini-2.5-flash` |
@@ -81,13 +82,9 @@ If Atlas SRV lookups fail with `ECONNREFUSED`, set `DNS_SERVERS=8.8.8.8,1.1.1.1`
 
 ### Configure the frontend
 
-`Frontend\.env`:
+`Frontend\.env` is optional. Leave `VITE_API_BASE_URL` unset to use same-origin `/api`: Vite proxies `/api` to port 5000 in development, and Vercel rewrites it to the Render API in production.
 
-```dotenv
-VITE_API_BASE_URL=http://localhost:5000/api
-```
-
-Vite inlines this value at build time. Changing it in Vercel requires a new deployment.
+If you set an absolute URL instead, Vite inlines it at build time and changing it requires a new deployment.
 
 ### Run
 
@@ -155,13 +152,7 @@ Ensure HTTPS is enabled so camera and geolocation work.
 
 ### Frontend
 
-Deploy `Frontend` to Vercel with:
-
-```dotenv
-VITE_API_BASE_URL=https://<your-render-service>.onrender.com/api
-```
-
-Then redeploy. A build that used `http://localhost:5000/api` cannot call a hosted API.
+The checked-in `vercel.json` proxies `/api/*` to the Render service, so the browser keeps first-party cookies without cross-site cookie issues. Keep `VITE_API_BASE_URL` unset unless you deliberately want to call a different API host.
 
 The production build is verified to call the hosted backend rather than `localhost`. Use the first-run setup screen to initialize the deployed database.
 
