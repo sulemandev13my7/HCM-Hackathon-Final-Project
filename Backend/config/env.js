@@ -3,15 +3,17 @@ const PRODUCTION_DB_PATTERN = /(mongodb\+srv:\/\/|\.mongodb\.net)/i;
 const isProductionDatabase = (uri) =>
   PRODUCTION_DB_PATTERN.test(String(uri || ""));
 
+const isProduction = () =>
+  process.env.NODE_ENV === "production" || Boolean(process.env.RENDER);
+
 const validateEnv = () => {
-  const nodeEnv = process.env.NODE_ENV || "development";
   const mongoUri = process.env.MONGO_URI || "";
 
   if (!process.env.JWT_SECRET) {
     throw new Error("JWT_SECRET is required");
   }
 
-  if (nodeEnv === "production") {
+  if (isProduction()) {
     if (!mongoUri) {
       throw new Error("MONGO_URI is required in production");
     }
@@ -33,4 +35,4 @@ const validateEnv = () => {
   }
 };
 
-module.exports = { isProductionDatabase, validateEnv };
+module.exports = { isProduction, isProductionDatabase, validateEnv };

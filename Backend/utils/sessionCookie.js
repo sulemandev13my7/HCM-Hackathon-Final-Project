@@ -1,9 +1,11 @@
+const { isProduction } = require("../config/env");
+
 const SESSION_COOKIE_NAME = "hcm_session";
 const SESSION_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 
 const sessionCookieOptions = () => ({
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
+  secure: isProduction(),
   sameSite: "lax",
   path: "/",
   maxAge: SESSION_MAX_AGE_MS,

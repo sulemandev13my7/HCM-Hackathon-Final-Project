@@ -7,7 +7,7 @@ const compression = require("compression");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const connectDB = require("./config/db");
-const { validateEnv } = require("./config/env");
+const { isProduction, validateEnv } = require("./config/env");
 const apiLimiter = require("./middleware/apiRateLimit");
 const requestContext = require("./middleware/requestContext");
 const { buildErrorResponse } = require("./utils/errorResponse");
@@ -19,8 +19,7 @@ const app = express();
 if (
   process.env.TRUST_PROXY === "1" ||
   process.env.TRUST_PROXY === "true" ||
-  process.env.RENDER ||
-  process.env.NODE_ENV === "production"
+  isProduction()
 ) {
   app.set("trust proxy", 1);
 }
@@ -94,7 +93,7 @@ app.use(requestContext);
 morgan.token("request-id", (req) => req.id);
 app.use(
   morgan(
-    process.env.NODE_ENV === "production"
+    isProduction()
       ? ':remote-addr - :request-id ":method :url" :status :response-time ms'
       : "dev",
   ),
@@ -169,7 +168,9 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     return res
       .status(status)
-      .json(buildErrorResponse(err, process.env.NODE_ENV));
+      .json(
+        buildErrorResponse(err, isProduction() ? "production" : "development"),
+      );
   }
 
   res.status(status).json({ message: err.message || "Request failed" });

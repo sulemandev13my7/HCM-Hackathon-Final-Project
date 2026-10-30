@@ -1,6 +1,6 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { isProductionDatabase } = require("../config/env");
+const { isProduction, isProductionDatabase } = require("../config/env");
 const {
   PASSWORD_REQUIREMENT,
   isValidNewPassword,
@@ -15,6 +15,28 @@ test("production database detection recognises Atlas hostnames", () => {
   );
   assert.equal(isProductionDatabase("mongodb://127.0.0.1:27017/hcm"), false);
   assert.equal(isProductionDatabase(""), false);
+});
+
+test("production mode recognises Render even without NODE_ENV", () => {
+  const previousNodeEnv = process.env.NODE_ENV;
+  const previousRender = process.env.RENDER;
+  try {
+    delete process.env.NODE_ENV;
+    delete process.env.RENDER;
+    assert.equal(isProduction(), false);
+
+    process.env.NODE_ENV = "production";
+    assert.equal(isProduction(), true);
+
+    delete process.env.NODE_ENV;
+    process.env.RENDER = "true";
+    assert.equal(isProduction(), true);
+  } finally {
+    if (previousNodeEnv === undefined) delete process.env.NODE_ENV;
+    else process.env.NODE_ENV = previousNodeEnv;
+    if (previousRender === undefined) delete process.env.RENDER;
+    else process.env.RENDER = previousRender;
+  }
 });
 
 test("password policy requires 12 characters and mixed character classes", () => {
