@@ -87,7 +87,7 @@ exports.getEmployee360 = async (req, res) => {
         .populate("leaveType", "name")
         .sort({ createdAt: -1 })
         .limit(10),
-      User.findOne({ employeeId: employee._id }),
+      User.findOne({ employeeId: employee._id, company: req.companyId }),
     ]);
     const salary = salaryHistory.find((entry) => entry.isActive) || null;
 
@@ -177,13 +177,14 @@ exports.createEmployee = async (req, res) => {
       if (!employeeData.department) delete employeeData.department;
       if (!employeeData.designation) delete employeeData.designation;
 
-      const created = await Employee.create(employeeData, { session });
+      const [created] = await Employee.create([employeeData], { session });
       await User.create(
         [
           {
             email,
             password: tempPassword,
             role: "employee",
+            company: req.companyId,
             employeeId: created._id,
             firstName: empData.firstName,
             lastName: empData.lastName,

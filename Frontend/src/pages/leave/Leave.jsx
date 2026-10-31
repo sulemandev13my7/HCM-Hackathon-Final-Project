@@ -491,7 +491,7 @@ export default function Leave() {
         <section className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm sm:p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-600">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-700">
                 Approval inbox
               </p>
               <h2 className="mt-1 text-lg font-semibold text-hcm-ink">

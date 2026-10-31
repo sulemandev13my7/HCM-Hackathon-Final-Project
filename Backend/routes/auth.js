@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   checkFirstRun,
   firstRunSetup,
+  signup,
   login,
   changePassword,
   resetPasswordWithToken,
@@ -11,11 +12,12 @@ const {
 } = require("../controllers/authController");
 const { protect } = require("../middleware/auth");
 const { logAudit } = require("../middleware/audit");
-const loginLimiter = require("../middleware/authRateLimit");
+const { loginLimiter, signupLimiter } = require("../middleware/authRateLimit");
 const passwordResetLimiter = require("../middleware/passwordResetRateLimit");
 
 router.get("/check-setup", checkFirstRun);
-router.post("/setup", firstRunSetup);
+router.post("/setup", signupLimiter, firstRunSetup);
+router.post("/signup", signupLimiter, signup);
 router.post("/logout", logout);
 router.post("/login", loginLimiter, login);
 router.post("/reset-password", passwordResetLimiter, resetPasswordWithToken);

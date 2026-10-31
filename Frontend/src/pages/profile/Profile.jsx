@@ -179,7 +179,7 @@ export default function Profile() {
               >
                 <row.icon className="mt-0.5 h-4 w-4 shrink-0 text-hcm-muted" />
                 <div className="min-w-0">
-                  <dt className="text-[11px] font-medium uppercase tracking-wide text-hcm-muted">
+                  <dt className="text-xs font-medium uppercase tracking-wide text-hcm-muted">
                     {row.label}
                   </dt>
                   <dd className="mt-0.5 break-words text-sm text-hcm-ink">
@@ -190,7 +190,7 @@ export default function Profile() {
             ))}
           </dl>
 
-          <p className="mt-4 flex items-center gap-1.5 text-[11px] text-hcm-muted">
+          <p className="mt-4 flex items-center gap-1.5 text-xs text-hcm-muted">
             <ShieldCheck className="h-3.5 w-3.5" />
             Employment details are managed by HR.
           </p>

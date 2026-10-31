@@ -7,11 +7,10 @@ import {
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./contexts/useAuth";
 import { Toaster } from "react-hot-toast";
-import { lazy, Suspense, useEffect, useState } from "react";
-import API from "./services/api";
+import { lazy, Suspense } from "react";
 import ErrorBoundary from "./components/ErrorBoundary";
-import FirstRunSetup from "./pages/FirstRunSetup";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import ChangePassword from "./pages/ChangePassword";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -53,19 +52,8 @@ const ProtectedRoute = ({ children, roles }) => {
 };
 
 const RootRedirect = () => {
-  const { user } = useAuth();
-  const [needsSetup, setNeedsSetup] = useState(null);
-
-  useEffect(() => {
-    API.get("/auth/check-setup")
-      .then((res) => {
-        setNeedsSetup(res.data.needsSetup);
-      })
-      .catch(() => setNeedsSetup(false));
-  }, []);
-
-  if (needsSetup === null) return <PageLoading />;
-  if (needsSetup) return <Navigate to="/setup" replace />;
+  const { user, loading } = useAuth();
+  if (loading) return <PageLoading />;
   if (user) return <Navigate to={getRoleHome(user.role)} replace />;
   return <Navigate to="/login" replace />;
 };
@@ -89,7 +77,8 @@ function App() {
         <Suspense fallback={<PageLoading />}>
           <Routes>
           <Route path="/" element={<RootRedirect />} />
-          <Route path="/setup" element={<FirstRunSetup />} />
+          <Route path="/setup" element={<Navigate to="/signup" replace />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />

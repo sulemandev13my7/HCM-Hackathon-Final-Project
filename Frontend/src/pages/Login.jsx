@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import {
   AlertCircle,
   ArrowRight,
-  Building2,
+  ArrowUpRight,
   Eye,
   EyeOff,
   Loader2,
@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import AuthShell from "../components/auth/AuthShell";
 import AuthField from "../components/auth/AuthField";
-import API from "../services/api";
 import { getRoleHome } from "../utils/roleHome";
 
 export default function Login() {
@@ -26,23 +25,8 @@ export default function Login() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
-  const [setupPending, setSetupPending] = useState(false);
   const { login, user, loading } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    let active = true;
-    API.get("/auth/check-setup")
-      .then((response) => {
-        if (active) setSetupPending(Boolean(response.data?.needsSetup));
-      })
-      .catch(() => {
-        if (active) setSetupPending(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
 
   useEffect(() => {
     if (loading || !user) return;
@@ -104,15 +88,15 @@ export default function Login() {
   return (
     <AuthShell variant="login">
       <div>
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-hcm-accent/15 bg-hcm-accent-soft px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-hcm-accent">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-hcm-accent/15 bg-hcm-accent-soft px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-hcm-accent">
           <LockKeyhole className="h-3 w-3" />
           Workspace access
         </span>
-        <h2 className="mt-4 font-display text-[28px] font-bold leading-tight tracking-[-0.03em] text-hcm-ink">
-          Welcome back.
+        <h2 className="mt-4 font-display text-[30px] font-bold leading-tight tracking-[-0.03em] text-hcm-ink sm:text-[32px]">
+          Welcome back
         </h2>
         <p className="mt-2 text-sm leading-6 text-hcm-muted">
-          Sign in to your workspace.
+          Sign in to continue to your workspace.
         </p>
       </div>
 
@@ -141,7 +125,7 @@ export default function Login() {
           type="email"
           inputMode="email"
           autoComplete="email"
-          placeholder="you@company.com"
+          placeholder="Enter your work email"
           value={email}
           onChange={(event) => {
             setEmail(event.target.value);
@@ -152,7 +136,6 @@ export default function Login() {
           }}
           error={fieldErrors.email}
           required
-          autoFocus
         />
 
         <AuthField
@@ -194,7 +177,7 @@ export default function Login() {
         <div className="-my-1 flex justify-end">
           <Link
             to="/forgot-password"
-            className="inline-flex h-8 items-center rounded-lg px-2 text-[11px] font-semibold text-hcm-muted underline-offset-2 transition hover:text-hcm-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-accent/20"
+            className="inline-flex min-h-10 items-center rounded-lg px-2 text-xs font-semibold text-hcm-muted underline-offset-2 transition hover:text-hcm-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hcm-accent/20"
           >
             Forgot password?
           </Link>
@@ -203,7 +186,7 @@ export default function Login() {
         <button
           type="submit"
           disabled={submitting}
-          className="hcm-btn-primary group flex h-11 w-full items-center justify-center gap-2 rounded-[10px] px-4 text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/20 disabled:cursor-wait disabled:opacity-70"
+          className="hcm-btn-primary group flex h-12 w-full items-center justify-center gap-2 rounded-[10px] px-4 text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/20 disabled:cursor-wait disabled:opacity-70"
         >
           {submitting ? (
             <>
@@ -219,33 +202,27 @@ export default function Login() {
         </button>
       </form>
 
-      <p className="mt-3.5 flex items-center justify-center gap-1.5 text-[11px] text-hcm-muted">
+      <p className="mt-3.5 flex items-center justify-center gap-1.5 text-xs text-hcm-muted">
         <ShieldCheck className="h-3.5 w-3.5 text-hcm-accent" />
         Your role controls what you can access.
       </p>
 
-      {setupPending && (
-        <>
-          <div className="mt-7 flex items-center gap-3 text-[11px] font-medium text-hcm-muted">
-            <span className="h-px flex-1 bg-hcm-line" />
-            New to HCM Lite?
-            <span className="h-px flex-1 bg-hcm-line" />
-          </div>
+      <div className="mt-7 flex items-center gap-3 text-xs font-medium text-hcm-muted">
+        <span className="h-px flex-1 bg-hcm-line" />
+        New to HCM Lite?
+        <span className="h-px flex-1 bg-hcm-line" />
+      </div>
 
-          <button
-            type="button"
-            onClick={() => navigate("/setup")}
-            className="group mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-[10px] border border-hcm-line bg-white px-4 text-[13px] font-semibold text-hcm-ink transition hover:border-hcm-line-strong hover:bg-hcm-surface-soft focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/10"
-          >
-            <Building2 className="h-4 w-4 text-hcm-muted" />
-            Set up a company workspace
-            <ArrowRight className="h-3.5 w-3.5 text-hcm-muted transition-transform group-hover:translate-x-0.5" />
-          </button>
-        </>
-      )}
+      <Link
+        to="/signup"
+        className="group mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-[10px] border border-hcm-line bg-hcm-surface-soft px-4 text-sm font-semibold text-hcm-ink transition hover:border-hcm-line-strong hover:bg-hcm-canvas focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-hcm-accent/10"
+      >
+        Create a company workspace
+        <ArrowUpRight className="h-3.5 w-3.5 text-hcm-muted transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+      </Link>
 
-      <p className="mt-5 text-center text-[11px] leading-5 text-hcm-muted">
-        Need an account? Ask your workspace administrator.
+      <p className="mt-5 text-center text-xs leading-5 text-hcm-muted">
+        Joining an existing workspace? Ask your HR team or Admin for an account.
       </p>
     </AuthShell>
   );

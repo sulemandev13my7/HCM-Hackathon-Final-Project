@@ -816,7 +816,7 @@ export default function Employees() {
           <div className="flex max-h-[94vh] w-full max-w-2xl flex-col overflow-hidden rounded-t-2xl bg-hcm-surface shadow-hcm sm:rounded-2xl">
             <div className="flex items-start justify-between border-b border-hcm-line/80 p-5 sm:p-6">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-600">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-hcm-accent">
                   {editingEmployeeId ? "Update record" : "New hire"}
                 </p>
                 <h2

@@ -6,7 +6,7 @@ HCM Lite: React 19 + Vite frontend and Express 5 + MongoDB backend for HR workfl
 ## Commands
 Run from the named directory.
 
-- Backend tests: `cd Backend; npm test` (`node --test`, 54 tests)
+- Backend tests: `cd Backend; npm test` (`node --test`, 70 tests)
 - Backend dev server: `cd Backend; npm run dev` (port 5000)
 - Frontend lint: `cd Frontend; npm run lint`
 - Frontend build: `cd Frontend; npm run build`
@@ -28,12 +28,16 @@ Run from the named directory.
 - Auth uses the httpOnly `hcm_session` cookie. Do not store JWTs or user records in localStorage.
 - Frontend API calls go through `Frontend/src/services/api.js`; base URL is `/api` (Vite proxies it to port 5000).
 - New passwords require 12+ chars with upper, lower, number, and symbol. Reuse `Backend/utils/passwordPolicy.js` and `Frontend` password checks.
-- Use `runInTransaction` for multi-collection writes; it falls back on standalone MongoDB.
+- Use `runInTransaction` for multi-collection writes; it falls back on standalone MongoDB. When passing a session to `Model.create`, pass an array: `Model.create([doc], { session })`.
+- Tenant-owned models use `Backend/utils/tenantPlugin.js`; tenant context comes from `runWithTenant` / `req.companyId`. `CompanySettings` is the company record.
+- Scope explicit `User` queries with `company: req.companyId`; do not rely on the plugin for `User` or `CompanySettings`.
+- New signups create an isolated company workspace, admin account and default leave types. Do not add a global first-run setup path.
 - Use `parsePagination` for list endpoints; cap limits.
 - Use `escapeCsvValue` for generated CSV cells.
 - Keep controllers thin; put reusable logic in `Backend/utils/`.
 - Do not print or commit secrets from `.env`.
-- Do not reset production data. Local development uses `mongodb://127.0.0.1:27017/hcm_lite`.
+- Do not reset production data unless the user explicitly requests a fresh start. Local development uses `mongodb://127.0.0.1:27017/hcm_lite`.
+- `npm --prefix Backend run db:reset -- --yes` drops collections and legacy indexes; it is for deliberate fresh-start resets only.
 
 ## Verification
 Before finishing any code change run the relevant commands above. Backend tests and frontend lint/build must pass. Do not commit unless explicitly asked.

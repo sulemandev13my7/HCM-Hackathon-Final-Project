@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const TRANSACTION_UNSUPPORTED_PATTERN =
-  /transaction numbers are only allowed|replica set|mongos|does not support transactions/i;
+  /transaction numbers are only allowed|replica set|mongos|does not support transactions|does not support retryable writes/i;
 
 const isTransactionUnsupported = (error) =>
   TRANSACTION_UNSUPPORTED_PATTERN.test(String(error?.message || ""));

@@ -162,6 +162,7 @@ exports.importCommit = [
                   email: row.email,
                   password: tempPassword,
                   role: "employee",
+                  company: req.companyId,
                   employeeId: employee[0]._id,
                   firstName: row.firstName,
                   lastName: row.lastName,

@@ -2,15 +2,15 @@
 
 A full-stack HR management system built for the Saylani Hackathon. It covers the complete employee lifecycle with role-based workflows for Admin, HR and Employees, plus an AI assistant that uses the same permission rules as the application.
 
-The app starts empty. There is no seed or demo data: the first admin creates the company and configures the workspace.
+The app is multi-tenant. Every signup creates an isolated company workspace, its first Admin account and default leave types. There is no seed or demo data.
 
 ## Features
 
 ### Core modules
 
-- **First-run setup** - Create the company and first Admin account on an empty database.
+- **Self-serve company signup** - Create a company workspace and first Admin account, with all data isolated per company.
 - **Admin launch checklist** - Live, data-backed onboarding progress for leave types, HR, employees and the first payroll run.
-- **Authentication and RBAC** - httpOnly cookie sessions, temporary-password onboarding, forced first-login password change, admin-issued one-time reset links, and role-specific routes.
+- **Authentication and RBAC** - Public company signup, httpOnly cookie sessions, temporary-password onboarding, forced first-login password change, admin-issued one-time reset links, and role-specific routes.
 - **Organization settings** - Company profile, office hours, grace period, half-day threshold, weekends, departments, designations, leave types and public holidays.
 - **Employee management** - Directory, search and filters, Employee 360, CSV import with dry-run validation, CSV export, salary structures and salary history.
 - **Attendance** - Web check-in/out, optional camera check-in with geofence validation, HR self-service attendance, company attendance board and correction requests.
@@ -98,11 +98,11 @@ npm --prefix Backend run dev
 npm --prefix Frontend run dev
 ```
 
-Open the Vite URL. On a fresh database, the app opens first-run setup. Create the Admin account, configure the organization, then create HR accounts. HR registers employees; each employee receives a temporary password that must be changed at first sign-in.
+Open the Vite URL. Create a company workspace at `/signup`, configure the organization, then create HR accounts. HR registers employees; each employee receives a temporary password that must be changed at first sign-in.
 
 ## Demo flow
 
-1. Complete first-run setup on a fresh database.
+1. Sign up a company workspace at `/signup`.
 2. Configure the company, office location, departments, designations and leave types.
 3. Create an HR account and sign in as HR.
 4. Register an employee and copy the generated temporary password.
@@ -113,7 +113,7 @@ Open the Vite URL. On a fresh database, the app opens first-run setup. Create th
 
 ### Reset between evaluators
 
-Admins can create a single-use password reset link for any active account from **Users & access**. Links expire after 30 minutes and are stored only as a SHA-256 hash. There is no public sign-up and no email delivery provider, so users request reset links from their workspace admin.
+Admins can create a single-use password reset link for any active account from **Users & access**. Links expire after 30 minutes and are stored only as a SHA-256 hash. There is no email delivery provider, so users request reset links from their workspace admin.
 
 To wipe the whole demo workspace between evaluators, reset the dedicated database from the operator machine:
 
@@ -121,7 +121,7 @@ To wipe the whole demo workspace between evaluators, reset the dedicated databas
 npm --prefix Backend run db:reset -- --yes
 ```
 
-This removes all company data and makes `/` open first-run setup again. Use it only between demo sessions; there is no undo.
+This removes every company workspace and its data. `/` and `/signup` then create a fresh workspace. Use it only between demo sessions; there is no undo.
 
 ## Deployment
 
@@ -131,7 +131,7 @@ This removes all company data and makes `/` open first-run setup again. Use it o
 - Backend API: <https://hcm-hackathon-final-project.onrender.com/api>
 - Health check: <https://hcm-hackathon-final-project.onrender.com/api/health>
 
-The hosted database is intentionally uninitialized. Open `/setup` to create the first workspace and admin account.
+The hosted database is intentionally uninitialized. Open `/signup` to create a workspace and admin account.
 
 ### Backend
 
@@ -154,7 +154,7 @@ Ensure HTTPS is enabled so camera and geolocation work.
 
 The checked-in `vercel.json` proxies `/api/*` to the Render service, so the browser keeps first-party cookies without cross-site cookie issues. Keep `VITE_API_BASE_URL` unset unless you deliberately want to call a different API host.
 
-The production build is verified to call the hosted backend rather than `localhost`. Use the first-run setup screen to initialize the deployed database.
+The production build is verified to call the hosted backend rather than `localhost`. Use `/signup` to create a workspace in the deployed database.
 
 ## Security
 
@@ -162,7 +162,7 @@ The production build is verified to call the hosted backend rather than `localho
 - Passwords hashed with bcrypt.
 - Temporary passwords are generated server-side and must be changed on first login.
 - Password reset links use 256-bit tokens, are stored only as SHA-256 hashes, expire after 30 minutes, and are consumed atomically on first use.
-- Login and password-reset endpoints are rate-limited.
+- Signup, login and password-reset endpoints are rate-limited.
 - AI API keys stay on the backend.
 - Audit snapshots redact credential fields before storage.
 - Audit logs record critical create, update, approval, payroll, attendance and authentication events.
@@ -180,19 +180,17 @@ npm --prefix Frontend run build
 
 Current local verification:
 
-- Backend unit tests: **49/49 passing**.
+- Backend unit tests: **70/70 passing**.
 - Frontend ESLint: passing.
 - Frontend production build: passing with route-level code splitting.
-- Isolated end-to-end smoke test: **55/55 passing**, covering setup, RBAC, HR self-service, camera geofence rejection and check-in, attendance, leave, payroll, payslip PDFs, dashboards, notifications, announcements, audit logs, CSV import/export, Employee 360, AI chat and smart leave.
-- Hosted Vercel frontend and Render API verified together: production health, setup status, CORS preflight, SPA deep links and the protected-route redirect all return the expected responses.
-- Login and first-run setup checked in a real browser at 375px and desktop widths with custom validation, focus handling and no horizontal overflow.
-- Admin launch checklist verified in a real browser: live counts, next-step highlighting, module links, collapse/expand state and accessible progress reporting.
-- Hosted setup remains unsubmitted so the deployed workspace stays clean for the first real admin.
+- Multi-tenant API verification: two workspaces created, employee/user/settings/leave-type data isolated, and cross-company employee access rejected with `404`.
+- Login and signup checked in a real browser at mobile and desktop widths with custom validation, focus handling and no horizontal overflow.
+- Hosted database reset leaves `/` and `/signup` ready for a fresh workspace.
 
 ## Notes
 
 - Starts empty; no dummy data is included.
-- Single-tenant by design: first-run `/setup` creates the only workspace, with no public sign-up.
+- Multi-tenant by design: every signup creates an isolated company workspace. A deliberate database reset removes all workspaces.
 - All financial and attendance calculations run on the server.
 - AI tools inherit the caller's role permissions.
 - Mobile layouts are supported from 375px upward.

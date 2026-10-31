@@ -110,7 +110,7 @@ export default function AIChat() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-9.5rem)] min-h-[32rem] flex-col overflow-hidden rounded-2xl border border-hcm-line bg-white shadow-sm">
+    <div className="flex h-[calc(100dvh-9.5rem)] min-h-[24rem] flex-col overflow-hidden rounded-2xl border border-hcm-line bg-white shadow-sm sm:min-h-[32rem]">
       <header className="hcm-chat-header shrink-0 px-5 py-4 sm:px-6">
         <div className="relative flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -121,7 +121,7 @@ export default function AIChat() {
               <h1 className="font-display text-lg font-bold tracking-tight text-white">
                 AI Assistant
               </h1>
-              <p className="flex items-center gap-1.5 text-xs text-white/60">
+              <p className="flex items-center gap-1.5 text-sm text-white/75">
                 <ShieldCheck className="h-3.5 w-3.5 text-hcm-lime" />
                 Live data · {role} scope
               </p>
@@ -193,7 +193,7 @@ export default function AIChat() {
                     }`}
                   >
                     {!isUser && (
-                      <p className="mb-1 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-hcm-muted">
+                      <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-hcm-muted">
                         <Sparkles className="h-3 w-3 text-hcm-accent" />
                         AI-generated
                       </p>

@@ -19,10 +19,15 @@ exports.logAudit = (action, entity) => {
   return async (req, res, next) => {
     try {
       const model = auditModels[entity];
-      if (model && req.params.id) {
+      const companyId = req.companyId || req.user?.company;
+      if (entity === "user" && model && req.params.id) {
+        req.auditBefore = await model
+          .findOne({ _id: req.params.id, company: companyId })
+          .lean();
+      } else if (entity === "company_settings" && model) {
+        req.auditBefore = await model.findById(companyId).lean();
+      } else if (model && req.params.id) {
         req.auditBefore = await model.findById(req.params.id).lean();
-      } else if (entity === "company_settings") {
-        req.auditBefore = await model.findOne().lean();
       }
     } catch {
       req.auditBefore = undefined;
@@ -33,6 +38,7 @@ exports.logAudit = (action, entity) => {
       if (req.user && res.statusCode >= 200 && res.statusCode < 300) {
         const safeData = sanitizeAuditData(data);
         AuditLog.create({
+          company: req.companyId || req.user.company,
           actor: req.user._id,
           actorRole: req.user.role,
           action,

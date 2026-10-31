@@ -339,11 +339,11 @@ export default function Payroll() {
         <>
           <section className="grid gap-4 sm:grid-cols-3">
             <div className="rounded-2xl border border-hcm-ink/10 bg-hcm-ink p-5 text-white">
-              <p className="text-sm text-white/55">Total net earned</p>
+              <p className="text-sm text-white/75">Total net earned</p>
               <p className="mt-2 text-2xl font-semibold">
                 {currency(metrics.totalEarned)}
               </p>
-              <p className="mt-1 text-xs text-white/55">
+              <p className="mt-1 text-sm text-white/75">
                 Across {metrics.primary} finalized payslip
                 {metrics.primary === 1 ? "" : "s"}
               </p>
@@ -498,13 +498,13 @@ export default function Payroll() {
           <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <div className="rounded-2xl border border-hcm-ink/10 bg-hcm-ink p-5 text-white">
               <div className="flex items-center justify-between">
-                <p className="text-sm text-white/55">Total net paid</p>
+                <p className="text-sm text-white/75">Total net paid</p>
                 <Wallet className="h-5 w-5 text-hcm-lime" />
               </div>
               <p className="mt-2 text-2xl font-semibold">
                 {currency(metrics.totalPaid)}
               </p>
-              <p className="mt-1 text-xs text-white/55">
+              <p className="mt-1 text-sm text-white/75">
                 From {metrics.finalized} finalized run
                 {metrics.finalized === 1 ? "" : "s"}
               </p>

@@ -16,6 +16,7 @@
   --color-hcm-line-strong: #c8dcd8;
   --color-hcm-accent: #007a68;
   --color-hcm-accent-strong: #005c50;
+  --color-hcm-accent-deep: #00483e;
   --color-hcm-accent-soft: #e3fbf4;
   --color-hcm-lime: #8cf8e1;
   --color-hcm-lime-soft: #effffb;
@@ -41,7 +42,7 @@
   }
 
   body {
-    @apply min-h-screen bg-hcm-canvas font-sans text-[15px] text-hcm-ink antialiased;
+    @apply min-h-screen bg-hcm-canvas font-sans text-base text-hcm-ink antialiased;
     background-image:
       radial-gradient(circle at 12% -8%, rgba(0, 133, 115, 0.08), transparent 32%),
       radial-gradient(circle at 100% 0%, rgba(255, 123, 102, 0.08), transparent 24%);
@@ -54,6 +55,12 @@
   select,
   textarea {
     -webkit-tap-highlight-color: transparent;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-hcm-muted);
+    opacity: 1;
   }
 
   ::selection {
@@ -103,15 +110,15 @@
   }
 
   .hcm-label {
-    @apply block text-[13px] font-semibold text-hcm-ink-soft;
+    @apply block text-sm font-semibold text-hcm-ink-soft;
   }
 
   .hcm-input {
-    @apply mt-1.5 w-full rounded-[10px] border border-hcm-line bg-white px-3.5 py-2.5 text-sm text-hcm-ink outline-none transition placeholder:text-[#708a8a] hover:border-hcm-line-strong focus:border-hcm-accent focus:ring-4 focus:ring-hcm-accent/10;
+    @apply mt-1.5 w-full rounded-[10px] border border-hcm-line bg-white px-3.5 py-2.5 text-sm text-hcm-ink outline-none transition placeholder:text-hcm-muted hover:border-hcm-line-strong focus:border-hcm-accent focus:ring-4 focus:ring-hcm-accent/10;
   }
 
   .hcm-select {
-    @apply mt-1.5 w-full appearance-none rounded-[10px] border border-hcm-line bg-white px-3.5 py-2.5 pr-9 text-sm text-hcm-ink outline-none transition placeholder:text-[#708a8a] hover:border-hcm-line-strong focus:border-hcm-accent focus:ring-4 focus:ring-hcm-accent/10;
+    @apply mt-1.5 w-full appearance-none rounded-[10px] border border-hcm-line bg-white px-3.5 py-2.5 pr-9 text-sm text-hcm-ink outline-none transition placeholder:text-hcm-muted hover:border-hcm-line-strong focus:border-hcm-accent focus:ring-4 focus:ring-hcm-accent/10;
   }
 
   .hcm-link {
@@ -222,30 +229,19 @@
     opacity: 0.9;
   }
 
-  .bg-hcm-accent {
-    background-image: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.14),
-      rgba(255, 255, 255, 0) 58%
-    );
-  }
-
   .hcm-btn-primary {
-    background-image: linear-gradient(135deg, #006b5d 0%, #007a68 100%);
-    box-shadow:
-      0 10px 24px -16px rgba(0, 133, 115, 0.8),
-      inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    background-color: var(--color-hcm-accent-strong);
+    background-image: none;
+    box-shadow: 0 4px 12px -5px rgba(0, 92, 80, 0.45);
     transition:
-      background-image 180ms ease,
+      background-color 180ms ease,
       box-shadow 180ms ease,
       transform 120ms ease;
   }
 
   .hcm-btn-primary:hover {
-    background-image: linear-gradient(135deg, #005c50 0%, #006b5d 100%);
-    box-shadow:
-      0 14px 28px -16px rgba(0, 133, 115, 0.85),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    background-color: var(--color-hcm-accent-deep);
+    box-shadow: 0 6px 16px -5px rgba(0, 72, 62, 0.5);
   }
 
   .hcm-btn-primary:active {

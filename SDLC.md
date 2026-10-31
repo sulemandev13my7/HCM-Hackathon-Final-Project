@@ -1,102 +1,30 @@
-# SDLC Plan - HCM Lite (4 Hours)
-**Timeline:** Aggressive but achievable with parallel work
+# HCM Lite Delivery Status
 
-## Phase 1: Planning & Setup (0-30 min)
-- [x] Read and understand brief
-- [x] Create PRD
-- [ ] Create architecture doc
-- [ ] Setup project structure (backend + frontend)
-- [ ] Install dependencies
-- [ ] Configure env
+The original four-hour implementation checklist is retired. This file records the current delivered scope and the verification evidence available in the repository.
 
-## Phase 2: Backend Core (30-90 min)
-**Priority: Foundation**
-- [ ] Project setup (Express, Mongoose, JWT, bcrypt, cors, dotenv)
-- [ ] DB connection
-- [ ] Models: User, Employee, CompanySettings, Department, etc.
-- [ ] Auth & RBAC middleware
-- [ ] First-run setup endpoint
-- [ ] Auth routes (login, change password)
-- [ ] Organization setup CRUD
-- [ ] Error handling, validation
+## Delivered
 
-## Phase 3: HR Core Flows (90-150 min)
-**Priority: Must-have for demo**
-- [ ] Employee management (register, list, 360, CSV import/export)
-- [ ] Attendance (check-in/out, rules, corrections)
-- [ ] Leave (apply, approve, balances, working days calc)
-- [ ] Payroll (salary structure, run, tax calc, PDF, finalize)
+- [x] React 19 + Vite frontend and Express 5 + MongoDB backend
+- [x] Workspace signup, Admin bootstrap, cookie sessions, RBAC, password change and reset flows
+- [x] Organization settings, departments, designations, leave types and holidays
+- [x] Employee directory, Employee 360, salary history and CSV import/export
+- [x] Attendance check-in/out, optional geofencing, corrections and company board
+- [x] Leave requests, balances, working-day rules, approval and cancellation
+- [x] Payroll drafts, server-side calculations, Admin finalization and PDF payslips
+- [x] Role dashboards, AI assistant, announcements, notifications and audit log
+- [x] Company-scoped data access, tenant regression tests and production error handling
+- [x] README, environment examples, architecture notes and GitHub Actions checks
 
-## Phase 4: Frontend (90-180 min) - Parallel with backend
-**Priority: UI for all flows**
-- [ ] Setup routing (react-router-dom)
-- [ ] Auth context, protected routes by role
-- [ ] First-run setup page
-- [ ] Login page
-- [ ] Layouts per role (Admin/HR/Employee)
-- [ ] Dashboards
-- [ ] Employee management UI
-- [ ] Attendance UI
-- [ ] Leave UI
-- [ ] Payroll UI
-- [ ] Settings/Org setup UI
+## Verification
 
-## Phase 5: AI Assistant + Dashboards + Comms (150-210 min)
-- [ ] AI service with tool calling
-- [ ] AI routes and tools (all 7 tools)
-- [ ] Dashboard aggregations
-- [ ] Announcements, notifications
-- [ ] Audit logging
-- [ ] Smart leave parsing
+- [x] Backend automated suite: run with `npm --prefix Backend test`
+- [x] Frontend lint: run with `npm --prefix Frontend run lint`
+- [x] Frontend production build: run with `npm --prefix Frontend run build`
+- [ ] Hosted deployment and live multi-workspace browser flow: requires configured hosted services and credentials; no live database or production data was changed during this review.
 
-## Phase 6: Integration, Testing & Polish (210-240 min)
-- [ ] End-to-end testing of demo flow
-- [ ] Fix bugs
-- [ ] RBAC verification
-- [ ] Add loading/error states
-- [ ] Create .env.example
-- [ ] Write comprehensive README
-- [ ] Final checks
+## Operational constraints
 
-## Tech Stack Decision
-**Backend:** Node.js + Express.js + Mongoose (MongoDB) - Fast to build, flexible schema
-**Frontend:** React 19 + Vite + React Router + Axios + Tailwind CSS
-**Auth:** JWT + bcryptjs
-**AI:** OpenRouter/OpenAI compatible API (free tier)
-**PDF:** pdfkit or puppeteer (pdfkit lighter)
-**Utils:** date-fns, lodash
-
-## Architecture
-```
-backend/
-├── config/ (db, env)
-├── models/ (all schemas)
-├── middleware/ (auth, rbac, audit)
-├── services/ (business logic - rules)
-├── controllers/ (route handlers)
-├── routes/ (API routes)
-├── utils/ (helpers, calc)
-└── ai/ (tools, service)
-
-frontend/
-├── src/
-│   ├── components/ (ui, layout)
-│   ├── contexts/ (auth)
-│   ├── pages/ (role-based)
-│   ├── services/ (api)
-│   ├── utils/ (helpers)
-│   └── App.jsx
-```
-
-## Team Split Recommendation
-- **Backend Dev 1:** Auth, Org, Employees, AI service
-- **Backend Dev 2:** Attendance, Leave, Payroll, Dashboards, Audit
-- **Frontend Dev 1:** Auth, Layouts, Dashboards, Employees, AI chat
-- **Frontend Dev 2:** Attendance, Leave, Payroll, Settings, Comms
-
-## Risk Mitigation
-- Start with minimal working versions, iterate
-- Use simple UI over fancy
-- Focus on demo-critical path first
-- Test RBAC early
-- Keep calculations in services (testable)
+- Start from `/signup`; there is no global first-run setup or seeded demo data.
+- Configure a dedicated MongoDB database, strong JWT secret, and allowed frontend origin before deployment.
+- AI responses require an optional backend-only OpenRouter API key.
+- Use the explicit database reset command only when intentionally clearing the dedicated demo database.

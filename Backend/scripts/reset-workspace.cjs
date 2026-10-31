@@ -38,18 +38,19 @@ const confirmed = process.argv.includes("--yes");
   }
 
   for (const name of collections) {
-    await db.collection(name).deleteMany({});
+    await db.dropCollection(name);
   }
 
-  for (const name of collections) {
-    const remaining = await db.collection(name).countDocuments();
-    if (remaining !== 0) {
-      throw new Error(`Reset verification failed for ${name}`);
-    }
+  const remainingCollections = await db
+    .listCollections({}, { nameOnly: true })
+    .toArray();
+  if (remainingCollections.length) {
+    throw new Error("Reset verification failed: collections still exist");
   }
 
   console.log("workspace_reset=true");
-  console.log("Open /setup to create the next workspace.");
+  console.log("All collections and legacy indexes were removed.");
+  console.log("Open /signup to create the first company workspace.");
   await mongoose.disconnect();
 })().catch(async (error) => {
   console.error(`RESET_ERROR ${error.message}`);

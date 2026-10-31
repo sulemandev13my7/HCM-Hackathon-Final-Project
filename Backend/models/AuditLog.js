@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const tenantPlugin = require('../utils/tenantPlugin');
 
 const auditLogSchema = new mongoose.Schema({
   actor: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
@@ -11,5 +12,7 @@ const auditLogSchema = new mongoose.Schema({
   ipAddress: String,
   userAgent: String
 }, { timestamps: true });
+
+auditLogSchema.plugin(tenantPlugin);
 
 module.exports = mongoose.model('AuditLog', auditLogSchema);

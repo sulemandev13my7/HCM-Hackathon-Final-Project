@@ -71,7 +71,7 @@ exports.createPayrollRun = async (req, res) => {
     const monthStart = new Date(Date.UTC(year, month - 1, 1));
     const nextMonthStart = new Date(Date.UTC(year, month, 1));
     const [settings, holidays] = await Promise.all([
-      CompanySettings.findOne(),
+      CompanySettings.findById(req.companyId),
       Holiday.find({
         isActive: true,
         date: { $gte: monthStart, $lt: nextMonthStart },
@@ -254,7 +254,10 @@ exports.finalizePayroll = async (req, res) => {
     await run.save();
 
     const users = await User.find(
-      { employeeId: { $in: run.items.map((item) => item.employee) } },
+      {
+        company: req.companyId,
+        employeeId: { $in: run.items.map((item) => item.employee) },
+      },
       "_id employeeId",
     );
     const notifications = buildPayslipNotifications(run, users, run.items);

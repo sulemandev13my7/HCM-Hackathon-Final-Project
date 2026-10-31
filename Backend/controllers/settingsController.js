@@ -1,10 +1,23 @@
 const CompanySettings = require('../models/CompanySettings');
 
+const SETTINGS_FIELDS = [
+  'companyName',
+  'industry',
+  'companySize',
+  'officeStartTime',
+  'graceMinutes',
+  'weekendDays',
+  'halfDayHours',
+  'officeLat',
+  'officeLng',
+  'officeRadius',
+];
+
 exports.getSettings = async (req, res) => {
   try {
-    let settings = await CompanySettings.findOne();
+    const settings = await CompanySettings.findById(req.companyId);
     if (!settings) {
-      settings = await CompanySettings.create({ companyName: 'My Company' });
+      return res.status(404).json({ message: 'Workspace not found' });
     }
     res.json(settings);
   } catch (error) {
@@ -14,13 +27,17 @@ exports.getSettings = async (req, res) => {
 
 exports.updateSettings = async (req, res) => {
   try {
-    let settings = await CompanySettings.findOne();
+    const settings = await CompanySettings.findById(req.companyId);
     if (!settings) {
-      settings = await CompanySettings.create(req.body);
-    } else {
-      Object.assign(settings, req.body);
-      await settings.save();
+      return res.status(404).json({ message: 'Workspace not found' });
     }
+
+    for (const field of SETTINGS_FIELDS) {
+      if (req.body[field] !== undefined) {
+        settings[field] = req.body[field];
+      }
+    }
+    await settings.save();
     res.json(settings);
   } catch (error) {
     res.status(500).json({ message: error.message });

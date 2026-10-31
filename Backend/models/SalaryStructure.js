@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const tenantPlugin = require('../utils/tenantPlugin');
 
 const salaryStructureSchema = new mongoose.Schema({
   employee: { type: mongoose.Schema.Types.ObjectId, ref: 'Employee', required: true },
@@ -10,5 +11,7 @@ const salaryStructureSchema = new mongoose.Schema({
   effectiveDate: { type: Date, default: Date.now },
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });
+
+salaryStructureSchema.plugin(tenantPlugin);
 
 module.exports = mongoose.model('SalaryStructure', salaryStructureSchema);

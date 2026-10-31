@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const tenantPlugin = require('../utils/tenantPlugin');
 
 const announcementSchema = new mongoose.Schema({
   title: { type: String, required: true },
@@ -7,5 +8,7 @@ const announcementSchema = new mongoose.Schema({
   targetRoles: [{ type: String, enum: ['admin', 'hr', 'employee'] }],
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });
+
+announcementSchema.plugin(tenantPlugin);
 
 module.exports = mongoose.model('Announcement', announcementSchema);

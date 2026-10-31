@@ -16,7 +16,7 @@ export default function AuthField({
     .join(" ");
 
   return (
-    <div>
+    <div className="min-w-0">
       <div className="mb-2 flex items-center justify-between gap-3">
         <label
           htmlFor={id}
@@ -25,13 +25,13 @@ export default function AuthField({
           {label}
         </label>
         {optional && (
-          <span className="text-[11px] font-medium text-hcm-muted">
+          <span className="text-xs font-medium text-hcm-muted">
             Optional
           </span>
         )}
       </div>
 
-      <div className="relative">
+      <div className="relative min-w-0">
         {Icon && (
           <Icon className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-hcm-muted" />
         )}
@@ -39,11 +39,11 @@ export default function AuthField({
           id={id}
           aria-invalid={Boolean(error)}
           aria-describedby={describedBy || undefined}
-          className={`h-12 w-full rounded-[10px] border bg-hcm-surface pl-11 text-[15px] text-hcm-ink outline-none transition placeholder:text-[#708a8a] disabled:cursor-not-allowed disabled:opacity-60 ${
+          className={`h-12 min-w-0 w-full rounded-[10px] border bg-hcm-surface pl-11 text-base text-hcm-ink outline-none transition placeholder:text-hcm-muted disabled:cursor-not-allowed disabled:opacity-60 ${
             action ? "pr-12" : "pr-4"
           } ${
             error
-              ? "border-[#e7a6a0] focus:border-[#b42318] focus:ring-4 focus:ring-[#b42318]/10"
+              ? "border-rose-300 focus:border-hcm-danger focus:ring-4 focus:ring-hcm-danger/10"
               : "border-hcm-line hover:border-hcm-line-strong focus:border-hcm-accent focus:ring-4 focus:ring-hcm-accent/10"
           } ${className}`}
           {...inputProps}
@@ -59,7 +59,7 @@ export default function AuthField({
         <p
           id={`${id}-error`}
           role="alert"
-          className="mt-1.5 flex items-start gap-1.5 text-xs font-medium text-[#b42318]"
+          className="mt-1.5 flex items-start gap-1.5 text-xs font-medium text-hcm-danger"
         >
           <AlertCircle className="mt-px h-3.5 w-3.5 shrink-0" />
           {error}

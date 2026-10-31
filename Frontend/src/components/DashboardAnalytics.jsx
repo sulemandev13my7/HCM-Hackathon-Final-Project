@@ -93,7 +93,7 @@ function AttentionRow({ to, icon: Icon, label, value, detail, tone }) {
         <span className="block text-xs font-semibold text-hcm-ink">
           {label}
         </span>
-        <span className="block truncate text-[10px] text-hcm-muted">
+        <span className="block truncate text-xs text-hcm-muted">
           {detail}
         </span>
       </span>
@@ -173,7 +173,7 @@ function PriorityPanel({ kpis, role }) {
       <div className="mt-4 rounded-2xl bg-hcm-ink px-4 py-4 text-white">
         <div className="flex items-end justify-between gap-3">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/55">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/75">
               Attendance coverage
             </p>
             <p className="mt-1 font-display text-2xl font-bold tracking-tight text-white">
@@ -525,13 +525,13 @@ export default function DashboardAnalytics({ role }) {
                 <XAxis
                   dataKey="date"
                   minTickGap={24}
-                  tick={{ fontSize: 10, fill: "#5a6f72" }}
+                  tick={{ fontSize: 11, fill: "#5a6f72" }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <YAxis
                   allowDecimals={false}
-                  tick={{ fontSize: 10, fill: "#5a6f72" }}
+                  tick={{ fontSize: 11, fill: "#5a6f72" }}
                   axisLine={false}
                   tickLine={false}
                   width={26}
@@ -569,7 +569,7 @@ export default function DashboardAnalytics({ role }) {
           ) : (
             <ChartEmpty />
           )}
-          <div className="mt-3 flex flex-wrap items-center gap-4 text-[10px] font-medium text-hcm-muted">
+          <div className="mt-3 flex flex-wrap items-center gap-4 text-xs font-medium text-hcm-muted">
             <span className="inline-flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-hcm-accent" /> Present
             </span>
@@ -604,14 +604,14 @@ export default function DashboardAnalytics({ role }) {
                 />
                 <XAxis
                   dataKey="departmentName"
-                  tick={{ fontSize: 10, fill: "#5a6f72" }}
+                  tick={{ fontSize: 11, fill: "#5a6f72" }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <YAxis
                   allowDecimals={false}
                   unit={isAdmin ? "" : "%"}
-                  tick={{ fontSize: 10, fill: "#5a6f72" }}
+                  tick={{ fontSize: 11, fill: "#5a6f72" }}
                   axisLine={false}
                   tickLine={false}
                   width={32}
@@ -652,7 +652,7 @@ export default function DashboardAnalytics({ role }) {
                     label={`${leaveType.name} utilization`}
                     className="mt-2"
                   />
-                  <p className="mt-1.5 text-[10px] text-hcm-muted">
+                  <p className="mt-1.5 text-xs text-hcm-muted">
                     {leaveType.used} of {leaveType.quota} days used
                   </p>
                 </div>
@@ -688,7 +688,7 @@ export default function DashboardAnalytics({ role }) {
                       <span className="block truncate font-medium text-hcm-ink">
                         {entry.employeeName}
                       </span>
-                      <span className="block truncate text-[10px] text-hcm-muted">
+                      <span className="block truncate text-xs text-hcm-muted">
                         {entry.department}
                       </span>
                     </span>

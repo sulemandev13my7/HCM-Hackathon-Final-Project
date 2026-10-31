@@ -1,6 +1,6 @@
 const variants = {
   primary: "hcm-btn-primary text-white",
-  lime: "bg-hcm-lime text-hcm-ink hover:bg-[#a7f7e7]",
+  lime: "bg-hcm-lime text-hcm-ink hover:bg-hcm-lime/85",
   secondary:
     "border border-hcm-line bg-white text-hcm-ink hover:border-hcm-line-strong hover:bg-hcm-surface-soft",
   ghost: "text-hcm-muted hover:bg-hcm-canvas hover:text-hcm-ink",
@@ -12,7 +12,7 @@ const variants = {
 };
 
 const sizes = {
-  sm: "h-9 gap-1.5 rounded-[10px] px-3 text-xs",
+  sm: "h-10 gap-1.5 rounded-[10px] px-3 text-xs",
   md: "h-10 gap-2 rounded-[10px] px-4 text-sm",
   lg: "h-11 gap-2 rounded-[10px] px-5 text-sm",
   icon: "h-10 w-10 rounded-[10px]",

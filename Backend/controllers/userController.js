@@ -36,6 +36,7 @@ exports.createHR = async (req, res) => {
       email: normalizedEmail,
       password,
       role: "hr",
+      company: req.companyId || req.user.company,
       firstName,
       lastName,
       mustChangePassword: true,
@@ -60,7 +61,9 @@ exports.createHR = async (req, res) => {
 
 exports.getUsers = async (req, res) => {
   try {
-    const users = await User.find()
+    const users = await User.find({
+      company: req.companyId || req.user.company,
+    })
       .select("-password")
       .populate("employeeId")
       .sort({ createdAt: -1 });
@@ -72,7 +75,10 @@ exports.getUsers = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findOne({
+      _id: req.params.id,
+      company: req.companyId || req.user.company,
+    });
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const tempPassword = generateTemporaryPassword();
@@ -91,7 +97,10 @@ exports.resetPassword = async (req, res) => {
 
 exports.createResetLink = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findOne({
+      _id: req.params.id,
+      company: req.companyId || req.user.company,
+    });
     if (!user) return res.status(404).json({ message: "User not found" });
     if (!user.isActive) {
       return res
@@ -121,7 +130,10 @@ exports.createResetLink = async (req, res) => {
 
 exports.toggleUserStatus = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findOne({
+      _id: req.params.id,
+      company: req.companyId || req.user.company,
+    });
     if (!user) return res.status(404).json({ message: "User not found" });
     if (!canDeactivateUser(req.user.id, user._id, user.role)) {
       return res

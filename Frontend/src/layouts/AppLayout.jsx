@@ -134,7 +134,7 @@ export default function AppLayout({
           >
             <Search className="h-4 w-4" />
             <span className="flex-1">Search or jump to</span>
-            <kbd className="rounded border border-hcm-line bg-white px-1.5 py-0.5 font-mono text-[9px] text-hcm-muted">
+            <kbd className="rounded border border-hcm-line bg-white px-1.5 py-0.5 font-mono text-[10px] text-hcm-muted">
               Ctrl K
             </kbd>
           </button>
@@ -143,7 +143,7 @@ export default function AppLayout({
         <nav className="min-h-0 flex-1 overflow-y-auto px-3 pb-4">
           {groups.map((group) => (
             <div key={group.name} className="mb-5 last:mb-0">
-              <p className="px-3 pb-1.5 text-[9px] font-semibold uppercase tracking-[0.18em] text-hcm-muted">
+              <p className="px-3 pb-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-hcm-muted">
                 {group.name}
               </p>
               <div className="space-y-0.5">
@@ -179,7 +179,7 @@ export default function AppLayout({
                       <span className="truncate">{item.label}</span>
                       {item.badge ? (
                         <span
-                          className={`ml-auto rounded-full px-1.5 py-0.5 text-[9px] font-bold ${
+                          className={`ml-auto rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
                             active
                               ? "bg-hcm-accent text-white"
                               : "bg-hcm-line text-hcm-ink-soft"
@@ -205,7 +205,7 @@ export default function AppLayout({
               <p className="truncate text-[13px] font-semibold">
                 {user?.firstName} {user?.lastName}
               </p>
-              <p className="truncate text-[10px] text-hcm-muted">
+              <p className="truncate text-xs text-hcm-muted">
                 {roleWord[accent] || roleLabel}
               </p>
             </div>
@@ -246,7 +246,7 @@ export default function AppLayout({
               </span>
             )}
             <div className="min-w-0">
-              <p className="truncate text-[9px] font-semibold uppercase tracking-[0.16em] text-hcm-muted">
+              <p className="truncate text-[10px] font-semibold uppercase tracking-[0.14em] text-hcm-muted">
                 {roleLabel}
               </p>
               <p className="truncate font-display text-[14px] font-semibold tracking-[-0.01em] text-hcm-ink">
@@ -264,7 +264,7 @@ export default function AppLayout({
             >
               <Search className="h-3.5 w-3.5" />
               <span className="hidden lg:inline">Search or jump to...</span>
-              <kbd className="rounded border border-hcm-line bg-white px-1.5 py-0.5 font-mono text-[9px]">
+              <kbd className="rounded border border-hcm-line bg-white px-1.5 py-0.5 font-mono text-[10px]">
                 Ctrl K
               </kbd>
             </button>
@@ -315,7 +315,7 @@ export default function AppLayout({
                   key={item.path}
                   to={item.path}
                   aria-current={active ? "page" : undefined}
-                  className={`flex min-w-0 flex-1 flex-col items-center gap-1 px-1 py-2.5 text-[9px] font-semibold transition ${
+                  className={`flex min-w-0 flex-1 flex-col items-center gap-1 px-1 py-2.5 text-[11px] font-semibold transition ${
                     active ? "text-hcm-accent-strong" : "text-hcm-muted"
                   }`}
                 >
@@ -335,7 +335,7 @@ export default function AppLayout({
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}
-              className="flex min-w-0 flex-1 flex-col items-center gap-1 px-1 py-2.5 text-[9px] font-semibold text-hcm-muted transition hover:text-hcm-ink"
+              className="flex min-w-0 flex-1 flex-col items-center gap-1 px-1 py-2.5 text-[11px] font-semibold text-hcm-muted transition hover:text-hcm-ink"
             >
               <span className="flex h-8 w-11 items-center justify-center rounded-xl">
                 <LayoutGrid className="h-4 w-4" />

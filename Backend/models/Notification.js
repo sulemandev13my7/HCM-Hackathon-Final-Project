@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const tenantPlugin = require('../utils/tenantPlugin');
 
 const notificationSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
@@ -8,5 +9,7 @@ const notificationSchema = new mongoose.Schema({
   read: { type: Boolean, default: false },
   link: String
 }, { timestamps: true });
+
+notificationSchema.plugin(tenantPlugin);
 
 module.exports = mongoose.model('Notification', notificationSchema);

@@ -21,9 +21,9 @@ export default function SectionCard({
               </span>
             )}
             <div className="min-w-0">
-              <h2 className="text-sm font-semibold text-hcm-ink">{title}</h2>
+              <h2 className="text-base font-semibold leading-6 text-hcm-ink">{title}</h2>
               {description && (
-                <p className="mt-0.5 text-xs leading-5 text-hcm-muted">
+                <p className="mt-1 text-sm leading-5 text-hcm-muted">
                   {description}
                 </p>
               )}

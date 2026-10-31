@@ -19,8 +19,8 @@ export default function StatCard({
       <div className="relative flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p
-            className={`text-xs font-semibold ${
-              emphasis ? "text-white/60" : "text-hcm-muted"
+            className={`text-sm font-semibold ${
+              emphasis ? "text-white/75" : "text-hcm-muted"
             }`}
           >
             {label}
@@ -30,8 +30,8 @@ export default function StatCard({
           </p>
           {detail && (
             <p
-              className={`mt-1 text-[11px] leading-5 ${
-                emphasis ? "text-white/45" : "text-hcm-muted"
+              className={`mt-1 text-xs leading-5 ${
+                emphasis ? "text-white/70" : "text-hcm-muted"
               }`}
             >
               {detail}

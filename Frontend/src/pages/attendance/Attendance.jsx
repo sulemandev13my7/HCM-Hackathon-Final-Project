@@ -353,7 +353,7 @@ export default function Attendance() {
         <section className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm sm:p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-600">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-700">
                 HR approval queue
               </p>
               <h2 className="mt-1 text-lg font-semibold text-hcm-ink">
@@ -594,19 +594,19 @@ export default function Attendance() {
                   </div>
                   <div className="mt-3 grid grid-cols-3 gap-2 rounded-xl bg-hcm-surface-soft p-2 text-center">
                     <div>
-                      <p className="text-[10px] uppercase text-hcm-muted">In</p>
+                      <p className="text-xs uppercase text-hcm-muted">In</p>
                       <p className="text-xs font-semibold text-hcm-ink">
                         {formatTime(record.checkIn)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-[10px] uppercase text-hcm-muted">Out</p>
+                      <p className="text-xs uppercase text-hcm-muted">Out</p>
                       <p className="text-xs font-semibold text-hcm-ink">
                         {formatTime(record.checkOut)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-[10px] uppercase text-hcm-muted">
+                      <p className="text-xs uppercase text-hcm-muted">
                         Hours
                       </p>
                       <p className="text-xs font-semibold text-hcm-ink">

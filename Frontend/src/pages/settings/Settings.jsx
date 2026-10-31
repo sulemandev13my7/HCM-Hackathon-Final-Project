@@ -282,7 +282,7 @@ export default function Settings() {
           {tab === "general" && (
             <div className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
               <section className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm sm:p-6">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-600">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-hcm-accent">
                   Company profile
                 </p>
                 <h2 className="mt-1 text-lg font-semibold text-hcm-ink">

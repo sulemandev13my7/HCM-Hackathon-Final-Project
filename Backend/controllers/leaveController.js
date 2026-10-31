@@ -20,8 +20,8 @@ const isWeekend = (date, weekendDays = [0, 6]) => {
   return weekendDays.includes(date.getUTCDay());
 };
 
-const calculateWorkingDays = async (startDate, endDate) => {
-  const settings = await CompanySettings.findOne();
+const calculateWorkingDays = async (startDate, endDate, companyId) => {
+  const settings = await CompanySettings.findById(companyId);
   const weekendDays = settings?.weekendDays || [0, 6];
   const holidays = await Holiday.find({ isActive: true });
   const holidayDates = holidays.map((h) => h.date.toISOString().split("T")[0]);
@@ -70,7 +70,11 @@ exports.applyLeave = async (req, res) => {
         .json({ message: "Leave request overlaps with existing leave" });
     }
 
-    const workingDays = await calculateWorkingDays(startDate, endDate);
+    const workingDays = await calculateWorkingDays(
+      startDate,
+      endDate,
+      req.companyId,
+    );
     const year = Number(startDate.slice(0, 4));
 
     // Check balance
@@ -212,6 +216,7 @@ exports.approveLeave = async (req, res) => {
 
       const user = await User.findOne({
         employeeId: leaveRequest.employee._id,
+        company: req.companyId,
       }).session(session || null);
       if (user) {
         await Notification.create(
@@ -256,7 +261,10 @@ exports.rejectLeave = async (req, res) => {
     leaveRequest.approvalComment = req.body.comment || "";
     await leaveRequest.save();
 
-    const user = await User.findOne({ employeeId: leaveRequest.employee });
+    const user = await User.findOne({
+      employeeId: leaveRequest.employee,
+      company: req.companyId,
+    });
     if (user) {
       await Notification.create({
         user: user._id,

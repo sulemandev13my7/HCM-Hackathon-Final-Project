@@ -32,7 +32,7 @@ exports.checkIn = async (req, res) => {
       return res.status(409).json({ message: 'Already checked in for today' });
     }
 
-    const settings = await CompanySettings.findOne();
+    const settings = await CompanySettings.findById(req.companyId);
     const source = req.body.source === 'camera' ? 'camera' : 'web';
     let cameraLocation;
     if (source === 'camera') {
@@ -110,7 +110,7 @@ exports.checkOut = async (req, res) => {
       return res.status(400).json({ message: 'Already checked out' });
     }
 
-    const settings = await CompanySettings.findOne();
+    const settings = await CompanySettings.findById(req.companyId);
     const now = new Date();
     attendance.checkOut = now;
     
@@ -193,7 +193,7 @@ exports.getMyTodayAttendance = async (req, res) => {
       employee: employeeId,
       date: today,
     }).populate('employee');
-    const settings = await CompanySettings.findOne();
+    const settings = await CompanySettings.findById(req.companyId);
 
     res.json({
       attendance,

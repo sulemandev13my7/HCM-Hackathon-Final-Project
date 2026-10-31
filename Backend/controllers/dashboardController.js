@@ -54,7 +54,7 @@ const getAnalyticsDashboard = async (req, res) => {
 
     const [employees, settings, holidays, departments] = await Promise.all([
       Employee.find(employeeQuery).populate("department", "name"),
-      CompanySettings.findOne(),
+      CompanySettings.findById(req.companyId),
       Holiday.find({
         isActive: true,
         date: { $gte: start, $lt: endExclusive },

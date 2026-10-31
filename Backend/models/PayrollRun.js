@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const tenantPlugin = require("../utils/tenantPlugin");
 
 const payrollRunSchema = new mongoose.Schema(
   {
@@ -30,6 +31,10 @@ const payrollRunSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-payrollRunSchema.index({ month: 1, year: 1 }, { unique: true });
+payrollRunSchema.index(
+  { company: 1, month: 1, year: 1 },
+  { unique: true },
+);
+payrollRunSchema.plugin(tenantPlugin);
 
 module.exports = mongoose.model("PayrollRun", payrollRunSchema);

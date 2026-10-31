@@ -188,7 +188,7 @@ export default function Announcements() {
         <section className="rounded-2xl border border-hcm-line bg-white p-5 shadow-sm sm:p-6">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-600">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-700">
                 New post
               </p>
               <h2 className="mt-1 text-lg font-semibold text-hcm-ink">

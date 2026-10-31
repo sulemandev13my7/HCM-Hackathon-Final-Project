@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const tenantPlugin = require('../utils/tenantPlugin');
 
 const attendanceCorrectionSchema = new mongoose.Schema({
   employee: { type: mongoose.Schema.Types.ObjectId, ref: 'Employee', required: true },
@@ -12,5 +13,7 @@ const attendanceCorrectionSchema = new mongoose.Schema({
   reviewComment: String,
   reviewedAt: Date
 }, { timestamps: true });
+
+attendanceCorrectionSchema.plugin(tenantPlugin);
 
 module.exports = mongoose.model('AttendanceCorrection', attendanceCorrectionSchema);

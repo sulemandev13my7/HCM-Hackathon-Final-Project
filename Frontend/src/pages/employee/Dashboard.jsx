@@ -274,7 +274,7 @@ export default function EmployeeDashboard() {
           action={<CalendarDays className="h-4 w-4 text-hcm-muted" />}
         >
           <div className="rounded-[10px] bg-hcm-surface-soft px-4 py-4">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-hcm-muted">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-hcm-muted">
               Leave remaining
             </p>
             <p className="mt-1 font-display text-4xl tracking-[-0.04em] text-hcm-ink">
@@ -314,7 +314,7 @@ export default function EmployeeDashboard() {
                   <span className="block text-xs font-semibold text-hcm-ink">
                     {action.label}
                   </span>
-                  <span className="block truncate text-[10px] text-hcm-muted">
+                  <span className="block truncate text-xs text-hcm-muted">
                     {action.description}
                   </span>
                 </span>

@@ -11,6 +11,7 @@ const API = axios.create({
 
 const AUTH_ENDPOINTS = [
   "/auth/login",
+  "/auth/signup",
   "/auth/setup",
   "/auth/change-password",
   "/auth/reset-password",

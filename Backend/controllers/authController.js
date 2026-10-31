@@ -1,5 +1,6 @@
 ﻿const User = require('../models/User');
 const CompanySettings = require('../models/CompanySettings');
+const LeaveType = require('../models/LeaveType');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const {
@@ -14,12 +15,21 @@ const {
   clearSessionCookie,
   setSessionCookie,
 } = require('../utils/sessionCookie');
+const { runInTransaction } = require('../utils/transactions');
+const { runWithTenant } = require('../config/tenantContext');
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const DEFAULT_LEAVE_TYPES = [
+  { name: 'Annual', quota: 20, isPaid: true, description: 'Planned annual leave' },
+  { name: 'Sick', quota: 10, isPaid: true, description: 'Medical and recovery leave' },
+  { name: 'Casual', quota: 10, isPaid: true, description: 'Short personal leave' },
+  { name: 'Unpaid', quota: 0, isPaid: false, description: 'Leave without pay' },
+];
+
 const generateToken = (user) => {
   return jwt.sign(
-    { id: user._id, tv: user.tokenVersion || 0 },
+    { id: user._id, tv: user.tokenVersion || 0, cid: user.company },
     process.env.JWT_SECRET,
     {
       expiresIn: process.env.JWT_EXPIRE || '7d'
@@ -27,84 +37,138 @@ const generateToken = (user) => {
   );
 };
 
-// Check if first run setup needed
-exports.checkFirstRun = async (req, res) => {
-  try {
-    const adminCount = await User.countDocuments({ role: 'admin' });
-    const settings = await CompanySettings.findOne();
-    res.json({
-      needsSetup: adminCount === 0,
-      setupComplete: settings?.setupComplete || false
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+const publicUser = (user, company) => ({
+  id: user._id,
+  email: user.email,
+  role: user.role,
+  firstName: user.firstName,
+  lastName: user.lastName,
+  employeeId: user.employeeId,
+  mustChangePassword: user.mustChangePassword,
+  company: user.company,
+  companyName: company?.companyName || '',
+});
+
+const createWorkspace = async ({
+  companyName,
+  firstName,
+  lastName,
+  email,
+  password,
+  industry,
+  companySize,
+}) => {
+  const normalizedCompanyName = String(companyName || '').trim();
+  const normalizedFirstName = String(firstName || '').trim();
+  const normalizedEmail = String(email || '').trim().toLowerCase();
+
+  if (!normalizedCompanyName || !normalizedFirstName || !normalizedEmail || !password) {
+    const error = new Error('Please provide company name, first name, email and password');
+    error.statusCode = 400;
+    throw error;
   }
+
+  if (normalizedCompanyName.length > 80) {
+    const error = new Error('Company name must be 80 characters or fewer');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (!EMAIL_PATTERN.test(normalizedEmail)) {
+    const error = new Error('Please provide a valid work email');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (!isValidNewPassword(password)) {
+    const error = new Error(PASSWORD_REQUIREMENT);
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const existingUser = await User.findOne({ email: normalizedEmail });
+  if (existingUser) {
+    const error = new Error('An account with this email already exists');
+    error.statusCode = 409;
+    throw error;
+  }
+
+  return runInTransaction(async (session) => {
+    const [company] = await CompanySettings.create(
+      [
+        {
+          companyName: normalizedCompanyName,
+          industry: String(industry || '').trim(),
+          companySize: String(companySize || '').trim(),
+          setupComplete: true,
+        },
+      ],
+      { session },
+    );
+
+    const [admin] = await User.create(
+      [
+        {
+          email: normalizedEmail,
+          password,
+          role: 'admin',
+          company: company._id,
+          firstName: normalizedFirstName,
+          lastName: String(lastName || '').trim(),
+          mustChangePassword: false,
+        },
+      ],
+      { session },
+    );
+
+    company.owner = admin._id;
+    await company.save({ session });
+
+    await runWithTenant(company._id, () =>
+      LeaveType.insertMany(
+        DEFAULT_LEAVE_TYPES.map((leaveType) => ({
+          ...leaveType,
+          company: company._id,
+        })),
+        { session },
+      ),
+    );
+
+    return { admin, company };
+  });
 };
 
-// First run setup - create company and admin
-exports.firstRunSetup = async (req, res) => {
+exports.checkFirstRun = async (req, res) => {
+  res.json({ needsSetup: false, setupComplete: true, signupEnabled: true });
+};
+
+exports.signup = async (req, res) => {
   try {
-    const adminCount = await User.countDocuments({ role: 'admin' });
-    if (adminCount > 0) {
-      return res.status(400).json({ message: 'Admin already exists' });
-    }
-
-    const { companyName, adminEmail, adminPassword, firstName, lastName } = req.body;
-    const normalizedCompanyName = String(companyName || '').trim();
-    const normalizedEmail = String(adminEmail || '').trim().toLowerCase();
-
-    if (!normalizedCompanyName || !normalizedEmail || !adminPassword) {
-      return res.status(400).json({ message: 'Please provide all required fields' });
-    }
-
-    if (!EMAIL_PATTERN.test(normalizedEmail)) {
-      return res.status(400).json({ message: 'Please provide a valid admin email' });
-    }
-
-    if (!isValidNewPassword(adminPassword)) {
-      return res.status(400).json({
-        message: PASSWORD_REQUIREMENT
-      });
-    }
-
-    // Create company settings
-    let settings = await CompanySettings.findOne();
-    if (!settings) {
-      settings = await CompanySettings.create({
-        companyName: normalizedCompanyName,
-        setupComplete: true
-      });
-    } else {
-      settings.companyName = normalizedCompanyName;
-      settings.setupComplete = true;
-      await settings.save();
-    }
-
-    // Create admin user
-    const admin = await User.create({
-      email: normalizedEmail,
-      password: adminPassword,
-      role: 'admin',
-      firstName,
-      lastName,
-      mustChangePassword: false
-    });
+    const { admin, company } = await createWorkspace(req.body);
 
     setSessionCookie(res, generateToken(admin));
 
     res.status(201).json({
-      message: 'Setup completed successfully',
-      user: {
-        id: admin._id,
-        email: admin.email,
-        role: admin.role,
-        firstName: admin.firstName,
-        lastName: admin.lastName
-      }
+      message: 'Workspace created successfully',
+      user: publicUser(admin, company),
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    const status = error.statusCode || (error.code === 11000 ? 409 : 500);
+    const message =
+      error.code === 11000
+        ? 'An account with this email already exists'
+        : error.message;
+    res.status(status).json({ message });
   }
+};
+
+exports.firstRunSetup = async (req, res) => {
+  req.body = {
+    ...req.body,
+    email: req.body.email || req.body.adminEmail,
+    password: req.body.password || req.body.adminPassword,
+  };
+  return exports.signup(req, res);
 };
 
 // Login
@@ -127,21 +191,18 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
+    const company = await CompanySettings.findById(user.company);
+    if (!company) {
+      return res.status(401).json({ message: 'Workspace is no longer available' });
+    }
+
     user.lastLogin = new Date();
     await user.save();
 
     setSessionCookie(res, generateToken(user));
 
     res.json({
-      user: {
-        id: user._id,
-        email: user.email,
-        role: user.role,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        employeeId: user.employeeId,
-        mustChangePassword: user.mustChangePassword
-      }
+      user: publicUser(user, company)
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -248,8 +309,17 @@ exports.logout = (req, res) => {
 // Get current user
 exports.getMe = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password').populate('employeeId');
-    res.json(user);
+    const user = await User.findById(req.user.id)
+      .select('-password')
+      .populate('employeeId');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    const company = await CompanySettings.findById(user.company);
+    res.json({
+      ...user.toObject(),
+      companyName: company?.companyName || '',
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const tenantPlugin = require('../utils/tenantPlugin');
 
 const leaveRequestSchema = new mongoose.Schema({
   employee: { type: mongoose.Schema.Types.ObjectId, ref: 'Employee', required: true },
@@ -13,5 +14,7 @@ const leaveRequestSchema = new mongoose.Schema({
   approvalComment: String,
   approvedAt: Date
 }, { timestamps: true });
+
+leaveRequestSchema.plugin(tenantPlugin);
 
 module.exports = mongoose.model('LeaveRequest', leaveRequestSchema);
